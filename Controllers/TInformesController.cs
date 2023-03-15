@@ -89,7 +89,6 @@ namespace gestionDiversidad.Controllers
         {
             TInforme informe = buscarInforme(nifAlumno, nifMedico, fecha);
             MemoryStream stream = new MemoryStream(informe.Contenido);
-            //HOla esto es un comentario
             return new FileStreamResult(stream, "application/pdf");
             
 
