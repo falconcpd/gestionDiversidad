@@ -1,0 +1,55 @@
+﻿@model IEnumerable<gestionDiversidad.Models.TInforme>
+
+@{
+    ViewData["Title"] = "listaInformes";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NifAlumnoNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NifMedicoNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NifAlumnoNavigation.Nif)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NifMedicoNavigation.Nif)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+                <td>
+                    <form method="get" asp-action="infoBasica" asp-controller="TInformes">
+                        <input type="hidden" name="nifAlumno" value=@item.NifAlumno />
+                        <input type="hidden" name="nifMedico" value=@item.NifMedico />
+                        <input type="hidden" name="fecha" value=@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss") />
+                        <button type="submit">Detalles informe</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

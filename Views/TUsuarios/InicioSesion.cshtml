@@ -1,0 +1,26 @@
+﻿@model string
+
+@{
+    ViewData["Title"] = "InicioSesion";
+}
+
+<h2>Inicio sesion</h2>
+
+<form method="post" asp-controller="TUsuarios" asp-action="logging">
+    <div>
+        <label for="usuario">Usuario: </label>
+        <input type="text" name="usuario" id="usuario"><br>
+    </div>
+    <div>
+        <label for="password">Password: </label>
+        <input type="text" name="password" id="password"><br>
+    </div>
+
+    <input type="submit" value="Iniciar Sesion">
+
+    @if (TempData["ErrorSesion"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorSesion"]</div>
+    }
+</form>
+
