@@ -1,4 +1,5 @@
-﻿@model gestionDiversidad.Models.TAlumno
+﻿@using Microsoft.AspNetCore.Http
+@model gestionDiversidad.Models.TAlumno
 
 @{
     ViewData["Title"] = "infoBasica";
@@ -54,4 +55,13 @@
         <button type="submit">Ver lista de informes</button>
     </form>
 </div>
+<div>
+    <a>@Context.Session.GetInt32("_rol").ToString()</a>
+</div>
 
+@*
+    Primera forma para acceder a sesion: @HttpContextAccessor.HttpContext.Session.GetInt32("_rol").ToString()
+    Segunda forma para acceder a sesion: @Context.Session.GetInt32("_rol").ToString()
+    Librería antigua: @inject IHttpContextAccessor HttpContextAccessor
+
+*@

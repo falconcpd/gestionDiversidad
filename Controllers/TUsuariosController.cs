@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
+//using Microsoft.Identity.Client;
+//using AspNetCore;
 
 namespace gestionDiversidad.Controllers
 {
@@ -65,6 +67,7 @@ namespace gestionDiversidad.Controllers
             var user = _context.TUsuarios.FirstOrDefault(u => u.Usuario == usuario && u.Password == password);
             string nif;
             int rol;
+            
 
             if (usuario == null || password == null || user == null)
             {
@@ -73,6 +76,10 @@ namespace gestionDiversidad.Controllers
             }
             rol = user.IdRol;
             nif = user.Nif;
+
+            string sessionKeyRol = "_rol";
+            HttpContext.Session.SetInt32(sessionKeyRol, 1);
+            int? lotad2 = HttpContext.Session.GetInt32(sessionKeyRol);
 
             if (rol == 1)
             {

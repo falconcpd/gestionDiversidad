@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace gestionDiversidad.Controllers
 {
@@ -28,6 +29,10 @@ namespace gestionDiversidad.Controllers
         // GET: TAlumnos/infoBasica/5
         public async Task<IActionResult> infoBasica(string id)
         {
+            string sessionKeyRol = "_rol";
+            int? lotad = HttpContext.Session.GetInt32(sessionKeyRol);
+
+
             if (id == null || _context.TAlumnos == null)
             {
                 return NotFound();

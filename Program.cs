@@ -3,12 +3,26 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Add memory cache
+builder.Services.AddDistributedMemoryCache();
 
 //Add context of database
 builder.Services.AddDbContext<TfgContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("TfgContext")));
+
+//Add Razor with HttpContext
+builder.Services.AddHttpContextAccessor();
+
+// Configure the session
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -35,6 +49,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
