@@ -1,4 +1,4 @@
-﻿@model IEnumerable<gestionDiversidad.Models.TInforme>
+﻿@model gestionDiversidad.ViewModels.ListaInformesView
 
 @{
     ViewData["Title"] = "listaInformes";
@@ -13,18 +13,18 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NifAlumnoNavigation)
+                @Html.DisplayNameFor(model => model.ListaInformes.First().NifAlumnoNavigation)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NifMedicoNavigation)
+                @Html.DisplayNameFor(model => model.ListaInformes.First().NifMedicoNavigation)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Fecha)
+                @Html.DisplayNameFor(model => model.ListaInformes.First().Fecha)
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.ListaInformes)
         {
             <tr>
                 <td>
@@ -41,14 +41,18 @@
                     @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
                     @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
                 </td>
-                <td>
-                    <form method="get" asp-action="infoBasica" asp-controller="TInformes">
-                        <input type="hidden" name="nifAlumno" value=@item.NifAlumno />
-                        <input type="hidden" name="nifMedico" value=@item.NifMedico />
-                        <input type="hidden" name="fecha" value=@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss") />
-                        <button type="submit">Detalles informe</button>
-                    </form>
-                </td>
+                @if (Model.Informe.Acceder)
+                {
+                    <td>
+                        <form method="get" asp-action="infoBasica" asp-controller="TInformes">
+                            <input type="hidden" name="nifAlumno" value=@item.NifAlumno />
+                            <input type="hidden" name="nifMedico" value=@item.NifMedico />
+                            <input type="hidden" name="fecha" value=@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss") />
+                            <button type="submit">Detalles informe</button>
+                        </form>
+                    </td>
+                }
+                
             </tr>
         }
     </tbody>

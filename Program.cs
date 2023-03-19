@@ -1,5 +1,8 @@
+using gestionDiversidad.Controllers;
 using gestionDiversidad.Models;
 using Microsoft.EntityFrameworkCore;
+using gestionDiversidad.Controllers;
+using gestionDiversidad.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,9 @@ builder.Services.AddDistributedMemoryCache();
 //Add context of database
 builder.Services.AddDbContext<TfgContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("TfgContext")));
+
+//Inyect "ServiceController"
+builder.Services.AddScoped<IServiceController, ServiceController>();
 
 //Add Razor with HttpContext
 builder.Services.AddHttpContextAccessor();

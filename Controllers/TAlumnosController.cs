@@ -6,17 +6,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
+using gestionDiversidad.ViewModels;
+using gestionDiversidad.Interfaces;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Drawing.Text;
 
 namespace gestionDiversidad.Controllers
 {
     public class TAlumnosController : Controller
     {
         private readonly TfgContext _context;
+        private readonly IServiceController _serviceController;
 
-        public TAlumnosController(TfgContext context)
+        public TAlumnosController(TfgContext context, IServiceController sc)
         {
             _context = context;
+            _serviceController = sc;
         }
 
         // GET: TAlumnos
@@ -29,8 +34,10 @@ namespace gestionDiversidad.Controllers
         // GET: TAlumnos/infoBasica/5
         public async Task<IActionResult> infoBasica(string id)
         {
+            AlumnoView vistaAlumno = new AlumnoView();
             string sessionKeyRol = "_rol";
             int? lotad = HttpContext.Session.GetInt32(sessionKeyRol);
+            int nlotad = lotad ?? 0;
 
 
             if (id == null || _context.TAlumnos == null)
@@ -46,7 +53,12 @@ namespace gestionDiversidad.Controllers
                 return NotFound();
             }
 
-            return View(tAlumno);
+            vistaAlumno.Alumno = tAlumno;
+            vistaAlumno.Permiso = _serviceController.permisoPantalla(1, nlotad);
+            vistaAlumno.LInformes = _serviceController.permisoPantalla(12, nlotad);
+            vistaAlumno.LMatriculas = _serviceController.permisoPantalla(10, nlotad);
+            
+            return View(vistaAlumno);
         }
 
         // GET: TAlumnos/Create

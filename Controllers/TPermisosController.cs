@@ -45,6 +45,7 @@ namespace gestionDiversidad.Controllers
             return View(tPermiso);
         }
 
+
         // GET: TPermisos/Create
         public IActionResult Create()
         {

@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
 using System.Globalization;
+using gestionDiversidad.Interfaces;
+using gestionDiversidad.ViewModels;
 
 namespace gestionDiversidad.Controllers
 {
     public class TInformesController : Controller
     {
         private readonly TfgContext _context;
+        private readonly IServiceController _serviceController;
 
-        public TInformesController(TfgContext context)
+        public TInformesController(TfgContext context, IServiceController sc)
         {
             _context = context;
+            _serviceController = sc;
         }
 
         // GET: TInformes
@@ -52,6 +56,10 @@ namespace gestionDiversidad.Controllers
             //Cuidado, es perezoso, utilizar el include
             TAlumno alumno;
             List<TInforme> informes = null;
+            ListaInformesView vistaListaInformes = new ListaInformesView();
+            int? lotad2 = HttpContext.Session.GetInt32("_rol");
+            int sesionRol = lotad2 ?? 0;
+
 
             if (rol == 1)
             {
@@ -59,7 +67,10 @@ namespace gestionDiversidad.Controllers
                 informes = alumno.TInformes.ToList();
             }
 
-            return View(informes);
+            vistaListaInformes.Permiso = _serviceController.permisoPantalla(12, sesionRol);
+            vistaListaInformes.Informe = _serviceController.permisoPantalla(5, sesionRol);
+            vistaListaInformes.ListaInformes = informes;
+            return View(vistaListaInformes);
 
         }
 
@@ -74,14 +85,29 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> infoBasica(string nifAlumno, string nifMedico, string fecha)
         {
             DateTime fechaTime;
+            InformeView informeView = new InformeView();
+            TInforme informe = null;
+            int? lotad2 = HttpContext.Session.GetInt32("_rol");
+            int sesionRol = lotad2 ?? 0;
             /* if (DateTime.TryParseExact(fecha, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaTime))
              {
 
              } */
             fechaTime = DateTime.ParseExact(fecha, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
 
-            TInforme informe = _context.TInformes.FirstOrDefault(t => t.NifAlumno == nifAlumno && t.NifMedico == nifMedico && t.Fecha == fechaTime);
-            return View(informe);
+            informe = _context.TInformes.FirstOrDefault(t => t.NifAlumno == nifAlumno && t.NifMedico == nifMedico && t.Fecha == fechaTime);
+
+            informeView.Informe = informe;
+            informeView.Permiso = _serviceController.permisoPantalla(5, sesionRol);
+            if (lotad2 == 4)
+            {
+                informeView.Nif = nifMedico;
+            }
+            else 
+            {
+                informeView.Nif = nifAlumno;
+            }
+            return View(informeView);
         }
 
         // GET: TInformes/verInforme

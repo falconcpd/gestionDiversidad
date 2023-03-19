@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http
-@model gestionDiversidad.Models.TAlumno
+@model gestionDiversidad.ViewModels.AlumnoView
 
 @{
     ViewData["Title"] = "infoBasica";
@@ -12,49 +12,58 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
+            @Html.DisplayNameFor(model => model.Alumno.Nombre)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
+            @Html.DisplayFor(model => model.Alumno.Nombre)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Apellido1)
+            @Html.DisplayNameFor(model => model.Alumno.Apellido1)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Apellido1)
+            @Html.DisplayFor(model => model.Alumno.Apellido1)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Apellido2)
+            @Html.DisplayNameFor(model => model.Alumno.Apellido2)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Apellido2)
+            @Html.DisplayFor(model => model.Alumno.Apellido2)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NifNavigation)
+            @Html.DisplayNameFor(model => model.Alumno.NifNavigation)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NifNavigation.Nif)
+            @Html.DisplayFor(model => model.Alumno.NifNavigation.Nif)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Nif">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.Alumno.Nif">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
-<div>
-    <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
-        <input type="hidden" name="nif" value="@Model.Nif" />
-        <input type="hidden" name="rol" value=1 />
-        <button type="submit">Ver lista de asignaturas</button>
-    </form>
-</div>
-<div>
-    <form method="get" asp-action="listaInformes" asp-controller="TInformes">
-        <input type="hidden" name="nif" value="@Model.Nif" />
-        <input type="hidden" name="rol" value=1 />
-        <button type="submit">Ver lista de informes</button>
-    </form>
-</div>
+@if (Model.LInformes.Acceder)
+{
+    <div>
+        <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
+            <input type="hidden" name="nif" value="@Model?.Alumno.Nif" />
+            <input type="hidden" name="rol" value=@Context.Session.GetInt32("_rol") />
+            <button type="submit">Ver lista de asignaturas</button>
+        </form>
+    </div>
+}
+
+@if (Model.LMatriculas.Acceder)
+{
+    <div>
+        <form method="get" asp-action="listaInformes" asp-controller="TInformes">
+            <input type="hidden" name="nif" value="@Model?.Alumno.Nif" />
+            <input type="hidden" name="rol" value=@Context.Session.GetInt32("_rol") />
+            <button type="submit">Ver lista de informes</button>
+        </form>
+    </div>
+}
+
+
 <div>
     <a>@Context.Session.GetInt32("_rol").ToString()</a>
 </div>
