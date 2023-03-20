@@ -1,7 +1,6 @@
 using gestionDiversidad.Controllers;
 using gestionDiversidad.Models;
 using Microsoft.EntityFrameworkCore;
-using gestionDiversidad.Controllers;
 using gestionDiversidad.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);

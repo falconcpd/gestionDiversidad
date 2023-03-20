@@ -95,7 +95,7 @@ namespace gestionDiversidad.Controllers
              } */
             fechaTime = DateTime.ParseExact(fecha, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
 
-            informe = _context.TInformes.FirstOrDefault(t => t.NifAlumno == nifAlumno && t.NifMedico == nifMedico && t.Fecha == fechaTime);
+            informe =  _context.TInformes.FirstOrDefault(t => t.NifAlumno == nifAlumno && t.NifMedico == nifMedico && t.Fecha == fechaTime);
 
             informeView.Informe = informe;
             informeView.Permiso = _serviceController.permisoPantalla(5, sesionRol);
