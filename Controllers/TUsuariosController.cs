@@ -78,12 +78,17 @@ namespace gestionDiversidad.Controllers
             nif = user.Nif;
 
             string sessionKeyRol = "_rol";
-            HttpContext.Session.SetInt32(sessionKeyRol, 1);
+            HttpContext.Session.SetInt32(sessionKeyRol, rol);
             int? lotad2 = HttpContext.Session.GetInt32(sessionKeyRol);
 
             if (rol == 1)
             {
                 return RedirectToAction("infoBasica", "TAlumnos", new { id = nif });
+            }
+
+            if(rol == 2)
+            {
+                return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
             }
 
             return RedirectToAction("Details", "TUsuarios", new { id = nif });

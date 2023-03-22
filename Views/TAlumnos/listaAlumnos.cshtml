@@ -1,0 +1,51 @@
+﻿@model gestionDiversidad.ViewModels.ListaAlumnosView
+
+@{
+    ViewData["Title"] = "listaInformes";
+}
+
+<h1>Lista alumnos</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ListaAlumnos.First().Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ListaAlumnos.First().Nif)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListaAlumnos)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nif)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+                @if (Model.Alumno.Acceder)
+                {
+                    <td>
+                        <form method="get" asp-action="infoBasica" asp-controller="TAlumnos">
+                            <input type="hidden" name="id" value=@item.Nif />
+                            <button type="submit">Detalles informe</button>
+                        </form>
+                    </td>
+                }
+
+            </tr>
+        }
+    </tbody>
+</table>

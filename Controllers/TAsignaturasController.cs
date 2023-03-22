@@ -31,12 +31,18 @@ namespace gestionDiversidad.Controllers
         {
             //Cuidado, es perezoso, utilizar el include
             TAlumno alumno;
+            TProfesor profesor; 
             List<TAsignatura> asignaturas = null;
 
             if (rol == 1)
             {
                 alumno = _context.TAlumnos.Include(u => u.IdAsignaturas).FirstOrDefault(u => u.Nif == nif);
                 asignaturas = alumno.IdAsignaturas.ToList();
+            }
+            if(rol == 2)
+            {
+                profesor =  _context.TProfesors.Include(u => u.IdAsignaturas).FirstOrDefault(u => u.Nif == nif);
+                asignaturas = profesor.IdAsignaturas.ToList();
             }
 
             return View(asignaturas);

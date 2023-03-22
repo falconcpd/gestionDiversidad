@@ -61,6 +61,24 @@ namespace gestionDiversidad.Controllers
             return View(vistaAlumno);
         }
 
+        //GET: TAlumnos/listaAlumnos
+        public async Task<IActionResult> listaAlumnos(string nif, int rol)
+        {
+            List<TAlumno> listaAlumnos;
+            ListaAlumnosView vistaListasAlumno = new ListaAlumnosView();
+            string sessionKeyRol = "_rol";
+            int? lotad = HttpContext.Session.GetInt32(sessionKeyRol);
+            int nlotad = lotad ?? 0;
+
+            listaAlumnos = _serviceController.listaAlumnos(nif, rol);
+
+            vistaListasAlumno.ListaAlumnos = listaAlumnos;
+            vistaListasAlumno.Permiso = _serviceController.permisoPantalla(7, nlotad);
+            vistaListasAlumno.Alumno = _serviceController.permisoPantalla(1, nlotad);
+
+            return View(vistaListasAlumno);
+        }
+
         // GET: TAlumnos/Create
         public IActionResult Create()
         {

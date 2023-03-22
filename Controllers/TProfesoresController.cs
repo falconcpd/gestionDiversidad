@@ -6,16 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
+using gestionDiversidad.Interfaces;
+using gestionDiversidad.ViewModels;
 
 namespace gestionDiversidad.Controllers
 {
     public class TProfesoresController : Controller
     {
         private readonly TfgContext _context;
+        private readonly IServiceController _serviceController;
 
-        public TProfesoresController(TfgContext context)
+        public TProfesoresController(TfgContext context, IServiceController sc)
         {
             _context = context;
+            _serviceController = sc;
         }
 
         // GET: TProfesores
@@ -23,6 +27,36 @@ namespace gestionDiversidad.Controllers
         {
             var tfgContext = _context.TProfesors.Include(t => t.NifNavigation);
             return View(await tfgContext.ToListAsync());
+        }
+
+        // GET: TProfesores/infoBasica/5
+        public async Task<IActionResult> infoBasica(string id)
+        {
+            ProfesorView vistaProfesor = new ProfesorView();
+            string sessionKeyRol = "_rol";
+            int? lotad = HttpContext.Session.GetInt32(sessionKeyRol);
+            int nlotad = lotad ?? 0;
+
+
+            if (id == null || _context.TProfesors == null)
+            {
+                return NotFound();
+            }
+
+            var tProfesor = await _context.TProfesors
+                .Include(t => t.NifNavigation)
+                .FirstOrDefaultAsync(m => m.Nif == id);
+            if (tProfesor == null)
+            {
+                return NotFound();
+            }
+
+            vistaProfesor.Profesor = tProfesor;
+            vistaProfesor.Permiso = _serviceController.permisoPantalla(2, nlotad);
+            vistaProfesor.LDocencias = _serviceController.permisoPantalla(10, nlotad);
+            vistaProfesor.LAlumnos = _serviceController.permisoPantalla(7, nlotad);
+
+            return View(vistaProfesor);
         }
 
         // GET: TProfesores/Details/5

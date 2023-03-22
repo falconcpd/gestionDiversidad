@@ -7,5 +7,7 @@ namespace gestionDiversidad.Interfaces
     {
         List<TPermiso> permisosRol(int rol);
         TPermiso permisoPantalla(int pantalla, int rol);
+        List<TAsignatura> listaAsignaturas(string nif, int rol);
+        List<TAlumno> listaAlumnos(string nif, int rol);
     }
 }
