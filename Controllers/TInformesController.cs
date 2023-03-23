@@ -9,6 +9,7 @@ using gestionDiversidad.Models;
 using System.Globalization;
 using gestionDiversidad.Interfaces;
 using gestionDiversidad.ViewModels;
+using gestionDiversidad.Constantes;
 
 namespace gestionDiversidad.Controllers
 {
@@ -54,22 +55,17 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> listaInformes(string nif, int rol)
         {
             //Cuidado, es perezoso, utilizar el include
-            TAlumno alumno;
             List<TInforme> informes = null;
             ListaInformesView vistaListaInformes = new ListaInformesView();
-            int? lotad2 = HttpContext.Session.GetInt32("_rol");
-            int sesionRol = lotad2 ?? 0;
+            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            int sesionRol = rawRol ?? 0;
 
+            informes = _serviceController.listaInformes(nif, rol);
 
-            if (rol == 1)
-            {
-                alumno = _context.TAlumnos.Include(u => u.TInformes).FirstOrDefault(u => u.Nif == nif);
-                informes = alumno.TInformes.ToList();
-            }
-
-            vistaListaInformes.Permiso = _serviceController.permisoPantalla(12, sesionRol);
-            vistaListaInformes.Informe = _serviceController.permisoPantalla(5, sesionRol);
+            vistaListaInformes.Permiso = _serviceController.permisoPantalla(constDefinidas.screenListalInformes, sesionRol);
+            vistaListaInformes.Informe = _serviceController.permisoPantalla(constDefinidas.screenInforme, sesionRol);
             vistaListaInformes.ListaInformes = informes;
+            vistaListaInformes.RolInforme = rol;
             return View(vistaListaInformes);
 
         }
@@ -82,24 +78,23 @@ namespace gestionDiversidad.Controllers
         }
 
         // GET: TInformes/infoBasica
-        public async Task<IActionResult> infoBasica(string nifAlumno, string nifMedico, string fecha)
+        public async Task<IActionResult> infoBasica(string nifAlumno, string nifMedico, string fecha, int rolInforme)
         {
             DateTime fechaTime;
             InformeView informeView = new InformeView();
             TInforme informe = null;
-            int? lotad2 = HttpContext.Session.GetInt32("_rol");
-            int sesionRol = lotad2 ?? 0;
+            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            int rol = rawRol ?? 0;
             /* if (DateTime.TryParseExact(fecha, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaTime))
              {
 
              } */
-            fechaTime = DateTime.ParseExact(fecha, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-
-            informe =  _context.TInformes.FirstOrDefault(t => t.NifAlumno == nifAlumno && t.NifMedico == nifMedico && t.Fecha == fechaTime);
+            informe = buscarInforme(nifAlumno, nifMedico, fecha);
 
             informeView.Informe = informe;
-            informeView.Permiso = _serviceController.permisoPantalla(5, sesionRol);
-            if (lotad2 == 4)
+            informeView.Permiso = _serviceController.permisoPantalla(constDefinidas.screenInforme, rol);
+            informeView.RolInforme = rolInforme;
+            if (rol == 4)
             {
                 informeView.Nif = nifMedico;
             }
@@ -117,7 +112,6 @@ namespace gestionDiversidad.Controllers
             MemoryStream stream = new MemoryStream(informe.Contenido);
             return new FileStreamResult(stream, "application/pdf");
             
-
         }
 
         // GET: TInformes/Create

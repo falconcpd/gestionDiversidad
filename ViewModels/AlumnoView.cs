@@ -8,6 +8,7 @@ namespace gestionDiversidad.ViewModels
         public TPermiso Permiso { get; set; } = null!;
         public TPermiso LMatriculas { get; set; } = null!;
         public TPermiso LInformes { get; set; } = null!;
+        public int Rol { get; set; }
 
     }
 }

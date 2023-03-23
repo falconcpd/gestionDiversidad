@@ -11,6 +11,7 @@ using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Drawing.Text;
 using gestionDiversidad.Interfaces;
 using System.ComponentModel;
+using gestionDiversidad.Constantes;
 
 namespace gestionDiversidad.Controllers
 {
@@ -64,7 +65,7 @@ namespace gestionDiversidad.Controllers
 
         }
 
-        //Retorna una lista de Asignaturas según el rol 
+        //Retorna una lista de Alumnos según el rol 
         public List<TAlumno> listaAlumnos(string nif, int rol)
         {
             //Cuidado, es perezoso, utilizar el include
@@ -89,6 +90,20 @@ namespace gestionDiversidad.Controllers
                 }
             }
             return alumnos;
+        }
+        //Retorna una lista de Informes según el rol
+        public List<TInforme> listaInformes(string nif, int rol)
+        {
+            TAlumno alumno;
+            List<TInforme> informes = null;
+
+            if (rol == 1)
+            {
+                alumno = _context.TAlumnos.Include(u => u.TInformes).FirstOrDefault(u => u.Nif == nif);
+                informes = alumno.TInformes.ToList();
+            }
+
+            return informes;
         }
     }
 }

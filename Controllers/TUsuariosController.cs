@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
+using gestionDiversidad.Constantes;
 //using Microsoft.Identity.Client;
 //using AspNetCore;
 
@@ -68,7 +69,6 @@ namespace gestionDiversidad.Controllers
             string nif;
             int rol;
             
-
             if (usuario == null || password == null || user == null)
             {
                 TempData["ErrorSesion"] = "No has podido iniciar sesión";
@@ -77,11 +77,21 @@ namespace gestionDiversidad.Controllers
             rol = user.IdRol;
             nif = user.Nif;
 
-            string sessionKeyRol = "_rol";
+            //string sessionKeyRol = "_rol";
+            string sessionKeyRol = constDefinidas.keyRol;
             HttpContext.Session.SetInt32(sessionKeyRol, rol);
-            int? lotad2 = HttpContext.Session.GetInt32(sessionKeyRol);
 
-            if (rol == 1)
+            switch (rol)
+            {
+                case 1:
+                    return RedirectToAction("infoBasica", "TAlumnos", new { id = nif });
+                case 2:
+                    return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
+                default:
+                    return RedirectToAction("Details", "TUsuarios", new { id = nif });
+            }
+
+           /* if (rol == 1)
             {
                 return RedirectToAction("infoBasica", "TAlumnos", new { id = nif });
             }
@@ -91,7 +101,7 @@ namespace gestionDiversidad.Controllers
                 return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
             }
 
-            return RedirectToAction("Details", "TUsuarios", new { id = nif });
+            return RedirectToAction("Details", "TUsuarios", new { id = nif }); */
         }
 
         // GET: TUsuarios/Create

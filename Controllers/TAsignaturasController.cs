@@ -6,16 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
+using gestionDiversidad.Interfaces;
 
 namespace gestionDiversidad.Controllers
 {
     public class TAsignaturasController : Controller
     {
         private readonly TfgContext _context;
+        private readonly IServiceController _serviceController;
 
-        public TAsignaturasController(TfgContext context)
+        public TAsignaturasController(TfgContext context, IServiceController sc)
         {
             _context = context;
+            _serviceController = sc;
         }
 
         // GET: TAsignaturas
@@ -30,20 +33,7 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> listaAsignaturas(string nif, int rol)
         {
             //Cuidado, es perezoso, utilizar el include
-            TAlumno alumno;
-            TProfesor profesor; 
-            List<TAsignatura> asignaturas = null;
-
-            if (rol == 1)
-            {
-                alumno = _context.TAlumnos.Include(u => u.IdAsignaturas).FirstOrDefault(u => u.Nif == nif);
-                asignaturas = alumno.IdAsignaturas.ToList();
-            }
-            if(rol == 2)
-            {
-                profesor =  _context.TProfesors.Include(u => u.IdAsignaturas).FirstOrDefault(u => u.Nif == nif);
-                asignaturas = profesor.IdAsignaturas.ToList();
-            }
+            List<TAsignatura> asignaturas = _serviceController.listaAsignaturas(nif, rol);
 
             return View(asignaturas);
 

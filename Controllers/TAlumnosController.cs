@@ -9,6 +9,7 @@ using gestionDiversidad.Models;
 using gestionDiversidad.ViewModels;
 using gestionDiversidad.Interfaces;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using gestionDiversidad.Constantes;
 using System.Drawing.Text;
 
 namespace gestionDiversidad.Controllers
@@ -35,12 +36,11 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> infoBasica(string id)
         {
             AlumnoView vistaAlumno = new AlumnoView();
-            string sessionKeyRol = "_rol";
-            int? lotad = HttpContext.Session.GetInt32(sessionKeyRol);
-            int nlotad = lotad ?? 0;
+            int? rolRaw = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            int rol = rolRaw ?? 0;
 
 
-            if (id == null || _context.TAlumnos == null)
+            if (id == null || _context.TAlumnos == null || rol == 0)
             {
                 return NotFound();
             }
@@ -54,9 +54,10 @@ namespace gestionDiversidad.Controllers
             }
 
             vistaAlumno.Alumno = tAlumno;
-            vistaAlumno.Permiso = _serviceController.permisoPantalla(1, nlotad);
-            vistaAlumno.LInformes = _serviceController.permisoPantalla(12, nlotad);
-            vistaAlumno.LMatriculas = _serviceController.permisoPantalla(10, nlotad);
+            vistaAlumno.Permiso = _serviceController.permisoPantalla(constDefinidas.screenAlumno, rol);
+            vistaAlumno.LInformes = _serviceController.permisoPantalla(constDefinidas.screenListalInformes , rol);
+            vistaAlumno.LMatriculas = _serviceController.permisoPantalla(constDefinidas.screenListaAsignaturas, rol);
+            vistaAlumno.Rol = constDefinidas.rolAlumno;
             
             return View(vistaAlumno);
         }

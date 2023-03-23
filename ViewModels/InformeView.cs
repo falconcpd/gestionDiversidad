@@ -7,5 +7,6 @@ namespace gestionDiversidad.ViewModels
         public TInforme Informe { get; set; } = null!;
         public TPermiso Permiso { get; set; } = null!;
         public string Nif { get; set; } = null!;
+        public int RolInforme;
     }
 }
