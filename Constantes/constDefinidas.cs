@@ -8,6 +8,7 @@
         public const int rolAdmin = 4;
         ////////////////////////////////
         public const string keyRol = "_rol";
+        public const string keyNif = "_nif";
         ///////////////////////////////
         public const int screenAlumno = 1;
         public const int screenProfesor = 2;

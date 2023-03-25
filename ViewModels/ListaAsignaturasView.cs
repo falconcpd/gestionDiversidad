@@ -2,14 +2,13 @@
 
 namespace gestionDiversidad.ViewModels
 {
-    public class ListaInformesView
+    public class ListaAsignaturasView
     {
         public TPermiso Permiso { get; set; } = null!;
-        public TPermiso Informe { get; set; } = null!;
-        public List<TInforme> ListaInformes { get; set; } = null!;
-        public int Rol;
+        public List<TAsignatura> ListaAsignaturas { get; set; } = null!;
         public string Nif { get; set; } = null!;
+        public int Rol { get; set; }
         public int SesionRol { get; set; }
-        public string SesionNif { get; set; } = null!;
+        public string SesionNif { get;set; } = null!;
     }
 }

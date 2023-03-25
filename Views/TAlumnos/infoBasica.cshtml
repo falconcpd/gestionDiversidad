@@ -62,6 +62,13 @@
         </form>
     </div>
 }
+@if (!(Model.Rol == Model.SesionRol))
+{
+    <div>
+        <a asp-controller="TAlumnos" asp-action="listaAlumnos"
+       asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a la lista de alumnos</a>
+    </div>
+}
 
 
 <div>

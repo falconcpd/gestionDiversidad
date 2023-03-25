@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
 using gestionDiversidad.Interfaces;
+using gestionDiversidad.ViewModels;
+using gestionDiversidad.Constantes;
 
 namespace gestionDiversidad.Controllers
 {
@@ -33,9 +35,22 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> listaAsignaturas(string nif, int rol)
         {
             //Cuidado, es perezoso, utilizar el include
+            ListaAsignaturasView vistaListaAsignaturas= new ListaAsignaturasView();
             List<TAsignatura> asignaturas = _serviceController.listaAsignaturas(nif, rol);
+            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            int sesionRol = rawRol ?? 0;
+            string? rawNif = HttpContext.Session.GetString(constDefinidas.keyNif);
+            string? sesionNif = rawNif;
 
-            return View(asignaturas);
+            vistaListaAsignaturas.ListaAsignaturas = asignaturas;
+            vistaListaAsignaturas.Permiso = _serviceController.
+                permisoPantalla(constDefinidas.screenListaAsignaturas, sesionRol);
+            vistaListaAsignaturas.Rol = rol;
+            vistaListaAsignaturas.Nif = nif;
+            vistaListaAsignaturas.SesionRol = sesionRol;
+            vistaListaAsignaturas.SesionNif = sesionNif;
+
+            return View(vistaListaAsignaturas);
 
         }
 

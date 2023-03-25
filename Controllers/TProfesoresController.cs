@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
 using gestionDiversidad.Interfaces;
 using gestionDiversidad.ViewModels;
+using gestionDiversidad.Constantes;
 
 namespace gestionDiversidad.Controllers
 {
@@ -33,12 +34,12 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> infoBasica(string id)
         {
             ProfesorView vistaProfesor = new ProfesorView();
-            string sessionKeyRol = "_rol";
-            int? lotad = HttpContext.Session.GetInt32(sessionKeyRol);
-            int nlotad = lotad ?? 0;
+            string sessionKeyRol = constDefinidas.keyRol;
+            int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
+            int rol = rawRol ?? 0;
 
 
-            if (id == null || _context.TProfesors == null)
+            if (id == null || _context.TProfesors == null || rol == 0)
             {
                 return NotFound();
             }
@@ -52,9 +53,13 @@ namespace gestionDiversidad.Controllers
             }
 
             vistaProfesor.Profesor = tProfesor;
-            vistaProfesor.Permiso = _serviceController.permisoPantalla(2, nlotad);
-            vistaProfesor.LDocencias = _serviceController.permisoPantalla(10, nlotad);
-            vistaProfesor.LAlumnos = _serviceController.permisoPantalla(7, nlotad);
+            vistaProfesor.Permiso = _serviceController
+                .permisoPantalla(constDefinidas.screenProfesor, rol);
+            vistaProfesor.LDocencias = _serviceController
+                .permisoPantalla(constDefinidas.screenListaAsignaturas, rol);
+            vistaProfesor.LAlumnos = _serviceController
+                .permisoPantalla(constDefinidas.screenListaAlumnos, rol);
+            vistaProfesor.Rol = constDefinidas.rolProfesor;
 
             return View(vistaProfesor);
         }

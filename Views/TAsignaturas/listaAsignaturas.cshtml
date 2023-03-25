@@ -1,4 +1,4 @@
-﻿@model IEnumerable<gestionDiversidad.Models.TAsignatura>
+﻿@model gestionDiversidad.ViewModels.ListaAsignaturasView
 
 @{
     ViewData["Title"] = "listAsignaturas";
@@ -13,13 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nombre)
+                @Html.DisplayNameFor(model => model.ListaAsignaturas.First().Nombre)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.ListaAsignaturas)
         {
                 <tr>
                     <td>
@@ -34,3 +34,22 @@
         }
     </tbody>
 </table>
+@if(Model.Rol == Model.SesionRol)
+{
+    <div>
+        <a asp-controller="TUsuarios" asp-action="volverPerfil" 
+        asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver al perfil principal</a>
+    </div>
+}
+else
+{
+        <div>
+            <a asp-controller="TUsuarios" asp-action="volverPerfil" 
+            asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver para atrás</a>
+        </div>
+    <div>
+        <a asp-controller="TUsuarios" asp-action="volverPerfil" 
+        asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a perfil principal</a>
+    </div>
+}
+

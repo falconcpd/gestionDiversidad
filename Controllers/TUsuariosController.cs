@@ -79,7 +79,9 @@ namespace gestionDiversidad.Controllers
 
             //string sessionKeyRol = "_rol";
             string sessionKeyRol = constDefinidas.keyRol;
+            string sessionKeyNif = constDefinidas.keyNif;
             HttpContext.Session.SetInt32(sessionKeyRol, rol);
+            HttpContext.Session.SetString(sessionKeyNif, nif);
 
             switch (rol)
             {
@@ -91,18 +93,22 @@ namespace gestionDiversidad.Controllers
                     return RedirectToAction("Details", "TUsuarios", new { id = nif });
             }
 
-           /* if (rol == 1)
-            {
-                return RedirectToAction("infoBasica", "TAlumnos", new { id = nif });
-            }
-
-            if(rol == 2)
-            {
-                return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
-            }
-
-            return RedirectToAction("Details", "TUsuarios", new { id = nif }); */
         }
+        //Acción para volver 
+        public IActionResult volverPerfil(string nif, int rol)
+        {
+            switch (rol)
+            {
+                case 1:
+                    return RedirectToAction("infoBasica", "TAlumnos", new { id = nif });
+                case 2:
+                    return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
+                default:
+                    return RedirectToAction("Details", "TUsuarios", new { id = nif });
+            }
+
+        }
+        
 
         // GET: TUsuarios/Create
         public IActionResult Create()

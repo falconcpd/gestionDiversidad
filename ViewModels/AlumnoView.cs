@@ -9,6 +9,8 @@ namespace gestionDiversidad.ViewModels
         public TPermiso LMatriculas { get; set; } = null!;
         public TPermiso LInformes { get; set; } = null!;
         public int Rol { get; set; }
+        public int SesionRol { get; set; }
+        public string SesionNif { get; set; } = null!;
 
     }
 }

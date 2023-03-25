@@ -59,13 +59,20 @@ namespace gestionDiversidad.Controllers
             ListaInformesView vistaListaInformes = new ListaInformesView();
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             int sesionRol = rawRol ?? 0;
+            //string? sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif);
 
             informes = _serviceController.listaInformes(nif, rol);
 
-            vistaListaInformes.Permiso = _serviceController.permisoPantalla(constDefinidas.screenListalInformes, sesionRol);
-            vistaListaInformes.Informe = _serviceController.permisoPantalla(constDefinidas.screenInforme, sesionRol);
+            vistaListaInformes.Permiso = _serviceController
+                .permisoPantalla(constDefinidas.screenListalInformes, sesionRol);
+            vistaListaInformes.Informe = _serviceController
+                .permisoPantalla(constDefinidas.screenInforme, sesionRol);
             vistaListaInformes.ListaInformes = informes;
-            vistaListaInformes.RolInforme = rol;
+            vistaListaInformes.Rol = rol;
+            vistaListaInformes.Nif = nif;
+            //vistaListaInformes.SesionRol= sesionRol;
+            //vistaListaInformes.SesionNif = sesionNif;
+
             return View(vistaListaInformes);
 
         }
@@ -84,7 +91,8 @@ namespace gestionDiversidad.Controllers
             InformeView informeView = new InformeView();
             TInforme informe = null;
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            int rol = rawRol ?? 0;
+            int sesionRol = rawRol ?? 0;
+            string? sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif);
             /* if (DateTime.TryParseExact(fecha, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaTime))
              {
 
@@ -92,9 +100,11 @@ namespace gestionDiversidad.Controllers
             informe = buscarInforme(nifAlumno, nifMedico, fecha);
 
             informeView.Informe = informe;
-            informeView.Permiso = _serviceController.permisoPantalla(constDefinidas.screenInforme, rol);
-            informeView.RolInforme = rolInforme;
-            if (rol == 4)
+            informeView.Permiso = _serviceController.permisoPantalla(constDefinidas.screenInforme, sesionRol);
+            informeView.Rol = rolInforme;
+            informeView.SesionRol = sesionRol;
+            informeView.SesionNif = sesionNif;
+            if (sesionRol == 4)
             {
                 informeView.Nif = nifMedico;
             }
