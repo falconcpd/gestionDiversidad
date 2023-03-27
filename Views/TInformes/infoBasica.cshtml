@@ -34,7 +34,29 @@
     </dl>
 </div>
 
-<div>
+@*<div>
     @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
     <a asp-controller="TInformes" asp-action="listaInformes" asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver a la lista</a>
-</div>
+</div> *@
+@if (Model.Rol == Model.SesionRol)
+{
+    <div>
+        <a asp-controller="TInformes" asp-action="listaInformes"
+       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver al perfil principal</a>
+    </div>
+}
+else
+{
+    <div>
+        <a asp-controller="TInformes" asp-action="listaInformes"
+       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver para atrás</a>
+    </div>
+    @if (!(Model.SesionRol == 2))
+    {
+        <div>
+            <a asp-controller="TInformes" asp-action="listaInformes"
+       asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a perfil principal</a>
+        </div>
+    }
+    
+}

@@ -41,7 +41,7 @@
     <a asp-action="Edit" asp-route-id="@Model?.Alumno.Nif">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
-@if (Model.LInformes.Acceder)
+@if (Model.LMatriculas.Acceder)
 {
     <div>
         <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
@@ -52,7 +52,7 @@
     </div>
 }
 
-@if (Model.LMatriculas.Acceder)
+@if (Model.LInformes.Acceder)
 {
     <div>
         <form method="get" asp-action="listaInformes" asp-controller="TInformes">

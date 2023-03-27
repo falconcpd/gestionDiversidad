@@ -89,6 +89,8 @@ namespace gestionDiversidad.Controllers
                     return RedirectToAction("infoBasica", "TAlumnos", new { id = nif });
                 case 2:
                     return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
+                case 3:
+                    return RedirectToAction("infoBasica", "TMedicos", new { id = nif });
                 default:
                     return RedirectToAction("Details", "TUsuarios", new { id = nif });
             }
@@ -103,6 +105,8 @@ namespace gestionDiversidad.Controllers
                     return RedirectToAction("infoBasica", "TAlumnos", new { id = nif });
                 case 2:
                     return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
+                case 3:
+                    return RedirectToAction("infoBasica", "TMedicos", new { id = nif });
                 default:
                     return RedirectToAction("Details", "TUsuarios", new { id = nif });
             }

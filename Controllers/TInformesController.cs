@@ -59,7 +59,7 @@ namespace gestionDiversidad.Controllers
             ListaInformesView vistaListaInformes = new ListaInformesView();
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             int sesionRol = rawRol ?? 0;
-            //string? sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif);
+            string? sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif);
 
             informes = _serviceController.listaInformes(nif, rol);
 
@@ -70,8 +70,8 @@ namespace gestionDiversidad.Controllers
             vistaListaInformes.ListaInformes = informes;
             vistaListaInformes.Rol = rol;
             vistaListaInformes.Nif = nif;
-            //vistaListaInformes.SesionRol= sesionRol;
-            //vistaListaInformes.SesionNif = sesionNif;
+            vistaListaInformes.SesionRol= sesionRol;
+            vistaListaInformes.SesionNif = sesionNif;
 
             return View(vistaListaInformes);
 
@@ -85,7 +85,7 @@ namespace gestionDiversidad.Controllers
         }
 
         // GET: TInformes/infoBasica
-        public async Task<IActionResult> infoBasica(string nifAlumno, string nifMedico, string fecha, int rolInforme)
+        public async Task<IActionResult> infoBasica(string nifAlumno, string nifMedico, string fecha, int rolInforme, string nifInforme)
         {
             DateTime fechaTime;
             InformeView informeView = new InformeView();
@@ -104,14 +104,15 @@ namespace gestionDiversidad.Controllers
             informeView.Rol = rolInforme;
             informeView.SesionRol = sesionRol;
             informeView.SesionNif = sesionNif;
-            if (sesionRol == 4)
+            informeView.Nif = nifInforme;
+            /*if (sesionRol == 4)
             {
                 informeView.Nif = nifMedico;
             }
             else 
             {
                 informeView.Nif = nifAlumno;
-            }
+            }*/
             return View(informeView);
         }
 

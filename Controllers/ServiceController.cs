@@ -48,6 +48,7 @@ namespace gestionDiversidad.Controllers
             //Cuidado, es perezoso, utilizar el include
             TAlumno alumno;
             TProfesor profesor;
+            TMedico medico;
             List<TAsignatura> asignaturas = new List<TAsignatura>();
 
             if (rol == 1)
@@ -71,7 +72,9 @@ namespace gestionDiversidad.Controllers
             //Cuidado, es perezoso, utilizar el include
             TProfesor profesor;
             TAsignatura wakeAsignatura;
+            TInforme wakeInforme;
             List<TAsignatura> asignaturas;
+            List<TInforme> informes;
             List<TAlumno> alumnos = new List<TAlumno>();
 
             if (rol == 2)
@@ -88,19 +91,39 @@ namespace gestionDiversidad.Controllers
                         }
                     }
                 }
+            }else if (rol == 3)
+            {
+                informes = listaInformes(nif, rol);
+                foreach(var informe in informes)
+                {
+                    wakeInforme = _context.TInformes.Include(i => i.NifAlumnoNavigation)
+                        .FirstOrDefault(i => i.NifMedico.Equals(informe.NifMedico) && i.NifAlumno.Equals(informe.NifAlumno)
+                        && i.Fecha.Equals(informe.Fecha)); 
+                    if(!alumnos.Any(a => a.Nif == wakeInforme.NifAlumno))
+                    {
+                        alumnos.Add(wakeInforme.NifAlumnoNavigation);
+                    }
+                }
             }
+
+
             return alumnos;
         }
         //Retorna una lista de Informes según el rol
         public List<TInforme> listaInformes(string nif, int rol)
         {
             TAlumno alumno;
+            TMedico medico;
             List<TInforme> informes = null;
 
             if (rol == 1)
             {
                 alumno = _context.TAlumnos.Include(u => u.TInformes).FirstOrDefault(u => u.Nif == nif);
                 informes = alumno.TInformes.ToList();
+            }else if(rol == 3)
+            {
+                medico = _context.TMedicos.Include(u => u.TInformes).FirstOrDefault(u => u.Nif == nif);
+                informes = medico.TInformes.ToList();
             }
 
             return informes;
