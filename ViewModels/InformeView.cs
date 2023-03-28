@@ -10,5 +10,6 @@ namespace gestionDiversidad.ViewModels
         public int Rol;
         public int SesionRol { get; set; }
         public string SesionNif { get; set; } = null!;
+        public IFormFile PDF { get; set; }
     }
 }

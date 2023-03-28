@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using gestionDiversidad.Models;
 using System.Globalization;
 using gestionDiversidad.Interfaces;
@@ -125,8 +126,39 @@ namespace gestionDiversidad.Controllers
             
         }
 
-        // GET: TInformes/Create
-        public IActionResult Create()
+        // POST : TInformes/actualizarPDF
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ActualizarPDF(string nifMedico, string nifAlumno, string fecha, IFormFile PDF, int rolInforme, string nifInforme)
+        {
+            // Buscar el informe en la base de datos
+            // busca el informe en la base de datos
+            var informe = buscarInforme(nifAlumno, nifMedico, fecha);
+
+            if (informe == null)
+            {
+                return NotFound();
+            }
+
+            // actualiza el contenido del informe con el archivo PDF subido
+            using (var ms = new MemoryStream())
+            {
+                await PDF.CopyToAsync(ms);
+                informe.Contenido = ms.ToArray();
+            }
+
+            _context.TInformes.Update(informe);
+            await _context.SaveChangesAsync();
+
+            //(string nifAlumno, string nifMedico, string fecha, int rolInforme, string nifInforme)
+
+            return RedirectToAction("infoBasica", "TInformes", new { nifMedico = nifMedico, nifAlumno = nifAlumno
+                , fecha = fecha, rolInforme = rolInforme, nifInforme = nifInforme});
+
+        } 
+
+            // GET: TInformes/Create
+            public IActionResult Create()
         {
             ViewData["NifAlumno"] = new SelectList(_context.TAlumnos, "Nif", "Nif");
             ViewData["NifMedico"] = new SelectList(_context.TMedicos, "Nif", "Nif");
