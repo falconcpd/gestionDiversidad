@@ -1,4 +1,5 @@
 ﻿@model gestionDiversidad.ViewModels.InformeView
+@using gestionDiversidad.Constantes
 
 @{
     ViewData["Title"] = "infoBasica";
@@ -51,7 +52,7 @@ else
         <a asp-controller="TInformes" asp-action="listaInformes"
        asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver para atrás</a>
     </div>
-    @if (!(Model.SesionRol == 2))
+    @if (!(Model.SesionRol == constDefinidas.rolProfesor))
     {
         <div>
             <a asp-controller="TInformes" asp-action="listaInformes"

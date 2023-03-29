@@ -53,11 +53,11 @@ namespace gestionDiversidad.Controllers
             }
 
             vistaProfesor.Profesor = tProfesor;
-            vistaProfesor.Permiso = _serviceController
+            vistaProfesor.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenProfesor, rol);
-            vistaProfesor.LDocencias = _serviceController
+            vistaProfesor.LDocencias = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaAsignaturas, rol);
-            vistaProfesor.LAlumnos = _serviceController
+            vistaProfesor.LAlumnos = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaAlumnos, rol);
             vistaProfesor.Rol = constDefinidas.rolProfesor;
 

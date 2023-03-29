@@ -37,7 +37,7 @@ namespace gestionDiversidad.Controllers
         {
             AlumnoView vistaAlumno = new AlumnoView();
             int? rolRaw = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            string? sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif);
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
             int rol = rolRaw ?? 0;
 
 
@@ -55,11 +55,11 @@ namespace gestionDiversidad.Controllers
             }
 
             vistaAlumno.Alumno = tAlumno;
-            vistaAlumno.Permiso = _serviceController
+            vistaAlumno.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenAlumno, rol);
-            vistaAlumno.LInformes = _serviceController
+            vistaAlumno.LInformes = await _serviceController
                 .permisoPantalla(constDefinidas.screenListalInformes , rol);
-            vistaAlumno.LMatriculas = _serviceController
+            vistaAlumno.LMatriculas = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaAsignaturas, rol);
             vistaAlumno.Rol = constDefinidas.rolAlumno;
             vistaAlumno.SesionRol = rol;
@@ -75,15 +75,15 @@ namespace gestionDiversidad.Controllers
             string sessionKeyRol = constDefinidas.keyRol;
             string sessionKeyNif = constDefinidas.keyNif;
             int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
-            string? sesionNif = HttpContext.Session.GetString(sessionKeyNif);
+            string sesionNif = HttpContext.Session.GetString(sessionKeyNif)!;
             int sesionRol = rawRol ?? 0;
 
-            listaAlumnos = _serviceController.listaAlumnos(nif, rol);
+            listaAlumnos = await _serviceController.listaAlumnos(nif, rol);
 
             vistaListasAlumno.ListaAlumnos = listaAlumnos;
-            vistaListasAlumno.Permiso = _serviceController
+            vistaListasAlumno.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaAlumnos, sesionRol);
-            vistaListasAlumno.Alumno = _serviceController
+            vistaListasAlumno.Alumno = await _serviceController
                 .permisoPantalla(constDefinidas.screenAlumno, sesionRol);
             vistaListasAlumno.Rol = rol;
             vistaListasAlumno.Nif = nif;

@@ -56,17 +56,17 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> listaInformes(string nif, int rol)
         {
             //Cuidado, es perezoso, utilizar el include
-            List<TInforme> informes = null;
+            List<TInforme> informes = new List<TInforme>();
             ListaInformesView vistaListaInformes = new ListaInformesView();
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             int sesionRol = rawRol ?? 0;
-            string? sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif);
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
 
-            informes = _serviceController.listaInformes(nif, rol);
+            informes = await _serviceController.listaInformes(nif, rol);
 
-            vistaListaInformes.Permiso = _serviceController
+            vistaListaInformes.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenListalInformes, sesionRol);
-            vistaListaInformes.Informe = _serviceController
+            vistaListaInformes.Informe = await _serviceController
                 .permisoPantalla(constDefinidas.screenInforme, sesionRol);
             vistaListaInformes.ListaInformes = informes;
             vistaListaInformes.Rol = rol;
@@ -79,29 +79,28 @@ namespace gestionDiversidad.Controllers
         }
 
         //Función para buscar informes
-        public TInforme buscarInforme(string nifAlumno, string nifMedico, string fecha)
+        public async Task<TInforme> buscarInforme(string nifAlumno, string nifMedico, string fecha)
         {
             DateTime fechaTime = DateTime.ParseExact(fecha, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-            return _context.TInformes.FirstOrDefault(t => t.NifAlumno == nifAlumno && t.NifMedico == nifMedico && t.Fecha == fechaTime);
+            return  (await _context.TInformes.FirstOrDefaultAsync(t => t.NifAlumno == nifAlumno && t.NifMedico == nifMedico && t.Fecha == fechaTime))!;
         }
 
         // GET: TInformes/infoBasica
         public async Task<IActionResult> infoBasica(string nifAlumno, string nifMedico, string fecha, int rolInforme, string nifInforme)
         {
-            DateTime fechaTime;
             InformeView informeView = new InformeView();
-            TInforme informe = null;
+            TInforme informe;
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             int sesionRol = rawRol ?? 0;
-            string? sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif);
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
             /* if (DateTime.TryParseExact(fecha, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaTime))
              {
 
              } */
-            informe = buscarInforme(nifAlumno, nifMedico, fecha);
+            informe = await buscarInforme(nifAlumno, nifMedico, fecha);
 
             informeView.Informe = informe;
-            informeView.Permiso = _serviceController.permisoPantalla(constDefinidas.screenInforme, sesionRol);
+            informeView.Permiso = await _serviceController.permisoPantalla(constDefinidas.screenInforme, sesionRol);
             informeView.Rol = rolInforme;
             informeView.SesionRol = sesionRol;
             informeView.SesionNif = sesionNif;
@@ -120,7 +119,7 @@ namespace gestionDiversidad.Controllers
         // GET: TInformes/verInforme
         public async Task<IActionResult> verInforme(string nifAlumno, string nifMedico, string fecha)
         {
-            TInforme informe = buscarInforme(nifAlumno, nifMedico, fecha);
+            TInforme informe = await buscarInforme(nifAlumno, nifMedico, fecha);
             MemoryStream stream = new MemoryStream(informe.Contenido);
             return new FileStreamResult(stream, "application/pdf");
             
@@ -129,11 +128,12 @@ namespace gestionDiversidad.Controllers
         // POST : TInformes/actualizarPDF
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ActualizarPDF(string nifMedico, string nifAlumno, string fecha, IFormFile PDF, int rolInforme, string nifInforme)
+        public async Task<IActionResult> ActualizarPDF(string nifMedico, string nifAlumno, 
+            string fecha, IFormFile PDF, int rolInforme, string nifInforme)
         {
             // Buscar el informe en la base de datos
             // busca el informe en la base de datos
-            var informe = buscarInforme(nifAlumno, nifMedico, fecha);
+            var informe = await buscarInforme(nifAlumno, nifMedico, fecha);
 
             if (informe == null)
             {

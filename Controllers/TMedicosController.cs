@@ -35,7 +35,7 @@ namespace gestionDiversidad.Controllers
         {
             MedicoView vistaMedico = new MedicoView();
             int? rolRaw = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            string? sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif);
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
             int rol = rolRaw ?? 0;
 
 
@@ -53,11 +53,11 @@ namespace gestionDiversidad.Controllers
             }
 
             vistaMedico.Medico = tMedico;
-            vistaMedico.Permiso = _serviceController
+            vistaMedico.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenAlumno, rol);
-            vistaMedico.LInformes = _serviceController
+            vistaMedico.LInformes = await _serviceController
                 .permisoPantalla(constDefinidas.screenListalInformes, rol);
-            vistaMedico.LAlumnos = _serviceController
+            vistaMedico.LAlumnos = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaAlumnos, rol);
             vistaMedico.Rol = constDefinidas.rolMedico;
             vistaMedico.SesionRol = rol;

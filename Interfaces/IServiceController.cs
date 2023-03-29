@@ -5,10 +5,10 @@ namespace gestionDiversidad.Interfaces
 {
     public interface IServiceController
     {
-        List<TPermiso> permisosRol(int rol);
-        TPermiso permisoPantalla(int pantalla, int rol);
-        List<TAsignatura> listaAsignaturas(string nif, int rol);
-        List<TAlumno> listaAlumnos(string nif, int rol);
-        List<TInforme> listaInformes(string nif, int rol);
+        Task<List<TPermiso>> permisosRol(int rol);
+        Task<TPermiso> permisoPantalla(int pantalla, int rol);
+        Task<List<TAsignatura>> listaAsignaturas(string nif, int rol);
+        Task<List<TAlumno>> listaAlumnos(string nif, int rol);
+        Task<List<TInforme>> listaInformes(string nif, int rol);
     }
 }

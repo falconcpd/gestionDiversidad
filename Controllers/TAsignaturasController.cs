@@ -36,14 +36,14 @@ namespace gestionDiversidad.Controllers
         {
             //Cuidado, es perezoso, utilizar el include
             ListaAsignaturasView vistaListaAsignaturas= new ListaAsignaturasView();
-            List<TAsignatura> asignaturas = _serviceController.listaAsignaturas(nif, rol);
+            List<TAsignatura> asignaturas = await _serviceController.listaAsignaturas(nif, rol);
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            int sesionRol = rawRol ?? 0;
-            string? rawNif = HttpContext.Session.GetString(constDefinidas.keyNif);
-            string? sesionNif = rawNif;
+            string rawNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            int sesionRol = rawRol ?? 0;           
+            string sesionNif = rawNif;
 
             vistaListaAsignaturas.ListaAsignaturas = asignaturas;
-            vistaListaAsignaturas.Permiso = _serviceController.
+            vistaListaAsignaturas.Permiso = await _serviceController.
                 permisoPantalla(constDefinidas.screenListaAsignaturas, sesionRol);
             vistaListaAsignaturas.Rol = rol;
             vistaListaAsignaturas.Nif = nif;
