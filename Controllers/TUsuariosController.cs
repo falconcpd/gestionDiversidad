@@ -85,14 +85,16 @@ namespace gestionDiversidad.Controllers
 
             switch (rol)
             {
-                case 1:
+                case constDefinidas.rolAlumno:
                     return RedirectToAction("infoBasica", "TAlumnos", new { id = nif });
-                case 2:
+                case constDefinidas.rolProfesor:
                     return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
-                case 3:
+                case constDefinidas.rolMedico:
                     return RedirectToAction("infoBasica", "TMedicos", new { id = nif });
+                case constDefinidas.rolAdmin:
+                    return RedirectToAction("infoBasica", "TAdministraciones", new { id = nif });
                 default:
-                    return RedirectToAction("Details", "TUsuarios", new { id = nif });
+                    return View("InicioSesion");
             }
 
         }
@@ -101,14 +103,14 @@ namespace gestionDiversidad.Controllers
         {
             switch (rol)
             {
-                case 1:
+                case constDefinidas.rolAlumno:
                     return RedirectToAction("infoBasica", "TAlumnos", new { id = nif });
-                case 2:
+                case constDefinidas.rolProfesor:
                     return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
-                case 3:
+                case constDefinidas.rolMedico:
                     return RedirectToAction("infoBasica", "TMedicos", new { id = nif });
                 default:
-                    return RedirectToAction("Details", "TUsuarios", new { id = nif });
+                    return RedirectToAction("infoBasica", "TAdministraciones", new { id = nif });
             }
 
         }

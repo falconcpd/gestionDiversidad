@@ -52,15 +52,18 @@ namespace gestionDiversidad.Controllers
 
             switch (rol)
             {
-                case 1:
+                case constDefinidas.rolAlumno:
                     alumno = (await _context.TAlumnos.Include(u => u.IdAsignaturas)
                         .FirstOrDefaultAsync(u => u.Nif == nif))!;
                     asignaturas = alumno.IdAsignaturas.ToList();
                     return asignaturas;
-                case 2:
+                case constDefinidas.rolProfesor:
                     profesor = (await _context.TProfesors.Include(u => u.IdAsignaturas)
                         .FirstOrDefaultAsync(u => u.Nif == nif))!;
                     asignaturas = profesor.IdAsignaturas.ToList();
+                    return asignaturas;
+                case constDefinidas.rolAdmin:
+                    asignaturas = (await _context.TAsignaturas.ToListAsync());
                     return asignaturas;
                 default: 
                     return asignaturas;
@@ -81,7 +84,7 @@ namespace gestionDiversidad.Controllers
 
             switch (rol)
             {
-                case 2:
+                case constDefinidas.rolProfesor:
                     asignaturas = await listaAsignaturas(nif, rol);
                     foreach (var asignatura in asignaturas)
                     {
@@ -96,7 +99,7 @@ namespace gestionDiversidad.Controllers
                         }
                     }
                     return alumnos;
-                case 3:
+                case constDefinidas.rolMedico:
                     informes = await listaInformes(nif, rol);
                     foreach (var informe in informes)
                     {
@@ -123,11 +126,11 @@ namespace gestionDiversidad.Controllers
 
             switch (rol)
             {
-                case 1:
+                case constDefinidas.rolAlumno:
                     alumno = (await _context.TAlumnos.Include(u => u.TInformes).FirstOrDefaultAsync(u => u.Nif == nif))!;
                     informes = alumno.TInformes.ToList();
                     return informes;
-                case 3:
+                case constDefinidas.rolMedico:
                     medico = (await _context.TMedicos.Include(u => u.TInformes).FirstOrDefaultAsync(u => u.Nif == nif))!;
                     informes = medico.TInformes.ToList();
                     return informes;

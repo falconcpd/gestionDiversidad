@@ -54,6 +54,14 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        public async Task<List<string>> nombresAsignatura()
+        {
+            List<string> nombres = new List<string>();
+            nombres = (await _context.TAsignaturas.Select(a => a.Nombre).ToListAsync());
+            return nombres;
+
+        }
+
         // GET: TAsignaturas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -72,10 +80,46 @@ namespace gestionDiversidad.Controllers
             return View(tAsignatura);
         }
 
+        //GET: TAsignaturas/insertarAsignatura
+        public IActionResult insertarAsignatura(string nif, int rol)
+        {
+            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            string rawNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            int sesionRol = rawRol ?? 0;
+            string sesionNif = rawNif;
+
+            CrearView vistaCrearAsignatura = new CrearView();
+            vistaCrearAsignatura.Nif = nif;
+            vistaCrearAsignatura.Rol= rol;
+
+            return View(vistaCrearAsignatura);
+        }
+
         // GET: TAsignaturas/Create
         public IActionResult Create()
         {
             return View();
+        }
+
+        //POST: TAsignaturas/crearAsignatura
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> crearAsignatura(int rol, string nif, CrearView model)
+        {
+            List<string> nombres = await nombresAsignatura();
+
+            if (nombres.Contains(model.Asignatura.Nombre))
+            {
+                TempData["NombreRepetido"] = "El nombre ya está cogido.";
+                return RedirectToAction("insertarAsignatura", "TAsignaturas", new { nif = nif, rol = rol });
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(model.Asignatura);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("listaAsignaturas", "TAsignaturas", new { nif = nif, rol = rol});
         }
 
         // POST: TAsignaturas/Create
@@ -85,6 +129,8 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre")] TAsignatura tAsignatura)
         {
+
+
             if (ModelState.IsValid)
             {
                 _context.Add(tAsignatura);

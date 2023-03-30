@@ -53,3 +53,12 @@ else
     </div>
 }
 
+@if (Model.Permiso.Insertar)
+{
+    <div>
+        <a asp-controller="TAsignaturas" asp-action="insertarAsignatura"
+       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>
+            Crear asignatura</a>
+    </div>
+}
+

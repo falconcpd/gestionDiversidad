@@ -1,0 +1,72 @@
+﻿@model gestionDiversidad.ViewModels.AdminView
+
+@{
+    ViewData["Title"] = "infoBasica";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>TAdmin</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Admin.Nombre)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Admin.Nombre)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Admin.Apellido1)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Admin.Apellido1)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Admin.Apellido2)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Admin.Apellido2)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Admin.NifNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Admin.NifNavigation.Nif)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Admin.Nif">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+@if (Model.LAsignaturas.Acceder)
+{
+    <div>
+        <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
+            <input type="hidden" name="nif" value="@Model?.Admin.Nif" />
+            <input type="hidden" name="rol" value=@Model?.Rol />
+            <button type="submit">Ver lista de asignaturas</button>
+        </form>
+    </div>
+}
+
+@if (!(Model.Rol == Model.SesionRol))
+{
+    <div>
+        <a asp-controller="TAlumnos" asp-action="listaAlumnos"
+       asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a la lista de alumnos</a>
+    </div>
+}
+
+
+<div>
+    <a>@Context.Session.GetInt32("_rol").ToString()</a>
+</div>
+
+@*
+    Primera forma para acceder a sesion: @HttpContextAccessor.HttpContext.Session.GetInt32("_rol").ToString()
+    Segunda forma para acceder a sesion: @Context.Session.GetInt32("_rol").ToString()
+    Librería antigua: @inject IHttpContextAccessor HttpContextAccessor
+
+*@
