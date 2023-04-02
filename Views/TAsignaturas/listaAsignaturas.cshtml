@@ -28,7 +28,9 @@
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="borrarAsignatura" asp-controller="TAsignaturas" 
+                    asp-route-id="@item.Id"
+                   asp-route-nif="@Model.Nif" asp-route-rol="@Model.Rol">Borrar</a>
                     </td>
                 </tr>
         }

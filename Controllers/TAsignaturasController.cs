@@ -191,9 +191,11 @@ namespace gestionDiversidad.Controllers
             return View(tAsignatura);
         }
 
-        // GET: TAsignaturas/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: TAsignaturas/borrarAsignatura/5
+        public async Task<IActionResult> borrarAsignatura(string nif, int rol,int? id)
         {
+            AsignaturaView vistaAsignatura = new AsignaturaView();
+
             if (id == null || _context.TAsignaturas == null)
             {
                 return NotFound();
@@ -206,13 +208,17 @@ namespace gestionDiversidad.Controllers
                 return NotFound();
             }
 
-            return View(tAsignatura);
+            vistaAsignatura.Asignatura = tAsignatura;
+            vistaAsignatura.Rol = rol;
+            vistaAsignatura.Nif = nif;
+
+            return View(vistaAsignatura);
         }
 
-        // POST: TAsignaturas/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: TAsignaturas/confirmarBorrado/5
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> confirmarBorrado(string nif, int rol, int id)
         {
             if (_context.TAsignaturas == null)
             {
@@ -225,7 +231,7 @@ namespace gestionDiversidad.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("listaAsignaturas", "TAsignaturas", new { nif = nif, rol = rol });
         }
 
         private bool TAsignaturaExists(int id)
