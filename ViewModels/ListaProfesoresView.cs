@@ -2,13 +2,11 @@
 
 namespace gestionDiversidad.ViewModels
 {
-    public class ProfesorView
+    public class ListaProfesoresView
     {
-        public TProfesor Profesor { get; set; } = null!;
         public TPermiso Permiso { get; set; } = null!;
-        public TPermiso LDocencias { get; set; } = null!;
-        public TPermiso LAlumnos { get; set; } = null!;
-        public int Rol { get; set; }
+        public TPermiso Profesor { get; set; } = null!;
+        public List<TProfesor> ListaProfesores { get; set; } = null!;
         public int SesionRol { get; set; }
         public string SesionNif { get; set; } = null!;
     }

@@ -10,6 +10,7 @@ using gestionDiversidad.Interfaces;
 using gestionDiversidad.ViewModels;
 using gestionDiversidad.Constantes;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.ComponentModel;
 
 namespace gestionDiversidad.Controllers
 {
@@ -30,6 +31,7 @@ namespace gestionDiversidad.Controllers
             var tfgContext = _context.TProfesors.Include(t => t.NifNavigation);
             return View(await tfgContext.ToListAsync());
         }
+
 
         // GET: TProfesores/infoBasica/5
         public async Task<IActionResult> infoBasica(string id)
@@ -63,6 +65,32 @@ namespace gestionDiversidad.Controllers
             vistaProfesor.Rol = constDefinidas.rolProfesor;
 
             return View(vistaProfesor);
+        }
+
+        //GET: TProfesores/listaProfesores
+        public async Task<IActionResult> listaProfesores()
+        {
+            List<TProfesor> listaProfesores;
+            ListaProfesoresView vistaListasProfesores = new ListaProfesoresView();
+            string sessionKeyRol = constDefinidas.keyRol;
+            string sessionKeyNif = constDefinidas.keyNif;
+
+            int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
+            string sesionNif = HttpContext.Session.GetString(sessionKeyNif)!;
+            int sesionRol = rawRol ?? 0;
+
+            listaProfesores = await _serviceController.listaProfesores();
+
+            vistaListasProfesores.ListaProfesores = listaProfesores;
+            vistaListasProfesores.Permiso = await _serviceController
+                .permisoPantalla(constDefinidas.screenListaProfesores, sesionRol);
+            vistaListasProfesores.Profesor = await _serviceController
+                .permisoPantalla(constDefinidas.screenProfesor, sesionRol);
+            vistaListasProfesores.SesionNif = sesionNif;
+            vistaListasProfesores.SesionRol = sesionRol;
+
+            return View(vistaListasProfesores);
+
         }
 
         // GET: TProfesores/Details/5

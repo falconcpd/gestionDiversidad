@@ -10,5 +10,6 @@ namespace gestionDiversidad.Interfaces
         Task<List<TAsignatura>> listaAsignaturas(string nif, int rol);
         Task<List<TAlumno>> listaAlumnos(string nif, int rol);
         Task<List<TInforme>> listaInformes(string nif, int rol);
+        Task<List<TProfesor>> listaProfesores();
     }
 }

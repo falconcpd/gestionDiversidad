@@ -62,6 +62,10 @@
         </form>
     </div>
 }
+@if (!(Model.Rol == Model.SesionRol))
+{
+    <a asp-action="listaProfesores" asp-controller="TProfesores">Volver a la lista</a>
+}
 
 
 <div>
