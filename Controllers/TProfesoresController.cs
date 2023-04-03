@@ -9,6 +9,7 @@ using gestionDiversidad.Models;
 using gestionDiversidad.Interfaces;
 using gestionDiversidad.ViewModels;
 using gestionDiversidad.Constantes;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace gestionDiversidad.Controllers
 {
@@ -81,6 +82,38 @@ namespace gestionDiversidad.Controllers
             }
 
             return View(tProfesor);
+        }
+
+        //GET: TProfesores/insertarProfesor
+        public IActionResult insertarProfesor(string nif, int rol)
+        {
+            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            string rawNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            int sesionRol = rawRol ?? 0;
+            string sesionNif = rawNif;
+
+            CrearProfesorView vistaCrearProfesor = new CrearProfesorView();
+            vistaCrearProfesor.NifCreador = nif;
+            vistaCrearProfesor.RolCreador = rol;
+
+            return View(vistaCrearProfesor);
+        }
+
+        //Función que crea al profesor: TProfesores/crearProfesor
+        public async Task<IActionResult> crearProfesor(string nif, string nombre, string apellido1, string apellido2, string nifCreador, int rolCreador)
+        {
+            var profesor = new TProfesor
+            {
+                Nif = nif,
+                Nombre = nombre,
+                Apellido1= apellido1,
+                Apellido2= apellido2
+            };
+
+            _context.Add(profesor);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("volverPerfil", "TUsuarios", 
+                new { nif = nifCreador, rol = rolCreador });
         }
 
         // GET: TProfesores/Create

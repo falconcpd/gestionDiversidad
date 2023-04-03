@@ -59,6 +59,12 @@
     </div>
 }
 
+<div>
+    <a asp-controller="TProfesores" asp-action="insertarProfesor" asp-route-nif="@Model.Nif" 
+    asp-route-rol="@Model.Rol"
+    class="btn btn-primary">Crear nuevo profesor</a>
+</div>
+
 
 <div>
     <a>@Context.Session.GetInt32("_rol").ToString()</a>

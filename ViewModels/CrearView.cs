@@ -8,5 +8,7 @@ namespace gestionDiversidad.ViewModels
         public string Nif { get; set; } = null!;
         public TAsignatura? Asignatura { get; set; }
         public TInforme? Informe { get; set; }
+        public TProfesor? Profesor { get; set; }
+        public TUsuario? Usuario { get; set; }
     }
 }

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
 using gestionDiversidad.Constantes;
+using gestionDiversidad.ViewModels;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 //using Microsoft.Identity.Client;
 //using AspNetCore;
 
@@ -27,6 +29,8 @@ namespace gestionDiversidad.Controllers
             var tfgContext = _context.TUsuarios.Include(t => t.IdRolNavigation);
             return View(await tfgContext.ToListAsync());
         }
+
+        //GET: TUsuarios/insertarUsuario
 
         // GET: TUsuarios/Details/5
         public async Task<IActionResult> Details(string id)
@@ -77,7 +81,6 @@ namespace gestionDiversidad.Controllers
             rol = user.IdRol;
             nif = user.Nif;
 
-            //string sessionKeyRol = "_rol";
             string sessionKeyRol = constDefinidas.keyRol;
             string sessionKeyNif = constDefinidas.keyNif;
             HttpContext.Session.SetInt32(sessionKeyRol, rol);
@@ -113,6 +116,39 @@ namespace gestionDiversidad.Controllers
                     return RedirectToAction("infoBasica", "TAdministraciones", new { id = nif });
             }
 
+        }
+
+        //[Remote] para que no se repitan NIF en un usuario
+        //GET : TUsuarios/verificarNif
+        public async Task<IActionResult> verificarNif(string nif)
+        {
+            var usuario = await _context.TUsuarios.AnyAsync(u => u.Nif == nif);
+            return Json(!usuario);
+        }
+
+        //POST: TUsuarios/crearUsuarioProfesor
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> crearUsuarioProfesor(CrearProfesorView model, int rolCreador, string nifCreador)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new TUsuario
+                {
+                    Nif = model.Nif,
+                    Usuario = model.Usuario,
+                    Password = model.Password,
+                    IdRol = constDefinidas.rolProfesor
+                };
+                 _context.Add(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("crearProfesor", "TProfesores", 
+                    new { nif = user.Nif, nombre = model.Nombre, 
+                        apellido1 = model.Apellido1, apellido2 = model.Apellido2, 
+                    nifCreador = nifCreador, rolCreador = rolCreador });
+
+            }
+            return RedirectToAction("insertarProfesor", "TProfesores", new { nif = nifCreador, rol = rolCreador });
         }
         
 
