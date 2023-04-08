@@ -60,25 +60,13 @@
 }
 
 <div>
-    <a asp-controller="TProfesores" asp-action="insertarProfesor" asp-route-nif="@Model.Nif" 
-    asp-route-rol="@Model.Rol"
-    class="btn btn-primary">Crear nuevo profesor</a>
-</div>
-<div>
-    <a asp-controller="TMedicos" asp-action="insertarMedico" asp-route-nif="@Model.Nif"
-       asp-route-rol="@Model.Rol"
-       class="btn btn-primary">Crear nuevo medico</a>
-</div>
-<div>
-    <a asp-controller="TProfesores" asp-action="listaProfesores"
-    asp-route-volverPadre="false">Ver profesores</a>
-</div>
-<div>
     <a asp-controller="TMedicos" asp-action="listaMedicos"
        asp-route-volverPadre="false">Ver medicos</a>
 </div>
-
-
+<div>
+    <a asp-controller="TProfesores" asp-action="listaProfesores"
+       asp-route-volverPadre="false">Ver profesores</a>
+</div>
 <div>
     <a>@Context.Session.GetInt32("_rol").ToString()</a>
 </div>

@@ -49,7 +49,10 @@
         }
     </tbody>
 </table>
-
+<div>
+    <a asp-controller="TMedicos" asp-action="insertarMedico"
+       class="btn btn-primary">Crear nuevo medico</a>
+</div>
 <div>
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
        asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a perfil principal</a>

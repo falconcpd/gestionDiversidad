@@ -19,7 +19,5 @@ namespace gestionDiversidad.ViewModels
         public string? Apellido1 { get; set; }
         [Required(ErrorMessage = "El segundo apellido no puede estar vacío.")]
         public string? Apellido2 { get; set; }
-        public string? NifCreador { get; set; }
-        public int RolCreador { get; set; }
     }
 }

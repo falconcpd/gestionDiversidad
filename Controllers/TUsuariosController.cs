@@ -143,7 +143,7 @@ namespace gestionDiversidad.Controllers
         //POST: TUsuarios/crearUsuarioProfesor
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> crearUsuarioProfesor(CrearProfesorView model, int rolCreador, string nifCreador)
+        public async Task<IActionResult> crearUsuarioProfesor(CrearProfesorView model)
         {
             if (ModelState.IsValid)
             {
@@ -158,17 +158,16 @@ namespace gestionDiversidad.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("crearProfesor", "TProfesores", 
                     new { nif = user.Nif, nombre = model.Nombre, 
-                        apellido1 = model.Apellido1, apellido2 = model.Apellido2, 
-                    nifCreador = nifCreador, rolCreador = rolCreador });
+                        apellido1 = model.Apellido1, apellido2 = model.Apellido2 });
 
             }
-            return RedirectToAction("insertarProfesor", "TProfesores", new { nif = nifCreador, rol = rolCreador });
+            return RedirectToAction("insertarProfesor", "TProfesores");
         }
 
         //POST: TUsuarios/crearUsuarioMedico
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> crearUsuarioMedico(CrearProfesorView model, int rolCreador, string nifCreador)
+        public async Task<IActionResult> crearUsuarioMedico(CrearProfesorView model)
         {
             if (ModelState.IsValid)
             {
@@ -187,13 +186,11 @@ namespace gestionDiversidad.Controllers
                         nif = user.Nif,
                         nombre = model.Nombre,
                         apellido1 = model.Apellido1,
-                        apellido2 = model.Apellido2,
-                        nifCreador = nifCreador,
-                        rolCreador = rolCreador
+                        apellido2 = model.Apellido2
                     });
 
             }
-            return RedirectToAction("insertarMedico", "TMedicos", new { nif = nifCreador, rol = rolCreador });
+            return RedirectToAction("insertarMedico", "TMedicos");
         }
 
 

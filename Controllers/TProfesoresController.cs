@@ -160,7 +160,7 @@ namespace gestionDiversidad.Controllers
         }
 
         //GET: TProfesores/insertarProfesor
-        public IActionResult insertarProfesor(string nif, int rol)
+        public IActionResult insertarProfesor()
         {
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             string rawNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
@@ -168,14 +168,12 @@ namespace gestionDiversidad.Controllers
             string sesionNif = rawNif;
 
             CrearProfesorView vistaCrearProfesor = new CrearProfesorView();
-            vistaCrearProfesor.NifCreador = nif;
-            vistaCrearProfesor.RolCreador = rol;
 
             return View(vistaCrearProfesor);
         }
 
         //Función que crea al profesor: TProfesores/crearProfesor
-        public async Task<IActionResult> crearProfesor(string nif, string nombre, string apellido1, string apellido2, string nifCreador, int rolCreador)
+        public async Task<IActionResult> crearProfesor(string nif, string nombre, string apellido1, string apellido2)
         {
             var profesor = new TProfesor
             {
@@ -187,8 +185,8 @@ namespace gestionDiversidad.Controllers
 
             _context.Add(profesor);
             await _context.SaveChangesAsync();
-            return RedirectToAction("volverPerfil", "TUsuarios", 
-                new { nif = nifCreador, rol = rolCreador });
+            return RedirectToAction("listaProfesores", "TProfesores", 
+                new { volverPadre = "false" });
         }
 
         // GET: TProfesores/Create
