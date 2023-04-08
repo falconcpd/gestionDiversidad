@@ -132,6 +132,14 @@ namespace gestionDiversidad.Controllers
             return Json(!usuario);
         }
 
+        //[Remote] para que no se repitan nombre de usuarios en un usuario
+        //GET : TUsuarios/verificarNombreUsuario
+        public async Task<IActionResult> verificarNombreUsuario(string usuario)
+        {
+            var TUsuario = await _context.TUsuarios.AnyAsync(u => u.Usuario == usuario);
+            return Json(!TUsuario);
+        }
+
         //POST: TUsuarios/crearUsuarioProfesor
         [HttpPost]
         [ValidateAntiForgeryToken]
