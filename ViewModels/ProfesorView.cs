@@ -8,8 +8,11 @@ namespace gestionDiversidad.ViewModels
         public TPermiso Permiso { get; set; } = null!;
         public TPermiso LDocencias { get; set; } = null!;
         public TPermiso LAlumnos { get; set; } = null!;
+        public TPermiso LProfesores { get; set; } = null!;
         public int Rol { get; set; }
         public int SesionRol { get; set; }
         public string SesionNif { get; set; } = null!;
+        public int PadreRol { get; set; }
+        public string PadreNif { get; set; } = null!;
     }
 }

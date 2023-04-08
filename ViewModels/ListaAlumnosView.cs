@@ -11,6 +11,8 @@ namespace gestionDiversidad.ViewModels
         public int Rol { get; set; }
         public int SesionRol { get; set; }
         public string SesionNif { get; set; } = null!;
+        public int ActualRol { get; set; }
+        public string ActualNif { get; set; } = null!;
     }
 }
 

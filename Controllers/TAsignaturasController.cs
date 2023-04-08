@@ -9,6 +9,8 @@ using gestionDiversidad.Models;
 using gestionDiversidad.Interfaces;
 using gestionDiversidad.ViewModels;
 using gestionDiversidad.Constantes;
+using gestionDiversidad.Navigation;
+using Newtonsoft.Json;
 
 namespace gestionDiversidad.Controllers
 {
@@ -41,12 +43,14 @@ namespace gestionDiversidad.Controllers
             string rawNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
             int sesionRol = rawRol ?? 0;           
             string sesionNif = rawNif;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
 
             vistaListaAsignaturas.ListaAsignaturas = asignaturas;
             vistaListaAsignaturas.Permiso = await _serviceController.
                 permisoPantalla(constDefinidas.screenListaAsignaturas, sesionRol);
-            vistaListaAsignaturas.Rol = rol;
-            vistaListaAsignaturas.Nif = nif;
+            vistaListaAsignaturas.Rol = actualUser.rol;
+            vistaListaAsignaturas.Nif = actualUser.nif;
             vistaListaAsignaturas.SesionRol = sesionRol;
             vistaListaAsignaturas.SesionNif = sesionNif;
 

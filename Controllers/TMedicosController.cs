@@ -9,6 +9,8 @@ using gestionDiversidad.Models;
 using gestionDiversidad.Constantes;
 using gestionDiversidad.Interfaces;
 using gestionDiversidad.ViewModels;
+using gestionDiversidad.Navigation;
+using Newtonsoft.Json;
 
 namespace gestionDiversidad.Controllers
 {
@@ -37,6 +39,9 @@ namespace gestionDiversidad.Controllers
             int? rolRaw = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
             int rol = rolRaw ?? 0;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            String actualJson;
 
 
             if (id == null || _context.TMedicos == null || rol == 0)
@@ -52,6 +57,13 @@ namespace gestionDiversidad.Controllers
                 return NotFound();
             }
 
+            if (!(actualUser.rol == constDefinidas.rolMedico))
+            {
+                actualUser = new UserNavigation(id, constDefinidas.rolMedico, actualUser);
+                actualJson = JsonConvert.SerializeObject(actualUser);
+                HttpContext.Session.SetString(constDefinidas.keyActualUser, actualJson);
+            }
+
             vistaMedico.Medico = tMedico;
             vistaMedico.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenAlumno, rol);
@@ -62,7 +74,57 @@ namespace gestionDiversidad.Controllers
             vistaMedico.Rol = constDefinidas.rolMedico;
             vistaMedico.SesionRol = rol;
             vistaMedico.SesionNif = sesionNif;
+            if (!(actualUser.padre == null))
+            {
+                vistaMedico.PadreNif = actualUser.padre.nif;
+                vistaMedico.PadreRol = actualUser.padre.rol;
+            }
+            else
+            {
+                vistaMedico.PadreNif = "dummy";
+                vistaMedico.PadreRol = 10;
+            }
             return View(vistaMedico);
+        }
+
+        //GET: TMedicos/listaMedicos
+        public async Task<IActionResult> listaMedicos(string volverPadre)
+        {
+            List<TMedico> listaMedicos;
+            ListaMedicosView vistaListasMedicos = new ListaMedicosView();
+            string sessionKeyRol = constDefinidas.keyRol;
+            string sessionKeyNif = constDefinidas.keyNif;
+
+            int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
+            string sesionNif = HttpContext.Session.GetString(sessionKeyNif)!;
+            int sesionRol = rawRol ?? 0;
+            bool volverPadreValue;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+
+            //Si volvemos de un usuario importante, volvemos a ser el padre: 
+            volverPadreValue = bool.Parse(volverPadre);
+            if (volverPadreValue)
+            {
+                string userNavigationPadreJson = JsonConvert.SerializeObject(actualUser.padre);
+                HttpContext.Session.SetString(constDefinidas.keyActualUser, userNavigationPadreJson);
+                userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+                actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            }
+
+            listaMedicos = await _serviceController.listaMedicos();
+
+            vistaListasMedicos.ListaMedicos = listaMedicos;
+            vistaListasMedicos.Permiso = await _serviceController
+                .permisoPantalla(constDefinidas.screenListaMedicos, sesionRol);
+            vistaListasMedicos.Medico = await _serviceController
+                .permisoPantalla(constDefinidas.screenMedico, sesionRol);
+            vistaListasMedicos.SesionNif = sesionNif;
+            vistaListasMedicos.SesionRol = sesionRol;
+
+
+            return View(vistaListasMedicos);
+
         }
 
         // GET: TMedicos/Details/5

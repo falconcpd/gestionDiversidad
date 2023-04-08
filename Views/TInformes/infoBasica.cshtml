@@ -43,14 +43,14 @@
 {
     <div>
         <a asp-controller="TInformes" asp-action="listaInformes"
-       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver al perfil principal</a>
+       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver lista de informes</a>
     </div>
 }
 else
 {
     <div>
         <a asp-controller="TInformes" asp-action="listaInformes"
-       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver para atrás</a>
+       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver lista informes</a>
     </div>
     @if (!(Model.SesionRol == constDefinidas.rolProfesor))
     {
@@ -66,7 +66,7 @@ else
 {
     <form asp-controller="TInformes" asp-action="actualizarPDF" asp-route-nifAlumno="@Model.Informe.NifAlumno"
       asp-route-nifMedico=@Model.Informe.NifMedico asp-route-fecha=@Model.Informe.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")
-      asp-route-rolInforme=@Model.Rol asp-route-nifInforme=@Model.Nif method="post" enctype="multipart/form-data">
+       method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label asp-for="@Model.PDF" >Seleccione el archivo PDF:</label>
             <input asp-for="@Model.PDF" type="file" accept=".pdf">

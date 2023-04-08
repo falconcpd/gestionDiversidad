@@ -11,6 +11,8 @@ using gestionDiversidad.ViewModels;
 using gestionDiversidad.Constantes;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.ComponentModel;
+using gestionDiversidad.Navigation;
+using Newtonsoft.Json;
 
 namespace gestionDiversidad.Controllers
 {
@@ -40,6 +42,10 @@ namespace gestionDiversidad.Controllers
             string sessionKeyRol = constDefinidas.keyRol;
             int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
             int rol = rawRol ?? 0;
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            String actualJson;
 
 
             if (id == null || _context.TProfesors == null || rol == 0)
@@ -55,6 +61,13 @@ namespace gestionDiversidad.Controllers
                 return NotFound();
             }
 
+            if (!(actualUser.rol == constDefinidas.rolProfesor))
+            {
+                actualUser = new UserNavigation(id, constDefinidas.rolProfesor, actualUser);
+                actualJson = JsonConvert.SerializeObject(actualUser);
+                HttpContext.Session.SetString(constDefinidas.keyActualUser, actualJson);
+            }
+
             vistaProfesor.Profesor = tProfesor;
             vistaProfesor.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenProfesor, rol);
@@ -62,13 +75,34 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenListaAsignaturas, rol);
             vistaProfesor.LAlumnos = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaAlumnos, rol);
+            vistaProfesor.LProfesores = await _serviceController
+                .permisoPantalla(constDefinidas.screenListaProfesores, rol);
             vistaProfesor.Rol = constDefinidas.rolProfesor;
+            vistaProfesor.SesionRol = rol;
+            vistaProfesor.SesionNif = sesionNif;
+            if (!(actualUser.padre == null))
+            {
+                vistaProfesor.PadreNif = actualUser.padre.nif;
+                vistaProfesor.PadreRol = actualUser.padre.rol;
+            }
+            else
+            {
+                vistaProfesor.PadreNif = "dummy";
+                vistaProfesor.PadreRol = 10;
+            }
+
+            /*
+             var aux = _serviceController
+                .permisoPantalla(constDefinidas.screenProfesor, rol);
+            Task.WhenAll(aux);
+            vistaProfesor.Permiso = aux.Result;
+              */
 
             return View(vistaProfesor);
         }
 
         //GET: TProfesores/listaProfesores
-        public async Task<IActionResult> listaProfesores()
+        public async Task<IActionResult> listaProfesores(string volverPadre)
         {
             List<TProfesor> listaProfesores;
             ListaProfesoresView vistaListasProfesores = new ListaProfesoresView();
@@ -78,6 +112,19 @@ namespace gestionDiversidad.Controllers
             int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
             string sesionNif = HttpContext.Session.GetString(sessionKeyNif)!;
             int sesionRol = rawRol ?? 0;
+            bool volverPadreValue;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+
+            //Si volvemos de un usuario importante, volvemos a ser el padre: 
+            volverPadreValue = bool.Parse(volverPadre);
+            if (volverPadreValue)
+            {
+                string userNavigationPadreJson = JsonConvert.SerializeObject(actualUser.padre);
+                HttpContext.Session.SetString(constDefinidas.keyActualUser, userNavigationPadreJson);
+                userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+                actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            }
 
             listaProfesores = await _serviceController.listaProfesores();
 

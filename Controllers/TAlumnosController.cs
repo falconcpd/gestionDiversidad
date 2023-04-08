@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
 using gestionDiversidad.ViewModels;
 using gestionDiversidad.Interfaces;
+using gestionDiversidad.Navigation;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using gestionDiversidad.Constantes;
 using System.Drawing.Text;
+using Newtonsoft.Json;
 
 namespace gestionDiversidad.Controllers
 {
@@ -39,6 +41,10 @@ namespace gestionDiversidad.Controllers
             int? rolRaw = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
             int rol = rolRaw ?? 0;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            //UserNavigation newUser = null;
+            String actualJson;
 
 
             if (id == null || _context.TAlumnos == null || rol == 0)
@@ -54,6 +60,19 @@ namespace gestionDiversidad.Controllers
                 return NotFound();
             }
 
+            //if(!(pastUser.padre == null)
+            if (!(actualUser.rol == constDefinidas.rolAlumno))
+            {
+                actualUser = new UserNavigation(id, constDefinidas.rolAlumno, actualUser);
+                actualJson = JsonConvert.SerializeObject(actualUser);
+                HttpContext.Session.SetString(constDefinidas.keyActualUser, actualJson);
+            }
+
+            //string sessionActualUser = constDefinidas.keyActualUser;
+            //string userNavigationJson = JsonConvert.SerializeObject(raiz);
+            //HttpContext.Session.SetString(sessionActualUser, userNavigationJson);
+
+
             vistaAlumno.Alumno = tAlumno;
             vistaAlumno.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenAlumno, rol);
@@ -61,14 +80,25 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenListalInformes , rol);
             vistaAlumno.LMatriculas = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaAsignaturas, rol);
-            vistaAlumno.Rol = constDefinidas.rolAlumno;
+            //vistaAlumno.Rol = constDefinidas.rolAlumno;
             vistaAlumno.SesionRol = rol;
             vistaAlumno.SesionNif = sesionNif;
+            if (!(actualUser.padre == null))
+            {
+                vistaAlumno.PadreNif = actualUser.padre.nif;
+                vistaAlumno.PadreRol = actualUser.padre.rol;
+            }
+            else
+            {
+                vistaAlumno.PadreNif = "dummy";
+                vistaAlumno.PadreRol = 10;
+            }
+            /////////////////////////////
             return View(vistaAlumno);
         }
 
         //GET: TAlumnos/listaAlumnos
-        public async Task<IActionResult> listaAlumnos(string nif, int rol)
+        public async Task<IActionResult> listaAlumnos(string nif, int rol, string volverPadre)
         {
             List<TAlumno> listaAlumnos;
             ListaAlumnosView vistaListasAlumno = new ListaAlumnosView();
@@ -77,6 +107,19 @@ namespace gestionDiversidad.Controllers
             int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
             string sesionNif = HttpContext.Session.GetString(sessionKeyNif)!;
             int sesionRol = rawRol ?? 0;
+            bool volverPadreValue;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+
+            //Si volvemos de un usuario importante, volvemos a ser el padre: 
+            volverPadreValue = bool.Parse(volverPadre);
+            if (volverPadreValue)
+            {
+                string userNavigationPadreJson = JsonConvert.SerializeObject(actualUser.padre);
+                HttpContext.Session.SetString(constDefinidas.keyActualUser, userNavigationPadreJson);
+                userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+                actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            }
 
             listaAlumnos = await _serviceController.listaAlumnos(nif, rol);
 
@@ -87,8 +130,12 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenAlumno, sesionRol);
             vistaListasAlumno.Rol = rol;
             vistaListasAlumno.Nif = nif;
+            vistaListasAlumno.ActualNif = actualUser.nif;
+            vistaListasAlumno.ActualRol = actualUser.rol;
             vistaListasAlumno.SesionRol = sesionRol;
             vistaListasAlumno.SesionNif = sesionNif;
+
+            //Añadir un boleano para ver si el usuario actual se baja una tier o no 
 
             return View(vistaListasAlumno);
         }

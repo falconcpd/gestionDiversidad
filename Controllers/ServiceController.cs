@@ -147,6 +147,13 @@ namespace gestionDiversidad.Controllers
             return profesores;
         }
 
+        //Retorna una lista de todos los médicos. 
+        //Esta función solo está disponible para un administrador.
+        public async Task<List<TMedico>> listaMedicos()
+        {
+            List<TMedico> medicos = await _context.TMedicos.ToListAsync();
+            return medicos;
+        }
     }
 
 

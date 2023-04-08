@@ -65,7 +65,12 @@
     class="btn btn-primary">Crear nuevo profesor</a>
 </div>
 <div>
-    <a asp-controller="TProfesores" asp-action="listaProfesores">Ver profesores</a>
+    <a asp-controller="TProfesores" asp-action="listaProfesores"
+    asp-route-volverPadre="false">Ver profesores</a>
+</div>
+<div>
+    <a asp-controller="TMedicos" asp-action="listaMedicos"
+       asp-route-volverPadre="false">Ver medicos</a>
 </div>
 
 

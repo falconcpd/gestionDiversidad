@@ -1,4 +1,5 @@
 ﻿@model gestionDiversidad.ViewModels.MedicoView
+@using gestionDiversidad.Constantes
 
 @{
     ViewData["Title"] = "infoBasica";
@@ -45,7 +46,8 @@
     <div>
         <form method="get" asp-action="listaAlumnos" asp-controller="TAlumnos">
             <input type="hidden" name="nif" value="@Model?.Medico.Nif" />
-            <input type="hidden" name="rol" value=@Model?.Rol />
+            <input type="hidden" name="rol" value=@constDefinidas.rolMedico />
+            <input type="hidden" name="volverPadre" value="false" />
             <button type="submit">Ver lista de Alumnos</button>
         </form>
     </div>
@@ -56,18 +58,21 @@
     <div>
         <form method="get" asp-action="listaInformes" asp-controller="TInformes">
             <input type="hidden" name="nif" value="@Model?.Medico.Nif" />
-            <input type="hidden" name="rol" value=@Model?.Rol />
+            <input type="hidden" name="rol" value=@constDefinidas.rolMedico />
             <button type="submit">Ver lista de informes</button>
         </form>
     </div>
 }
-@*if (!(Model.Rol == Model.SesionRol))
+@if (!(Model.Rol == Model.SesionRol))
 {
-    <div>
-        <a asp-controller="TAlumnos" asp-action="listaAlumnos"
-       asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a la lista de alumnos</a>
-    </div>
-} *@
+    @if (!(Model.PadreRol == constDefinidas.rolMedico))
+    {
+        <div>
+            <a asp-controller="TMedicos" asp-action="listaMedicos"
+       asp-route-volverPadre="true">Volver a la lista de medicos</a>
+        </div>
+    }
+}
 
 
 <div>

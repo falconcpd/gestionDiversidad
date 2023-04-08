@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
 using gestionDiversidad.Constantes;
 using gestionDiversidad.ViewModels;
+using gestionDiversidad.Navigation;
+using Newtonsoft.Json;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 //using Microsoft.Identity.Client;
 //using AspNetCore;
@@ -80,16 +82,20 @@ namespace gestionDiversidad.Controllers
             }
             rol = user.IdRol;
             nif = user.Nif;
+            UserNavigation raiz = new UserNavigation(nif, rol, null);
 
             string sessionKeyRol = constDefinidas.keyRol;
             string sessionKeyNif = constDefinidas.keyNif;
+            string sessionActualUser = constDefinidas.keyActualUser;
+            string userNavigationJson = JsonConvert.SerializeObject(raiz);
             HttpContext.Session.SetInt32(sessionKeyRol, rol);
             HttpContext.Session.SetString(sessionKeyNif, nif);
+            HttpContext.Session.SetString(sessionActualUser, userNavigationJson);
 
             switch (rol)
             {
                 case constDefinidas.rolAlumno:
-                    return RedirectToAction("infoBasica", "TAlumnos", new { id = nif });
+                    return RedirectToAction("infoBasica", "TAlumnos", new { id = nif});
                 case constDefinidas.rolProfesor:
                     return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
                 case constDefinidas.rolMedico:

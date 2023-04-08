@@ -11,6 +11,8 @@ using System.Globalization;
 using gestionDiversidad.Interfaces;
 using gestionDiversidad.ViewModels;
 using gestionDiversidad.Constantes;
+using gestionDiversidad.Navigation;
+using Newtonsoft.Json;
 
 namespace gestionDiversidad.Controllers
 {
@@ -61,6 +63,8 @@ namespace gestionDiversidad.Controllers
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             int sesionRol = rawRol ?? 0;
             string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
 
             informes = await _serviceController.listaInformes(nif, rol);
 
@@ -69,8 +73,8 @@ namespace gestionDiversidad.Controllers
             vistaListaInformes.Informe = await _serviceController
                 .permisoPantalla(constDefinidas.screenInforme, sesionRol);
             vistaListaInformes.ListaInformes = informes;
-            vistaListaInformes.Rol = rol;
-            vistaListaInformes.Nif = nif;
+            vistaListaInformes.Rol = actualUser.rol;
+            vistaListaInformes.Nif = actualUser.nif;
             vistaListaInformes.SesionRol= sesionRol;
             vistaListaInformes.SesionNif = sesionNif;
 
@@ -86,13 +90,15 @@ namespace gestionDiversidad.Controllers
         }
 
         // GET: TInformes/infoBasica
-        public async Task<IActionResult> infoBasica(string nifAlumno, string nifMedico, string fecha, int rolInforme, string nifInforme)
+        public async Task<IActionResult> infoBasica(string nifAlumno, string nifMedico, string fecha)
         {
             InformeView informeView = new InformeView();
             TInforme informe;
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             int sesionRol = rawRol ?? 0;
             string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
             /* if (DateTime.TryParseExact(fecha, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaTime))
              {
 
@@ -101,10 +107,10 @@ namespace gestionDiversidad.Controllers
 
             informeView.Informe = informe;
             informeView.Permiso = await _serviceController.permisoPantalla(constDefinidas.screenInforme, sesionRol);
-            informeView.Rol = rolInforme;
+            informeView.Rol = actualUser.rol;
             informeView.SesionRol = sesionRol;
             informeView.SesionNif = sesionNif;
-            informeView.Nif = nifInforme;
+            informeView.Nif = actualUser.nif;
             /*if (sesionRol == 4)
             {
                 informeView.Nif = nifMedico;
@@ -129,7 +135,7 @@ namespace gestionDiversidad.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizarPDF(string nifMedico, string nifAlumno, 
-            string fecha, IFormFile PDF, int rolInforme, string nifInforme)
+            string fecha, IFormFile PDF)
         {
             // Buscar el informe en la base de datos
             // busca el informe en la base de datos
@@ -153,7 +159,7 @@ namespace gestionDiversidad.Controllers
             //(string nifAlumno, string nifMedico, string fecha, int rolInforme, string nifInforme)
 
             return RedirectToAction("infoBasica", "TInformes", new { nifMedico = nifMedico, nifAlumno = nifAlumno
-                , fecha = fecha, rolInforme = rolInforme, nifInforme = nifInforme});
+                , fecha = fecha});
 
         } 
 
