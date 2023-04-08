@@ -146,6 +146,38 @@ namespace gestionDiversidad.Controllers
             return View(tMedico);
         }
 
+        //GET: TMedicos/insertarMedico
+        public IActionResult insertarMedico(string nif, int rol)
+        {
+            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            string rawNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            int sesionRol = rawRol ?? 0;
+            string sesionNif = rawNif;
+
+            CrearMedicoView vistaCrearMedico = new CrearMedicoView();
+            vistaCrearMedico.NifCreador = nif;
+            vistaCrearMedico.RolCreador = rol;
+
+            return View(vistaCrearMedico);
+        }
+
+        //Función que crea al medico: TProfesores/crearMedico
+        public async Task<IActionResult> crearMedico(string nif, string nombre, string apellido1, string apellido2, string nifCreador, int rolCreador)
+        {
+            var medico = new TMedico
+            {
+                Nif = nif,
+                Nombre = nombre,
+                Apellido1 = apellido1,
+                Apellido2 = apellido2
+            };
+
+            _context.Add(medico);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("volverPerfil", "TUsuarios",
+                new { nif = nifCreador, rol = rolCreador });
+        }
+
         // GET: TMedicos/Create
         public IActionResult Create()
         {

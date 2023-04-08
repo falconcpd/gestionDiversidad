@@ -164,7 +164,38 @@ namespace gestionDiversidad.Controllers
             }
             return RedirectToAction("insertarProfesor", "TProfesores", new { nif = nifCreador, rol = rolCreador });
         }
-        
+
+        //POST: TUsuarios/crearUsuarioMedico
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> crearUsuarioMedico(CrearProfesorView model, int rolCreador, string nifCreador)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new TUsuario
+                {
+                    Nif = model.Nif,
+                    Usuario = model.Usuario,
+                    Password = model.Password,
+                    IdRol = constDefinidas.rolMedico
+                };
+                _context.Add(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("crearMedico", "TMedicos",
+                    new
+                    {
+                        nif = user.Nif,
+                        nombre = model.Nombre,
+                        apellido1 = model.Apellido1,
+                        apellido2 = model.Apellido2,
+                        nifCreador = nifCreador,
+                        rolCreador = rolCreador
+                    });
+
+            }
+            return RedirectToAction("insertarMedico", "TMedicos", new { nif = nifCreador, rol = rolCreador });
+        }
+
 
         // GET: TUsuarios/Create
         public IActionResult Create()

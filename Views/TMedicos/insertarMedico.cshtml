@@ -1,0 +1,59 @@
+﻿@model gestionDiversidad.ViewModels.CrearMedicoView
+
+@{
+    ViewData["Title"] = "insertarMedico";
+}
+
+<h1>Crear Medico</h1>
+
+<h4>TMedico</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="crearUsuarioMedico" asp-controller="TUsuarios">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.Nif" class="control-label"></label>
+                <input asp-for="Nif" class="form-control" />
+                <span asp-validation-for="@Model.Nif" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Usuario" class="control-label"></label>
+                <input asp-for="Usuario" class="form-control" />
+                <span asp-validation-for="@Model.Usuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="@Model.Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Apellido1" class="control-label"></label>
+                <input asp-for="Apellido1" class="form-control" />
+                <span asp-validation-for="@Model.Apellido1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Apellido2" class="control-label"></label>
+                <input asp-for="Apellido2" class="form-control" />
+                <span asp-validation-for="@Model.Apellido2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="hidden" name="rolCreador" value="@Model.RolCreador" />
+                <input type="hidden" name="nifCreador" value="@Model.NifCreador" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
