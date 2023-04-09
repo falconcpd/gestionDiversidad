@@ -161,10 +161,43 @@ namespace gestionDiversidad.Controllers
             return RedirectToAction("infoBasica", "TInformes", new { nifMedico = nifMedico, nifAlumno = nifAlumno
                 , fecha = fecha});
 
-        } 
+        }
 
-            // GET: TInformes/Create
-            public IActionResult Create()
+        //Función que crea un informe: TInformes/crearInforme
+        public async Task<IActionResult> crearInforme(string nifMedico, string nifAlumno)
+        {
+            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            int sesionRol = rawRol ?? 0;
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+
+            var filepdf = TempData[constDefinidas.keyInformePDF] as string;
+            byte[] filestream = Convert.FromBase64String(filepdf);
+            //Hago que se pueda almacenar el pdf. 
+
+
+            //Ahora obtengo la fecha actual.
+            DateTime fechaActual = DateTime.Now;
+            string fechaActualFormateada = fechaActual.ToString("yyyy-MM-ddTHH:mm:ss");
+            DateTime fechaActualFinal = DateTime.ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+
+            //Creo el informe y lo añado
+            var informe = new TInforme
+            {
+                NifMedico = nifMedico,
+                NifAlumno = nifAlumno,
+                Fecha = fechaActualFinal,
+                Contenido = filestream
+            };
+
+            _context.Add(informe);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("listaAlumnos", "TAlumnos",
+                new { nif = sesionNif, rol = sesionRol, volverPadre = "false" });
+        }
+
+
+        // GET: TInformes/Create
+        public IActionResult Create()
         {
             ViewData["NifAlumno"] = new SelectList(_context.TAlumnos, "Nif", "Nif");
             ViewData["NifMedico"] = new SelectList(_context.TMedicos, "Nif", "Nif");

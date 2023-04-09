@@ -140,6 +140,37 @@ namespace gestionDiversidad.Controllers
             return View(vistaListasAlumno);
         }
 
+        //GET: TAlumnos/insertarAlumno
+        public async Task<IActionResult> insertarAlumno()
+        {
+            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            string rawNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            int sesionRol = rawRol ?? 0;
+            string sesionNif = rawNif;
+
+            CrearAlumnoView vistaCrearAlumno = new CrearAlumnoView();
+            vistaCrearAlumno.ListaMedicos = (await _context.TMedicos.ToListAsync());
+
+            return View(vistaCrearAlumno);
+        }
+
+        //Función que crea al alumno: TAlumnos/crearAlumno
+        public async Task<IActionResult> crearAlumno(string nif, string nombre, string apellido1, string apellido2, string medico)
+        {
+            var alumno = new TAlumno
+            {
+                Nif = nif,
+                Nombre = nombre,
+                Apellido1 = apellido1,
+                Apellido2 = apellido2
+            };
+
+            _context.Add(alumno);
+            await _context.SaveChangesAsync(); 
+            return RedirectToAction("crearInforme", "TInformes",
+                new { nifMedico = medico, nifAlumno = nif});
+        }
+
         // GET: TAlumnos/Create
         public IActionResult Create()
         {

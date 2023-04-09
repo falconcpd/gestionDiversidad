@@ -10,6 +10,7 @@
         public const string keyRol = "_rol";
         public const string keyNif = "_nif";
         public const string keyActualUser = "_actualUser";
+        public const string keyInformePDF = "_PDF";
         ///////////////////////////////
         public const int screenAlumno = 1;
         public const int screenProfesor = 2;

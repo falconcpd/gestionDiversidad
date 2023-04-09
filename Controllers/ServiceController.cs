@@ -113,7 +113,10 @@ namespace gestionDiversidad.Controllers
                         }
                     }
                     return alumnos;
-                default:
+                case constDefinidas.rolAdmin:
+                    alumnos = (await _context.TAlumnos.ToListAsync());
+                    return alumnos;
+                default: 
                     return alumnos;
             }
         }

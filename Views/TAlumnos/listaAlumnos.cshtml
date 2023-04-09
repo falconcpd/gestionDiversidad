@@ -1,4 +1,5 @@
 ﻿@model gestionDiversidad.ViewModels.ListaAlumnosView
+@using gestionDiversidad.Constantes
 
 @{
     ViewData["Title"] = "listaInformes";
@@ -66,5 +67,11 @@ else
     <div>
         <a asp-controller="TUsuarios" asp-action="volverPerfil"
        asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a perfil principal</a>
+    </div>
+}
+@if(Model.Permiso.Insertar && Model.ActualRol == constDefinidas.rolAdmin){
+    <div>
+        <a asp-controller="TAlumnos" asp-action="insertarAlumno"
+           class="btn btn-primary">Crear nuevo alumno</a>
     </div>
 }

@@ -193,6 +193,52 @@ namespace gestionDiversidad.Controllers
             return RedirectToAction("insertarMedico", "TMedicos");
         }
 
+        //POST: TUsuarios/crearUsuarioAlumno
+       [HttpPost]
+       [ValidateAntiForgeryToken]
+        public async Task<IActionResult> crearUsuarioAlumno(CrearAlumnoView model)
+        {
+            if (ModelState.IsValid)
+            {
+                /* //Hago que se pueda almacenar el pdf. 
+                 byte[] contenido;
+                 using (var ms = new MemoryStream())
+                 {
+                     await model.PDF.CopyToAsync(ms);
+                     contenido = ms.ToArray();
+                 } */
+
+                using (var ms = new MemoryStream())
+                {
+                    await model.PDF.CopyToAsync(ms);
+                    var file = ms.ToArray();
+                    string base64file = Convert.ToBase64String(file);
+                    TempData[constDefinidas.keyInformePDF] = base64file;
+                }
+
+                var user = new TUsuario
+                {
+                    Nif = model.Nif,
+                    Usuario = model.Usuario,
+                    Password = model.Password,
+                    IdRol = constDefinidas.rolAlumno
+                }; 
+                _context.Add(user);
+                await _context.SaveChangesAsync(); 
+                return RedirectToAction("crearAlumno", "TAlumnos",
+                    new
+                    {
+                        nif = model.Nif,
+                        nombre = model.Nombre,
+                        apellido1 = model.Apellido1,
+                        apellido2 = model.Apellido2, 
+                        medico = model.MedicoNif
+                    });
+
+            }
+            return RedirectToAction("insertarAlumno", "TAlumnos");
+        }
+
 
         // GET: TUsuarios/Create
         public IActionResult Create()
