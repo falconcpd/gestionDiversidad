@@ -13,6 +13,7 @@ using gestionDiversidad.ViewModels;
 using gestionDiversidad.Constantes;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace gestionDiversidad.Controllers
 {
@@ -193,6 +194,60 @@ namespace gestionDiversidad.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("listaAlumnos", "TAlumnos",
                 new { nif = sesionNif, rol = sesionRol, volverPadre = "false" });
+        }
+
+        // POST : TInformes/crearInformeNuevo
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> crearInformeNuevo(CrearInformeView model)
+        {
+            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            int sesionRol = rawRol ?? 0;
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            if (ModelState.IsValid)
+            {
+                byte[] contenido;
+                string nifMedico = model.MedicoNif;
+                string nifAlumno = model.AlumnoNif;
+                using (var ms = new MemoryStream())
+                {
+                    await model.PDF.CopyToAsync(ms);
+                    contenido = ms.ToArray();
+                }
+                //Ahora obtengo la fecha actual.
+                DateTime fechaActual = DateTime.Now;
+                string fechaActualFormateada = fechaActual.ToString("yyyy-MM-ddTHH:mm:ss");
+                DateTime fechaActualFinal = DateTime.ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+
+                var informe = new TInforme
+                {
+                    NifMedico = nifMedico,
+                    NifAlumno = nifAlumno,
+                    Fecha = fechaActualFinal,
+                    Contenido = contenido
+                };
+                _context.Add(informe);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("listaInformes", "TInformes", 
+                    new { nif = sesionNif, rol = sesionRol });
+            }
+
+            return RedirectToAction("insertarInforme", "TInformes"); 
+        }
+
+        //Funcion que redirecciona para crear informe.
+        public async Task<IActionResult> insertarInforme()
+        {
+            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            int sesionRol = rawRol ?? 0;
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+
+            CrearInformeView vistaCrearInforme = new CrearInformeView();
+            vistaCrearInforme.ListaMedicos = (await _serviceController.listaMedicos());
+            vistaCrearInforme.ListaAlumnos = (await _serviceController.listaAlumnos(sesionNif, sesionRol));
+
+            return View(vistaCrearInforme);
         }
 
 

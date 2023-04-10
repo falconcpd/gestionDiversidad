@@ -1,0 +1,43 @@
+﻿@model gestionDiversidad.ViewModels.CrearInformeView
+
+@{
+    ViewData["Title"] = "CrearAlumno";
+}
+
+<h1>Crear Alumno</h1>
+
+<h4>TAlumno</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="crearInformeNuevo" asp-controller="TInformes"
+              method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.MedicoNif" class="control-label"></label>
+                <select asp-for="MedicoNif" asp-items="@Model.ListaMedicos.Select(m => new SelectListItem { Text = m.Nombre, Value = m.Nif })"></select>
+                <span asp-validation-for="@Model.MedicoNif" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.AlumnoNif" class="control-label"></label>
+                <select asp-for="AlumnoNif" asp-items="@Model.ListaAlumnos.Select(a => new SelectListItem { Text = a.Nombre, Value = a.Nif })"></select>
+                <span asp-validation-for="@Model.AlumnoNif" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.PDF">Seleccione el archivo PDF:</label>
+                <input asp-for="@Model.PDF" type="file" accept=".pdf">
+                <span asp-validation-for="@Model.PDF" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

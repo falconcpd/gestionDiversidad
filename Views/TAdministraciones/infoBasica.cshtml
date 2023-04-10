@@ -74,6 +74,11 @@
     asp-route-volverPadre="false">Ver alumnos</a>
 </div>
 <div>
+    <a asp-controller="TInformes" asp-action="listaInformes"
+       asp-route-nif="@Model.Admin.Nif" asp-route-rol="@constDefinidas.rolAdmin">
+       Ver Informes</a>
+</div>
+<div>
     <a>@Context.Session.GetInt32("_rol").ToString()</a>
 </div>
 

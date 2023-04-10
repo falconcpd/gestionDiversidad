@@ -137,6 +137,12 @@ namespace gestionDiversidad.Controllers
                     medico = (await _context.TMedicos.Include(u => u.TInformes).FirstOrDefaultAsync(u => u.Nif == nif))!;
                     informes = medico.TInformes.ToList();
                     return informes;
+                case constDefinidas.rolAdmin:
+                    informes = (await _context.TInformes
+                        .Include(i => i.NifMedicoNavigation)
+                        .Include(i => i.NifAlumnoNavigation)
+                        .OrderBy(i => i.NifAlumnoNavigation.Nombre).ToListAsync());
+                    return informes;
                 default:
                     return informes;
             }

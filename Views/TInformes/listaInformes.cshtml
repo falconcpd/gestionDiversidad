@@ -4,7 +4,7 @@
     ViewData["Title"] = "listaInformes";
 }
 
-<h1>Index</h1>
+<h1>Lista de informes</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,10 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ListaInformes.First().NifAlumnoNavigation)
+                @Html.DisplayName("Nombre alumno")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ListaInformes.First().NifMedicoNavigation)
+                @Html.DisplayName("Nombre medico")
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ListaInformes.First().Fecha)
@@ -28,10 +28,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.NifAlumnoNavigation.Nif)
+                    @Html.DisplayFor(modelItem => item.NifAlumnoNavigation.Nombre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.NifMedicoNavigation.Nif)
+                    @Html.DisplayFor(modelItem => item.NifMedicoNavigation.Nombre)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Fecha)
@@ -57,6 +57,13 @@
         }
     </tbody>
 </table>
+@if (Model.Permiso.Insertar)
+{
+    <div>
+        <a asp-controller="TInformes" asp-action="insertarInforme"
+           class="btn btn-primary">Nuevo Informe</a>
+    </div>
+}
 @if (Model.Rol == Model.SesionRol)
 {
     <div>
