@@ -63,7 +63,7 @@
         </form>
     </div>
 }
-@if (!(Model.PadreRol == constDefinidas.rolAlumno))
+@if (Model.LAlumnos.Acceder)
 {
     <div>
         <a asp-controller="TAlumnos" asp-action="listaAlumnos"

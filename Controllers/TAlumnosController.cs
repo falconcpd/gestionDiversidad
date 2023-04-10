@@ -80,6 +80,8 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenListalInformes , rol);
             vistaAlumno.LMatriculas = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaAsignaturas, rol);
+            vistaAlumno.LAlumnos = await _serviceController
+                .permisoPantalla(constDefinidas.screenListaAlumnos, rol);
             //vistaAlumno.Rol = constDefinidas.rolAlumno;
             vistaAlumno.SesionRol = rol;
             vistaAlumno.SesionNif = sesionNif;
