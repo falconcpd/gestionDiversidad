@@ -152,7 +152,11 @@ namespace gestionDiversidad.Controllers
         //Esta función solo está disponible para un administrador.
         public async Task<List<TProfesor>> listaProfesores()
         {
-            List<TProfesor> profesores = await _context.TProfesors.Include(p => p.NifNavigation).ToListAsync();
+            List<TProfesor> profesores = await _context.TProfesors
+                .Include(p => p.NifNavigation)
+                .Include(p => p.IdAsignaturas)
+                .ToListAsync();
+
             return profesores;
         }
 

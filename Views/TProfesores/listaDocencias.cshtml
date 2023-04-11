@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Http
+@using gestionDiversidad.Constantes
+@model gestionDiversidad.ViewModels.DocenciaView
+
+@{
+    ViewData["Title"] = "listaDocencias";
+}
+
+<h1>Lista Docencias</h1>
+
+<div>
+    <h4>Profesores y asignaturas</h4>
+    <hr />
+    @foreach (var profesor in Model.LProfesores)
+    {
+        <h2>@profesor.Nombre</h2>
+        <ul>
+            @foreach (var asignatura in profesor.IdAsignaturas)
+            {
+                <li>@asignatura.Nombre</li>
+            }
+        </ul>
+    }
+</div>
+<div>
+    <a asp-controller="TProfesores" asp-action="insertarDocencia"
+       class="btn btn-primary">Crear nueva docencia</a>
+</div>
+<div>
+    <a asp-controller="TUsuarios" asp-action="volverPerfil"
+       asp-route-nif="@Model.SesionNif" asp-route-rol="@Model.SesionRol">
+       Volver usuario principal</a>
+</div>
+
+
+<div>
+    <a>@Context.Session.GetInt32("_rol").ToString()</a>
+</div>

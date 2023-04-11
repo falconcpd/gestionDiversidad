@@ -140,6 +140,64 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        // GET: TProfesores/listaDocencias
+        public async Task<IActionResult> listaDocencias()
+        {
+            string sessionKeyRol = constDefinidas.keyRol;
+            string sessionKeyNif = constDefinidas.keyNif;
+            int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
+            string sesionNif = HttpContext.Session.GetString(sessionKeyNif)!;
+            int sesionRol = rawRol ?? 0;
+
+            List<TProfesor> profesores = await _serviceController .listaProfesores();
+            DocenciaView vistaDocencia = new DocenciaView();
+            vistaDocencia.LProfesores = profesores;
+            vistaDocencia.SesionRol = sesionRol;
+            vistaDocencia.SesionNif = sesionNif;
+            return View(vistaDocencia);
+        }
+
+        // GET: TProfesores/insertarDocencia
+        public async Task<IActionResult> insertarDocencia()
+        {
+            string sessionKeyRol = constDefinidas.keyRol;
+            string sessionKeyNif = constDefinidas.keyNif;
+            int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
+            string sesionNif = HttpContext.Session.GetString(sessionKeyNif)!;
+            int sesionRol = rawRol ?? 0;
+
+            CrearDocenciaView crearDocenciaVista = new CrearDocenciaView();
+            crearDocenciaVista.LProfesores = await _serviceController.listaProfesores();
+            crearDocenciaVista.LAsignaturas = await _serviceController.listaAsignaturas(sesionNif, sesionRol);
+
+            return View(crearDocenciaVista);
+        }
+
+        //POST: TProfesores/crearDocencia
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> crearDocencia(CrearDocenciaView model)
+        {
+            int idAsignatura = Int32.Parse(model.IdAsignatura);
+            var profesor = await _context.TProfesors
+                .Include(p => p.IdAsignaturas).FirstOrDefaultAsync(p => p.Nif == model.NifProfesor);
+            var asignatura = await _context.TAsignaturas.FirstOrDefaultAsync(a => a.Id == idAsignatura);
+            List<TAsignatura> listaAsiganturas = profesor!.IdAsignaturas.ToList();
+            bool imparte = listaAsiganturas.Contains(asignatura!);
+            if (ModelState.IsValid && !(imparte))
+            {
+
+                profesor!.IdAsignaturas.Add(asignatura!);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("listaDocencias", "TProfesores");
+
+            }
+            TempData["ExisteDocencia"] = "El profesor ya está impartiendo esa asignatura.";
+            return RedirectToAction("insertarDocencia", "TProfesores");
+
+        }
+
         // GET: TProfesores/Details/5
         public async Task<IActionResult> Details(string id)
         {

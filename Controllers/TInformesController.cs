@@ -163,6 +163,14 @@ namespace gestionDiversidad.Controllers
                 , fecha = fecha});
 
         }
+        //Función que utilizo para la fecha de ahora
+        public DateTime fechaPresente()
+        {
+            DateTime fechaActual = DateTime.Now;
+            string fechaActualFormateada = fechaActual.ToString("yyyy-MM-ddTHH:mm:ss");
+            DateTime fechaActualFinal = DateTime.ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            return fechaActualFinal;
+        }
 
         //Función que crea un informe: TInformes/crearInforme
         public async Task<IActionResult> crearInforme(string nifMedico, string nifAlumno)
@@ -177,9 +185,7 @@ namespace gestionDiversidad.Controllers
 
 
             //Ahora obtengo la fecha actual.
-            DateTime fechaActual = DateTime.Now;
-            string fechaActualFormateada = fechaActual.ToString("yyyy-MM-ddTHH:mm:ss");
-            DateTime fechaActualFinal = DateTime.ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            DateTime fechaActualFinal = fechaPresente();
 
             //Creo el informe y lo añado
             var informe = new TInforme
@@ -215,9 +221,7 @@ namespace gestionDiversidad.Controllers
                     contenido = ms.ToArray();
                 }
                 //Ahora obtengo la fecha actual.
-                DateTime fechaActual = DateTime.Now;
-                string fechaActualFormateada = fechaActual.ToString("yyyy-MM-ddTHH:mm:ss");
-                DateTime fechaActualFinal = DateTime.ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+                DateTime fechaActualFinal = fechaPresente();
 
                 var informe = new TInforme
                 {
