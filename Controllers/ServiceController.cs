@@ -114,7 +114,9 @@ namespace gestionDiversidad.Controllers
                     }
                     return alumnos;
                 case constDefinidas.rolAdmin:
-                    alumnos = (await _context.TAlumnos.ToListAsync());
+                    alumnos = (await _context.TAlumnos
+                        .Include(a => a.IdAsignaturas)
+                        .ToListAsync());
                     return alumnos;
                 default: 
                     return alumnos;

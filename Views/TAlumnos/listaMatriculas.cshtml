@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Http
+@using gestionDiversidad.Constantes
+@model gestionDiversidad.ViewModels.MatriculaView
+
+@{
+    ViewData["Title"] = "listaMatriculas";
+}
+
+<h1>Lista Matriculas</h1>
+
+<div>
+    <h4>Alumnos y asignaturas</h4>
+    <hr />
+    @foreach (var alumno in Model.LAlumnos)
+    {
+        <h2>@alumno.Nombre</h2>
+        <ul>
+            @foreach (var asignatura in alumno.IdAsignaturas)
+            {
+                <li>@asignatura.Nombre</li>
+            }
+        </ul>
+    }
+</div>
+<div>
+    <a asp-controller="TAlumnos" asp-action="insertarMatricula"
+       class="btn btn-primary">Crear nueva Matricula</a>
+</div>
+<div>
+    <a asp-controller="TUsuarios" asp-action="volverPerfil"
+       asp-route-nif="@Model.SesionNif" asp-route-rol="@Model.SesionRol">
+        Volver usuario principal
+    </a>
+</div>
+
+
+<div>
+    <a>@Context.Session.GetInt32("_rol").ToString()</a>
+</div>

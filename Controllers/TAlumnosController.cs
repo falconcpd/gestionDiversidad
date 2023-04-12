@@ -173,6 +173,64 @@ namespace gestionDiversidad.Controllers
                 new { nifMedico = medico, nifAlumno = nif});
         }
 
+        // GET: TAlumnos/listaMatriculas
+        public async Task<IActionResult> listaMatriculas()
+        {
+            string sessionKeyRol = constDefinidas.keyRol;
+            string sessionKeyNif = constDefinidas.keyNif;
+            int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
+            string sesionNif = HttpContext.Session.GetString(sessionKeyNif)!;
+            int sesionRol = rawRol ?? 0;
+
+            List<TAlumno> alumnos = await _serviceController.listaAlumnos(sesionNif, sesionRol);
+            MatriculaView vistaMatricula = new MatriculaView();
+            vistaMatricula.LAlumnos = alumnos;
+            vistaMatricula.SesionRol = sesionRol;
+            vistaMatricula.SesionNif = sesionNif;
+            return View(vistaMatricula);
+        }
+
+        // GET: TAlumnos/insertarMatricula
+        public async Task<IActionResult> insertarMatricula()
+        {
+            string sessionKeyRol = constDefinidas.keyRol;
+            string sessionKeyNif = constDefinidas.keyNif;
+            int? rawRol = HttpContext.Session.GetInt32(sessionKeyRol);
+            string sesionNif = HttpContext.Session.GetString(sessionKeyNif)!;
+            int sesionRol = rawRol ?? 0;
+
+            CrearMatriculaView crearMatriculaVista = new CrearMatriculaView();
+            crearMatriculaVista.LAlumnos = await _serviceController.listaAlumnos(sesionNif, sesionRol);
+            crearMatriculaVista.LAsignaturas = await _serviceController.listaAsignaturas(sesionNif, sesionRol);
+
+            return View(crearMatriculaVista);
+        }
+
+        //POST: TAlumnos/crearMatricula
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> crearMatricula(CrearMatriculaView model)
+        {
+            int idAsignatura = Int32.Parse(model.IdAsignatura);
+            var alumno = await _context.TAlumnos
+                .Include(a => a.IdAsignaturas).FirstOrDefaultAsync(a => a.Nif == model.NifAlumno);
+            var asignatura = await _context.TAsignaturas.FirstOrDefaultAsync(a => a.Id == idAsignatura);
+            List<TAsignatura> listaAsiganturas = alumno!.IdAsignaturas.ToList();
+            bool asiste = listaAsiganturas.Contains(asignatura!);
+            if (ModelState.IsValid && !(asiste))
+            {
+
+                alumno!.IdAsignaturas.Add(asignatura!);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("listaMatriculas", "TAlumnos");
+
+            }
+            TempData["ExisteMatricula"] = "El alumno ya está asistiendo a esta asignatura.";
+            return RedirectToAction("insertarMatricula", "TAlumnos");
+
+        }
+
         // GET: TAlumnos/Create
         public IActionResult Create()
         {

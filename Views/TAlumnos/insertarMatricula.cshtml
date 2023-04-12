@@ -1,0 +1,47 @@
+﻿@model gestionDiversidad.ViewModels.CrearMatriculaView
+
+@{
+    ViewData["Title"] = "CrearMatricula";
+}
+
+<h1>Crear Matricula</h1>
+
+<h4>TAlumno</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="crearMatricula" asp-controller="TAlumnos"
+              method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.NifAlumno" class="control-label"></label>
+                <select asp-for="NifAlumno" asp-items="@Model.LAlumnos!.Select(a => new SelectListItem { Text = a.Nombre, Value = a.Nif })"></select>
+                <span asp-validation-for="@Model.NifAlumno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.IdAsignatura" class="control-label"></label>
+                <select asp-for="IdAsignatura" asp-items="@Model.LAsignaturas!.Select(a => new SelectListItem { Text = a.Nombre, Value = a.Id.ToString() })"></select>
+                <span asp-validation-for="@Model.IdAsignatura" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+@if (TempData["ExisteMatricula"] != null)
+{
+    <div class="alert alert-danger">@TempData["ExisteMatricula"]</div>
+}
+<div>
+    <a asp-controller="TAlumnos" asp-action="listaMatriculas"
+       asp-route-volverPadre="false">Volver Matriculas</a>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
