@@ -41,6 +41,15 @@
     <a asp-action="Edit" asp-route-id="@Model?.Medico.Nif">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+@if (Model!.Permiso.Modificar)
+{
+    <div>
+        <a asp-controller="TMedicos" asp-action="modificarMedico"
+       asp-route-nif="@Model.Medico.Nif">
+            Modificar info de medico
+        </a>
+    </div>
+}
 @if (Model.LAlumnos.Acceder)
 {
     <div>

@@ -239,6 +239,59 @@ namespace gestionDiversidad.Controllers
             return RedirectToAction("insertarAlumno", "TAlumnos");
         }
 
+        // POST: TUsuarios/logging
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> confirmarCambios(ModificarUsuarios model)
+        {
+            int rol = model.Rol;
+            string nif = model.Nif;
+
+            if (ModelState.IsValid)
+            {
+
+                switch (rol)
+                {
+                    case constDefinidas.rolAlumno:
+                        TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nif))!;
+                        alumno.Nombre = model.Nombre;
+                        alumno.Apellido1 = model.Apellido1;
+                        alumno.Apellido2 = model.Apellido2;
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("volverPerfil", "TUsuarios", new { nif = nif, rol = rol });
+                    case constDefinidas.rolProfesor:
+                        TProfesor profesor = (await _context.TProfesors.FirstOrDefaultAsync(p => p.Nif == nif))!;
+                        profesor.Nombre = model.Nombre;
+                        profesor.Apellido1 = model.Apellido1;
+                        profesor.Apellido2 = model.Apellido2;
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("volverPerfil", "TUsuarios", new { nif = nif, rol = rol });
+                    case constDefinidas.rolMedico:
+                        TMedico medico = (await _context.TMedicos.FirstOrDefaultAsync(m => m.Nif == nif))!;
+                        medico.Nombre = model.Nombre;
+                        medico.Apellido1 = model.Apellido1;
+                        medico.Apellido2 = model.Apellido2;
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("volverPerfil", "TUsuarios", new { nif = nif, rol = rol });
+                }
+
+            }
+
+            switch (rol)
+            {
+                case constDefinidas.rolProfesor:
+                    TProfesor profesor = (await _context.TProfesors.FirstOrDefaultAsync(p => p.Nif == nif))!;
+                    return RedirectToAction("modificarAlumno", "TAlumnos", new { nif = nif, rol = rol });
+                case constDefinidas.rolAlumno:
+                    TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nif))!;
+                    return RedirectToAction("modificarProfesor", "TProfesores", new { nif = nif, rol = rol });
+                case constDefinidas.rolMedico:
+                    TAlumno medico = (await _context.TAlumnos.FirstOrDefaultAsync(m => m.Nif == nif))!;
+                    return RedirectToAction("modificarMedico", "TMedicos", new { nif = nif, rol = rol });
+                default:
+                    return View();
+            }
+        }
 
         // GET: TUsuarios/Create
         public IActionResult Create()

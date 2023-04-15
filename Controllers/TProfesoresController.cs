@@ -198,6 +198,20 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        //GET: TProfesores/modificarProfesor
+        public async Task<IActionResult> modificarProfesor(string nif)
+        {
+            TProfesor profesor = (await _context.TProfesors.FirstOrDefaultAsync(p => p.Nif == nif))!;
+            ModificarUsuarios modificarProfesorView = new ModificarUsuarios();
+            modificarProfesorView.Nif = nif;
+            modificarProfesorView.Rol = constDefinidas.rolProfesor;
+            modificarProfesorView.Nombre = profesor.Nombre;
+            modificarProfesorView.Apellido1 = profesor.Apellido1;
+            modificarProfesorView.Apellido2 = profesor.Apellido2;
+
+            return View(modificarProfesorView);
+        }
+
         // GET: TProfesores/Details/5
         public async Task<IActionResult> Details(string id)
         {

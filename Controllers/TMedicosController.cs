@@ -176,6 +176,21 @@ namespace gestionDiversidad.Controllers
                 new { volverPadre = "false" });
         }
 
+
+        //GET: TMedicos/modificarMedico
+        public async Task<IActionResult> modificarMedico(string nif)
+        {
+            TMedico medico = (await _context.TMedicos.FirstOrDefaultAsync(m => m.Nif == nif))!;
+            ModificarUsuarios modificarMedicoView = new ModificarUsuarios();
+            modificarMedicoView.Nif = nif;
+            modificarMedicoView.Rol = constDefinidas.rolMedico;
+            modificarMedicoView.Nombre = medico.Nombre;
+            modificarMedicoView.Apellido1 = medico.Apellido1;
+            modificarMedicoView.Apellido2 = medico.Apellido2;
+
+            return View(modificarMedicoView);
+        }
+
         // GET: TMedicos/Create
         public IActionResult Create()
         {

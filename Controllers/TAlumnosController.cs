@@ -231,6 +231,20 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        //GET: TAlumnos/modificarAlumno
+        public async Task<IActionResult> modificarAlumno(string nif)
+        {
+            TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nif))!;
+            ModificarUsuarios modificarAlumnoView = new ModificarUsuarios();
+            modificarAlumnoView.Nif = nif;
+            modificarAlumnoView.Rol = constDefinidas.rolAlumno;
+            modificarAlumnoView.Nombre = alumno.Nombre;
+            modificarAlumnoView.Apellido1 = alumno.Apellido1;
+            modificarAlumnoView.Apellido2 = alumno.Apellido2;
+
+            return View(modificarAlumnoView);
+        }
+
         // GET: TAlumnos/Create
         public IActionResult Create()
         {
