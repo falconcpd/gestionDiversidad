@@ -1,0 +1,38 @@
+﻿@model gestionDiversidad.ViewModels.BorrarDocenciaView
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>¿Seguro que quieres borrar esto?</h3>
+<div>
+    <h4>TDocencia</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NifProfesor)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NifProfesor)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdAsignatura)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdAsignatura)
+        </dd>
+    </dl>
+
+    <form asp-action="confirmarBorradoDocencia" asp-controller="TProfesores">
+        <input type="hidden" asp-for="NifProfesor" />
+        <input type="hidden" asp-for="IdAsignatura" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="listaDocencias" asp-controller="TProfesores">
+            Volver lista de docencias.
+        </a>
+    </form>
+</div>

@@ -13,6 +13,7 @@ using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.ComponentModel;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace gestionDiversidad.Controllers
 {
@@ -149,7 +150,7 @@ namespace gestionDiversidad.Controllers
             string sesionNif = HttpContext.Session.GetString(sessionKeyNif)!;
             int sesionRol = rawRol ?? 0;
 
-            List<TProfesor> profesores = await _serviceController .listaProfesores();
+            List<TProfesor> profesores = await _serviceController.listaProfesores();
             DocenciaView vistaDocencia = new DocenciaView();
             vistaDocencia.LProfesores = profesores;
             vistaDocencia.SesionRol = sesionRol;
@@ -259,6 +260,45 @@ namespace gestionDiversidad.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("listaProfesores", "TProfesores", 
                 new { volverPadre = "false" });
+        }
+
+        // GET: TProfesores/borrarDocencia/5
+        public IActionResult borrarDocencia(int idAsignatura, string nifProfesor)
+        {
+            BorrarDocenciaView vistaBorrarDocencia = new BorrarDocenciaView();
+            vistaBorrarDocencia.NifProfesor = nifProfesor;  
+            vistaBorrarDocencia.IdAsignatura = idAsignatura;
+
+            return View(vistaBorrarDocencia);
+        }
+        // POST: TAsignaturas/confirmarBorrado/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> confirmarBorradoDocencia(BorrarDocenciaView model)
+        {
+            string nifProfesor = model.NifProfesor;
+            int idAsigantura = model.IdAsignatura;
+
+            if (ModelState.IsValid)
+            {
+
+                TProfesor profesor = (await _context.TProfesors
+                    .Include(p => p.IdAsignaturas)
+                    .FirstOrDefaultAsync(p => p.Nif == nifProfesor))!;
+                TAsignatura asignatura = (await _context.TAsignaturas
+                    .Include(a => a.NifProfesors)
+                    .FirstOrDefaultAsync(a => a.Id == idAsigantura))!;
+                profesor.IdAsignaturas.Remove(asignatura);
+                asignatura.NifProfesors.Remove(profesor);
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction("listaDocencias", "TProfesores");
+            }
+            return RedirectToAction("borrarDocencia", "TProfesores", new
+            {
+                idAsignatura = idAsigantura,
+                nifProfesor = nifProfesor
+            });
         }
 
         // GET: TProfesores/Create
