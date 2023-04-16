@@ -11,6 +11,7 @@ using gestionDiversidad.ViewModels;
 using gestionDiversidad.Constantes;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
+//using System.Data.Entity;
 
 namespace gestionDiversidad.Controllers
 {
@@ -204,9 +205,10 @@ namespace gestionDiversidad.Controllers
             {
                 return NotFound();
             }
-
             var tAsignatura = await _context.TAsignaturas
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(a => a.NifAlumnos)
+                .Include(a => a.NifProfesors)
+                .FirstOrDefaultAsync(a => a.Id == id);
             if (tAsignatura == null)
             {
                 return NotFound();
@@ -228,9 +230,24 @@ namespace gestionDiversidad.Controllers
             {
                 return Problem("Entity set 'TfgContext.TAsignaturas'  is null.");
             }
-            var tAsignatura = await _context.TAsignaturas.FindAsync(id);
+            var tAsignatura = await _context.TAsignaturas
+                .Include(a => a.NifAlumnos)
+                .Include(a => a.NifProfesors)
+                .FirstOrDefaultAsync(a => a.Id == id);
             if (tAsignatura != null)
             {
+                List<TProfesor> profesores = tAsignatura.NifProfesors.ToList();
+                List<TAlumno> alumnos = tAsignatura.NifAlumnos.ToList();    
+                /////
+                foreach(var profesor in profesores)
+                {
+                    profesor.IdAsignaturas.Remove(tAsignatura);
+                }
+                foreach(var alumno in alumnos)
+                {
+                    alumno.IdAsignaturas.Remove(tAsignatura);
+                }
+
                 _context.TAsignaturas.Remove(tAsignatura);
             }
             
