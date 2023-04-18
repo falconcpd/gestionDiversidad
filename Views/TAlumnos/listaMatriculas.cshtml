@@ -18,6 +18,11 @@
             @foreach (var asignatura in alumno.IdAsignaturas)
             {
                 <li>@asignatura.Nombre</li>
+                <li>
+                    <a asp-controller="TAlumnos" asp-action="borrarMatricula"
+               asp-route-idAsignatura="@asignatura.Id" asp-route-nifAlumno="@alumno.Nif"
+                       class="btn btn-primary">Borrar matricula</a>
+                </li>
             }
         </ul>
     }

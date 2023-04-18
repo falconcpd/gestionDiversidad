@@ -245,6 +245,46 @@ namespace gestionDiversidad.Controllers
             return View(modificarAlumnoView);
         }
 
+        // GET: TAlumnos/borrarMatricula/5
+        public IActionResult borrarMatricula(int idAsignatura, string nifAlumno)
+        {
+            BorrarMatriculaView vistaBorrarMatricula = new BorrarMatriculaView();
+            vistaBorrarMatricula.NifAlumno = nifAlumno;
+            vistaBorrarMatricula.IdAsignatura = idAsignatura;
+
+            return View(vistaBorrarMatricula);
+        }
+
+        // POST: TAlumnos/confirmarBorradoMatricula/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> confirmarBorradoMatricula(BorrarMatriculaView model)
+        {
+            string nifAlumno = model.NifAlumno;
+            int idAsigantura = model.IdAsignatura;
+
+            if (ModelState.IsValid)
+            {
+
+                TAlumno alumno = (await _context.TAlumnos
+                    .Include(a => a.IdAsignaturas)
+                    .FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+                TAsignatura asignatura = (await _context.TAsignaturas
+                    .Include(a => a.NifProfesors)
+                    .FirstOrDefaultAsync(asg => asg.Id == idAsigantura))!;
+                alumno.IdAsignaturas.Remove(asignatura);
+                asignatura.NifAlumnos.Remove(alumno);
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction("listaMatriculas", "TAlumnos");
+            }
+            return RedirectToAction("borrarMatricula", "TAlumnos", new
+            {
+                idAsignatura = idAsigantura,
+                nifAlumno = nifAlumno
+            });
+        }
+
         // GET: TAlumnos/Create
         public IActionResult Create()
         {

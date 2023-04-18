@@ -44,6 +44,15 @@
                         </form>
                     </td>
                 }
+                @if (Model.Permiso.Borrar)
+                {
+                    <td>
+                        <form asp-action="borrarProfesor" asp-controller="TProfesores">
+                            <input type="hidden" name="nifProfesor" value="@item.Nif" />
+                            <input type="submit" value="Delete" class="btn btn-danger" /> |
+                        </form>
+                    </td>
+                }
 
             </tr>
         }

@@ -271,7 +271,7 @@ namespace gestionDiversidad.Controllers
 
             return View(vistaBorrarDocencia);
         }
-        // POST: TAsignaturas/confirmarBorrado/5
+        // POST: TAsignaturas/confirmarBorradoDocencia/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> confirmarBorradoDocencia(BorrarDocenciaView model)
@@ -306,6 +306,38 @@ namespace gestionDiversidad.Controllers
         {
             ViewData["Nif"] = new SelectList(_context.TUsuarios, "Nif", "Nif");
             return View();
+        }
+
+        // GET: TProfesores/borrarProfesor/5
+        public async Task<IActionResult> borrarProfesor(string nifProfesor)
+        {
+            TProfesor profesor = (await _context.TProfesors
+                    .FirstOrDefaultAsync(p => p.Nif == nifProfesor))!;
+            return View(profesor);
+
+            //Para volver para atra, hay que utilizar navigation
+        }
+
+        // POST: TProfesores/confirmarBorradoProfesor/
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> confirmarBorradoProfesor(string nifProfesor)
+        {
+            TProfesor profesor = (await _context.TProfesors
+                    .FirstOrDefaultAsync(p => p.Nif == nifProfesor))!;
+            _context.TProfesors.Remove(profesor);
+            List<TAsignatura> asignaturas = (await _serviceController.listaAsignaturas(nifProfesor, constDefinidas.rolProfesor))!;
+            foreach(var asignatura in asignaturas)
+            {
+                asignatura.NifProfesors.Remove(profesor);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("listaProfesores", "TProfesores", new
+            {
+                volverPadre = "false"
+            });
         }
 
         // POST: TProfesores/Create
