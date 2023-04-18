@@ -285,6 +285,61 @@ namespace gestionDiversidad.Controllers
             });
         }
 
+        //GET: TAlumnos/borrarAlumno
+        public async Task<IActionResult> borrarAlumno(string nifAlumno)
+        {
+            TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+            //Actual user
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            string actualNif = actualUser.nif;
+            int actualRol = actualUser.rol;
+            //
+            BorrarAlumnoView vistaBorrarAlumno = new BorrarAlumnoView();
+            vistaBorrarAlumno.ActualNif = actualNif;
+            vistaBorrarAlumno.ActualRol = actualRol;
+            vistaBorrarAlumno.Alumno = alumno;
+
+            return View(vistaBorrarAlumno);
+
+        }
+
+        // POST: TAlumnos/confirmarBorradoAlumno
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> confirmarBorradoAlumno(string nifAlumno, int actualRol, string actualNif)
+        {
+            TAlumno alumno = (await _context.TAlumnos
+                .Include(a => a.IdAsignaturas)
+                .FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+
+            //Quitar enlace Matriculas
+            List<TAsignatura> asignaturas = await _serviceController.listaAsignaturas(nifAlumno, constDefinidas.rolAlumno);
+            foreach(var asignatura in asignaturas)
+            {
+                asignatura.NifAlumnos.Remove(alumno);
+            }
+
+            //Quitar lo de los informes
+            List<TInforme> informes = await _serviceController.listaInformes(nifAlumno, constDefinidas.rolAlumno);
+            foreach(var informe in informes)
+            {
+                _context.TInformes.Remove(informe);
+            }
+
+            //Borrar alumno
+            _context.TAlumnos.Remove(alumno);
+
+           await _context.SaveChangesAsync();
+
+            return RedirectToAction("listaAlumnos", "TAlumnos", new
+            {
+                rol = actualRol,
+                volverPadre = "false",
+                nif = actualNif
+            });
+        }
+
         // GET: TAlumnos/Create
         public IActionResult Create()
         {

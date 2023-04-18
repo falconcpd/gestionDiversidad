@@ -132,11 +132,15 @@ namespace gestionDiversidad.Controllers
             switch (rol)
             {
                 case constDefinidas.rolAlumno:
-                    alumno = (await _context.TAlumnos.Include(u => u.TInformes).FirstOrDefaultAsync(u => u.Nif == nif))!;
+                    alumno = (await _context.TAlumnos
+                        .Include(u => u.TInformes)
+                        .FirstOrDefaultAsync(u => u.Nif == nif))!;
                     informes = alumno.TInformes.ToList();
                     return informes;
                 case constDefinidas.rolMedico:
-                    medico = (await _context.TMedicos.Include(u => u.TInformes).FirstOrDefaultAsync(u => u.Nif == nif))!;
+                    medico = (await _context.TMedicos
+                        .Include(u => u.TInformes)
+                        .FirstOrDefaultAsync(u => u.Nif == nif))!;
                     informes = medico.TInformes.ToList();
                     return informes;
                 case constDefinidas.rolAdmin:
