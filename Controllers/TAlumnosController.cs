@@ -330,7 +330,12 @@ namespace gestionDiversidad.Controllers
             //Borrar alumno
             _context.TAlumnos.Remove(alumno);
 
-           await _context.SaveChangesAsync();
+            //Borrar usuario
+            TUsuario usuario = (await _context.TUsuarios
+                .FirstOrDefaultAsync(u => u.Nif == nifAlumno))!;
+            _context.TUsuarios.Remove(usuario);
+
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("listaAlumnos", "TAlumnos", new
             {

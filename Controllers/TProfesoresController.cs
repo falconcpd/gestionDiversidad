@@ -326,6 +326,9 @@ namespace gestionDiversidad.Controllers
             TProfesor profesor = (await _context.TProfesors
                     .FirstOrDefaultAsync(p => p.Nif == nifProfesor))!;
             _context.TProfesors.Remove(profesor);
+            TUsuario usuario = (await _context.TUsuarios
+                .FirstOrDefaultAsync(u => u.Nif == nifProfesor))!;
+            _context.TUsuarios.Remove(usuario);
             List<TAsignatura> asignaturas = (await _serviceController.listaAsignaturas(nifProfesor, constDefinidas.rolProfesor))!;
             foreach(var asignatura in asignaturas)
             {
