@@ -52,6 +52,15 @@
                         </form>
                     </td>
                 }
+                @if (Model.Permiso.Borrar)
+                {
+                    <td>
+                        <a asp-controller="TInformes" asp-action="borrarInforme"
+                   asp-route-nifMedico="@item.NifMedico" asp-route-nifAlumno="@item.NifAlumno"
+                   asp-route-fecha="@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")"
+                           class="btn btn-primary">Borrar informe</a>
+                    </td>
+                }
                 
             </tr>
         }
@@ -81,5 +90,9 @@ else
         <a asp-controller="TUsuarios" asp-action="volverPerfil"
        asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a perfil principal</a>
     </div>
+}
+@if (TempData["UnSoloInforme"] != null)
+{
+    <div class="alert alert-danger">@TempData["UnSoloInforme"]</div>
 }
 

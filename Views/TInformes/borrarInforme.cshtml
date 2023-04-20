@@ -1,0 +1,22 @@
+﻿@model gestionDiversidad.ViewModels.BorrarInformeView
+
+@{
+    ViewData["Title"] = "borrarInforme";
+}
+
+<h1>Delete</h1>
+
+<h3>¿Seguro que quieres el informe?</h3>
+
+    <form asp-action="confirmarBorradoInforme" asp-controller="TInformes" method="post">
+        <input type="hidden" asp-for="NifAlumno" />
+        <input type="hidden" asp-for="NifMedico" />
+        <input type="hidden" asp-for="Fecha" />
+        <input type="hidden" asp-for="ActualRol" />
+        <input type="hidden" asp-for="ActualNif" />
+        <input type="submit" value="Delete" class="btn btn-danger" />
+    </form>
+<div>
+    <a asp-action="listaInformes" asp-controller="TInformes"
+       asp-route-nif="@Model.ActualNif" asp-route-rol="@Model.ActualRol">Volver a la lista de informes</a>
+</div>

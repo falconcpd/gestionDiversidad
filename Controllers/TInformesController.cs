@@ -14,6 +14,7 @@ using gestionDiversidad.Constantes;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
 using System.IO;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace gestionDiversidad.Controllers
 {
@@ -69,7 +70,7 @@ namespace gestionDiversidad.Controllers
 
             informes = await _serviceController.listaInformes(nif, rol);
 
-            vistaListaInformes.Permiso = await _serviceController
+             vistaListaInformes.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenListalInformes, sesionRol);
             vistaListaInformes.Informe = await _serviceController
                 .permisoPantalla(constDefinidas.screenInforme, sesionRol);
@@ -178,9 +179,11 @@ namespace gestionDiversidad.Controllers
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             int sesionRol = rawRol ?? 0;
             string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
 
             var filepdf = TempData[constDefinidas.keyInformePDF] as string;
-            byte[] filestream = Convert.FromBase64String(filepdf);
+            byte[] filestream = Convert.FromBase64String(filepdf!);
             //Hago que se pueda almacenar el pdf. 
 
 
@@ -199,7 +202,7 @@ namespace gestionDiversidad.Controllers
             _context.Add(informe);
             await _context.SaveChangesAsync();
             return RedirectToAction("listaAlumnos", "TAlumnos",
-                new { nif = sesionNif, rol = sesionRol, volverPadre = "false" });
+                new { nif = actualUser.nif, rol = actualUser.rol, volverPadre = "false" });
         }
 
         // POST : TInformes/crearInformeNuevo
@@ -210,6 +213,8 @@ namespace gestionDiversidad.Controllers
             int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
             int sesionRol = rawRol ?? 0;
             string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
             if (ModelState.IsValid)
             {
                 byte[] contenido;
@@ -234,7 +239,7 @@ namespace gestionDiversidad.Controllers
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("listaInformes", "TInformes", 
-                    new { nif = sesionNif, rol = sesionRol });
+                    new { nif = actualUser.nif, rol = actualUser.rol });
             }
 
             return RedirectToAction("insertarInforme", "TInformes"); 
@@ -254,6 +259,66 @@ namespace gestionDiversidad.Controllers
             return View(vistaCrearInforme);
         }
 
+        // GET: TInformes/borrarInforme
+        public async Task<IActionResult> borrarInforme(string nifMedico, string nifAlumno, string fecha)
+        {
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            TAlumno alumno = (await _context.TAlumnos
+                .Include(a => a.TInformes)
+                .FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+
+            int numInformes = alumno.TInformes.Count();
+            if(numInformes < 2)
+            {
+                TempData["UnSoloInforme"] = "A ese alumno solo le queda un informe." +
+                    "Como es obligatorio que tenga al menos uno, por favor, borre el alumno " +
+                    "completamente o añada otro informe";
+
+                return RedirectToAction("listaInformes", "TInformes", new
+                {
+                    nif = actualUser.nif,
+                    rol = actualUser.rol
+                });
+                    
+            }
+
+            BorrarInformeView vistaBorrarInforme = new BorrarInformeView();
+            vistaBorrarInforme.NifAlumno = nifAlumno;
+            vistaBorrarInforme.NifMedico = nifMedico;
+            vistaBorrarInforme.Fecha = fecha;
+            vistaBorrarInforme.ActualNif = actualUser.nif;
+            vistaBorrarInforme.ActualRol = actualUser.rol;
+
+            return View(vistaBorrarInforme);
+
+        }
+
+        // POST: TInformes/confirmarBorradoInforme
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> confirmarBorradoInforme(BorrarInformeView model)
+        {
+            if (ModelState.IsValid)
+            {
+                TInforme informe = await buscarInforme(model.NifAlumno, model.NifMedico, model.Fecha);
+                _context.TInformes.Remove(informe);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("listaInformes", "TInformes", new
+                {
+                    nif = model.ActualNif,
+                    rol = model.ActualRol
+                });
+            }
+
+            return RedirectToAction("borrarInforme", "TInformes", new
+            {
+                nifMedico = model.NifMedico,
+                nifAlumno = model.NifAlumno,
+                fecha = model.Fecha
+            });
+        } 
 
         // GET: TInformes/Create
         public IActionResult Create()
