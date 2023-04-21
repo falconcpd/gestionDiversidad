@@ -1,0 +1,56 @@
+﻿@model gestionDiversidad.ViewModels.ModificarMedicoInforme
+
+@{
+    ViewData["Title"] = "ModificarMedicoInforme";
+}
+
+<h1>Cambiar de medico un informe</h1>
+
+<h4>TInformes</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-10">
+                @Html.DisplayNameFor(model => model.Alumno.Nombre)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Alumno.Nombre)
+            </dd>
+            <dt class="col-sm-10">
+                @Html.DisplayNameFor(model => model.Medico.Nombre)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Medico.Nombre)
+            </dd>
+        </dl>
+
+        <form asp-action="confirmarCambioMedicoInforme" asp-controller="TInformes"
+              method="post">
+            <div>
+                <input type="hidden" value="@Model.Alumno.Nif" name="nifAlumno" />
+                <input type="hidden" value="@Model.Medico.Nif" name="nifAnteriorMedico" />
+                <input type="hidden" value="@Model.Fecha" name="fecha" />
+                <input type="hidden" value="@Model.ActualRol" name="actualRol" />
+                <input type="hidden" value="@Model.ActualNif" name="actualNif" />
+            </div>
+            <div class="form-group">
+                <label for="nifNuevoMedico">Selecione un médico nuevo</label>
+                <select name="nifNuevoMedico" id="nifNuevoMedico">
+                    @foreach (var medico in Model.ListaMedicos)
+                    {
+                        <option value="@medico.Nif">"@medico.Nombre"</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="listaInformes" asp-controller="TInformes"
+       asp-route-nif="@Model.ActualNif" asp-route-rol="@Model.ActualRol">Volver a la lista de informes</a>
+</div>
+

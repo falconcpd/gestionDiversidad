@@ -15,6 +15,7 @@ using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
 using System.IO;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Diagnostics.CodeAnalysis;
 
 namespace gestionDiversidad.Controllers
 {
@@ -318,10 +319,80 @@ namespace gestionDiversidad.Controllers
                 nifAlumno = model.NifAlumno,
                 fecha = model.Fecha
             });
-        } 
+        }
 
-        // GET: TInformes/Create
-        public IActionResult Create()
+        // GET: TInformes/elegirMedicoInforme
+        public async Task<IActionResult> elegirMedicoInforme(string nifMedico, string nifAlumno, string fecha)
+        {
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+
+            List<TMedico> listaMedicos = (await _context.TMedicos.ToListAsync())!;
+            if(listaMedicos.Count <= 1)
+            {
+                TempData["UnSoloMedicoParaCambiar"] = "Solo existe un médico, por lo que no tiene" +
+                    "sentido cambiarlo";
+
+                return RedirectToAction("listaInformes", "TInformes", new
+                {
+                    nif = actualUser.nif,
+                    rol = actualUser.rol
+                });
+            }
+
+            TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+            TMedico medico = (await _context.TMedicos.FirstOrDefaultAsync(m => m.Nif == nifMedico))!;
+
+            listaMedicos.Remove(medico);
+
+            ModificarMedicoInforme modificar = new ModificarMedicoInforme();
+            modificar.Medico = medico;
+            modificar.Alumno = alumno;
+            modificar.Fecha = fecha;
+            modificar.ActualNif = actualUser.nif;
+            modificar.ActualRol = actualUser.rol;
+            modificar.ListaMedicos = listaMedicos;
+
+            return View(modificar);
+        }
+        // POST: TInformes/confirmarCambioMedicoInforme
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> confirmarCambioMedicoInforme(string nifAnteriorMedico, string nifAlumno, string fecha, string actualNif, int actualRol, string nifNuevoMedico)
+        {
+            TInforme informe = await buscarInforme(nifAlumno, nifAnteriorMedico, fecha);
+            TMedico anteriorMedico = (await _context.TMedicos.FirstOrDefaultAsync(m => m.Nif == nifAnteriorMedico))!;
+            TMedico nuevoMedico = (await _context.TMedicos.FirstOrDefaultAsync(m => m.Nif == nifNuevoMedico))!;
+            TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+
+            //Removemos del antiguo médico y el alumno el informe
+            anteriorMedico.TInformes.Remove(informe);
+            alumno.TInformes.Remove(informe);
+            //Almacenamos el contenido y lo borramos
+            byte[] contenido = informe.Contenido;
+            _context.TInformes.Remove(informe);
+            //Creamos el nuevo informe
+            DateTime fechaTime = DateTime.ParseExact(fecha, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            var nuevoInforme = new TInforme
+            {
+                NifMedico = nifNuevoMedico,
+                NifAlumno = nifAlumno,
+                Fecha = fechaTime,
+                Contenido = contenido
+            };
+            _context.Add(nuevoInforme);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("listaInformes", "TInformes", new
+            {
+                nif = actualNif,
+                rol = actualRol
+            });
+        }
+
+
+            // GET: TInformes/Create
+            public IActionResult Create()
         {
             ViewData["NifAlumno"] = new SelectList(_context.TAlumnos, "Nif", "Nif");
             ViewData["NifMedico"] = new SelectList(_context.TMedicos, "Nif", "Nif");

@@ -61,6 +61,15 @@
                            class="btn btn-primary">Borrar informe</a>
                     </td>
                 }
+                @if (Model.Permiso.Modificar)
+                {
+                    <td>
+                    <a asp-controller="TInformes" asp-action="elegirMedicoInforme"
+                   asp-route-nifMedico="@item.NifMedico" asp-route-nifAlumno="@item.NifAlumno"
+                   asp-route-fecha="@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")"
+                           class="btn btn-primary">Cambiar Medico informe</a>
+                    </td>
+                }
                 
             </tr>
         }
