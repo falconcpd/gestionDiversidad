@@ -1,19 +1,21 @@
 ﻿@model string
 
 @{
-    ViewData["Title"] = "InicioSesion";
+    ViewData["Title"] = "inicioSesion";
 }
 
 <h2>Inicio sesion</h2>
 
-<form method="post" asp-controller="TUsuarios" asp-action="logging">
+<form asp-controller="TUsuarios" asp-action="logging">
     <div>
         <label for="usuario">Usuario: </label>
         <input type="text" name="usuario" id="usuario"><br>
+        <br>
     </div>
     <div>
         <label for="password">Password: </label>
         <input type="text" name="password" id="password"><br>
+        <br>
     </div>
 
     <input type="submit" value="Iniciar Sesion">

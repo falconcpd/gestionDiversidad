@@ -11,8 +11,6 @@ using gestionDiversidad.ViewModels;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-//using Microsoft.Identity.Client;
-//using AspNetCore;
 
 namespace gestionDiversidad.Controllers
 {
@@ -25,61 +23,35 @@ namespace gestionDiversidad.Controllers
             _context = context;
         }
 
-        // GET: TUsuarios
-        public async Task<IActionResult> Index()
-        {
-            var tfgContext = _context.TUsuarios.Include(t => t.IdRolNavigation);
-            return View(await tfgContext.ToListAsync());
-        }
-
-        //GET: TUsuarios/insertarUsuario
-
-        // GET: TUsuarios/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null || _context.TUsuarios == null)
-            {
-                return NotFound();
-            }
-
-            var tUsuario = await _context.TUsuarios
-                .Include(t => t.IdRolNavigation)
-                .FirstOrDefaultAsync(m => m.Nif == id);
-            if (tUsuario == null)
-            {
-                return NotFound();
-            }
-
-            return View(tUsuario);
-        }
-
         // GET: TUsuarios/InicioSesion
         public IActionResult InicioSesion()
         {
             return View();
         }
 
-        /*
-         public IActionResult InicioSesion()
-        {
-            return View();
-        }
-         */
-
-        // POST: TUsuarios/logging
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        // GET: TUsuarios/logging
         public IActionResult logging(string usuario, string password)
         {
-            var user = _context.TUsuarios.FirstOrDefault(u => u.Usuario == usuario && u.Password == password);
+            var user = _context.TUsuarios
+                .FirstOrDefault(u => u.Usuario == usuario && u.Password == password);
             string nif;
             int rol;
             
-            if (usuario == null || password == null || user == null)
+            if(usuario == null)
             {
-                TempData["ErrorSesion"] = "No has podido iniciar sesión";
+                TempData["ErrorSesion"] = "El usuario está vacío.";
+                return View("InicioSesion");
+            }else if(password == null)
+            {
+                TempData["ErrorSesion"] = "La contraseña está vacía.";
                 return View("InicioSesion");
             }
+            else if(user == null)
+            {
+                TempData["ErrorSesion"] = "El usuario o contraseña son incorrectos.";
+                return View("InicioSesion");
+            }
+
             rol = user.IdRol;
             nif = user.Nif;
             UserNavigation raiz = new UserNavigation(nif, rol, null);
@@ -92,22 +64,13 @@ namespace gestionDiversidad.Controllers
             HttpContext.Session.SetString(sessionKeyNif, nif);
             HttpContext.Session.SetString(sessionActualUser, userNavigationJson);
 
-            switch (rol)
+            return RedirectToAction("volverPerfil", "TUsuarios", new
             {
-                case constDefinidas.rolAlumno:
-                    return RedirectToAction("infoBasica", "TAlumnos", new { id = nif});
-                case constDefinidas.rolProfesor:
-                    return RedirectToAction("infoBasica", "TProfesores", new { id = nif });
-                case constDefinidas.rolMedico:
-                    return RedirectToAction("infoBasica", "TMedicos", new { id = nif });
-                case constDefinidas.rolAdmin:
-                    return RedirectToAction("infoBasica", "TAdministraciones", new { id = nif });
-                default:
-                    return View("InicioSesion");
-            }
-
+                nif = nif,
+                rol = rol
+            });
         }
-        //Acción para volver 
+        // Función para volver/iniciar un usuario
         public IActionResult volverPerfil(string nif, int rol)
         {
             switch (rol)
@@ -128,7 +91,8 @@ namespace gestionDiversidad.Controllers
         //GET : TUsuarios/verificarNif
         public async Task<IActionResult> verificarNif(string nif)
         {
-            var usuario = await _context.TUsuarios.AnyAsync(u => u.Nif == nif);
+            var usuario = await _context.TUsuarios
+                .AnyAsync(u => u.Nif == nif);
             return Json(!usuario);
         }
 
@@ -136,7 +100,8 @@ namespace gestionDiversidad.Controllers
         //GET : TUsuarios/verificarNombreUsuario
         public async Task<IActionResult> verificarNombreUsuario(string usuario)
         {
-            var TUsuario = await _context.TUsuarios.AnyAsync(u => u.Usuario == usuario);
+            var TUsuario = await _context.TUsuarios
+                .AnyAsync(u => u.Usuario == usuario);
             return Json(!TUsuario);
         }
 
@@ -149,17 +114,21 @@ namespace gestionDiversidad.Controllers
             {
                 var user = new TUsuario
                 {
-                    Nif = model.Nif,
-                    Usuario = model.Usuario,
-                    Password = model.Password,
+                    Nif = model.Nif!,
+                    Usuario = model.Usuario!,
+                    Password = model.Password!,
                     IdRol = constDefinidas.rolProfesor
                 };
+
                  _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("crearProfesor", "TProfesores", 
-                    new { nif = user.Nif, nombre = model.Nombre, 
-                        apellido1 = model.Apellido1, apellido2 = model.Apellido2 });
 
+                return RedirectToAction("crearProfesor", "TProfesores", new {
+                    nif = user.Nif, 
+                    nombre = model.Nombre, 
+                    apellido1 = model.Apellido1,
+                    apellido2 = model.Apellido2 
+                });
             }
             return RedirectToAction("insertarProfesor", "TProfesores");
         }
@@ -173,13 +142,15 @@ namespace gestionDiversidad.Controllers
             {
                 var user = new TUsuario
                 {
-                    Nif = model.Nif,
-                    Usuario = model.Usuario,
-                    Password = model.Password,
+                    Nif = model.Nif!,
+                    Usuario = model.Usuario!,
+                    Password = model.Password!,
                     IdRol = constDefinidas.rolMedico
                 };
+
                 _context.Add(user);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction("crearMedico", "TMedicos",
                     new
                     {
@@ -193,21 +164,13 @@ namespace gestionDiversidad.Controllers
             return RedirectToAction("insertarMedico", "TMedicos");
         }
 
-        //POST: TUsuarios/crearUsuarioAlumno
+       //POST: TUsuarios/crearUsuarioAlumno
        [HttpPost]
        [ValidateAntiForgeryToken]
         public async Task<IActionResult> crearUsuarioAlumno(CrearAlumnoView model)
         {
             if (ModelState.IsValid)
             {
-                /* //Hago que se pueda almacenar el pdf. 
-                 byte[] contenido;
-                 using (var ms = new MemoryStream())
-                 {
-                     await model.PDF.CopyToAsync(ms);
-                     contenido = ms.ToArray();
-                 } */
-
                 using (var ms = new MemoryStream())
                 {
                     await model.PDF.CopyToAsync(ms);
@@ -218,16 +181,16 @@ namespace gestionDiversidad.Controllers
 
                 var user = new TUsuario
                 {
-                    Nif = model.Nif,
-                    Usuario = model.Usuario,
-                    Password = model.Password,
+                    Nif = model.Nif!,
+                    Usuario = model.Usuario!,
+                    Password = model.Password!,
                     IdRol = constDefinidas.rolAlumno
                 }; 
+
                 _context.Add(user);
                 await _context.SaveChangesAsync(); 
-                return RedirectToAction("crearAlumno", "TAlumnos",
-                    new
-                    {
+
+                return RedirectToAction("crearAlumno", "TAlumnos", new {
                         nif = model.Nif,
                         nombre = model.Nombre,
                         apellido1 = model.Apellido1,
@@ -239,7 +202,7 @@ namespace gestionDiversidad.Controllers
             return RedirectToAction("insertarAlumno", "TAlumnos");
         }
 
-        // POST: TUsuarios/logging
+        // POST: TUsuarios/confirmarCambios
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> confirmarCambios(ModificarUsuarios model)
@@ -249,168 +212,72 @@ namespace gestionDiversidad.Controllers
 
             if (ModelState.IsValid)
             {
-
                 switch (rol)
                 {
                     case constDefinidas.rolAlumno:
-                        TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nif))!;
+                        TAlumno alumno = (await _context.TAlumnos
+                            .FirstOrDefaultAsync(a => a.Nif == nif))!;
                         alumno.Nombre = model.Nombre;
                         alumno.Apellido1 = model.Apellido1;
                         alumno.Apellido2 = model.Apellido2;
                         await _context.SaveChangesAsync();
-                        return RedirectToAction("volverPerfil", "TUsuarios", new { nif = nif, rol = rol });
+                        return RedirectToAction("volverPerfil", "TUsuarios", new { 
+                            nif = nif, 
+                            rol = rol 
+                        });
                     case constDefinidas.rolProfesor:
-                        TProfesor profesor = (await _context.TProfesors.FirstOrDefaultAsync(p => p.Nif == nif))!;
+                        TProfesor profesor = (await _context.TProfesors
+                            .FirstOrDefaultAsync(p => p.Nif == nif))!;
                         profesor.Nombre = model.Nombre;
                         profesor.Apellido1 = model.Apellido1;
                         profesor.Apellido2 = model.Apellido2;
                         await _context.SaveChangesAsync();
-                        return RedirectToAction("volverPerfil", "TUsuarios", new { nif = nif, rol = rol });
+                        return RedirectToAction("volverPerfil", "TUsuarios", new { 
+                            nif = nif,
+                            rol = rol 
+                        });
                     case constDefinidas.rolMedico:
-                        TMedico medico = (await _context.TMedicos.FirstOrDefaultAsync(m => m.Nif == nif))!;
+                        TMedico medico = (await _context.TMedicos
+                            .FirstOrDefaultAsync(m => m.Nif == nif))!;
                         medico.Nombre = model.Nombre;
                         medico.Apellido1 = model.Apellido1;
                         medico.Apellido2 = model.Apellido2;
                         await _context.SaveChangesAsync();
-                        return RedirectToAction("volverPerfil", "TUsuarios", new { nif = nif, rol = rol });
+                        return RedirectToAction("volverPerfil", "TUsuarios", new { 
+                            nif = nif,
+                            rol = rol 
+                        });
                 }
-
             }
 
             switch (rol)
             {
                 case constDefinidas.rolProfesor:
-                    TProfesor profesor = (await _context.TProfesors.FirstOrDefaultAsync(p => p.Nif == nif))!;
-                    return RedirectToAction("modificarAlumno", "TAlumnos", new { nif = nif, rol = rol });
+                    TProfesor profesor = (await _context.TProfesors
+                        .FirstOrDefaultAsync(p => p.Nif == nif))!;
+                    return RedirectToAction("modificarAlumno", "TAlumnos", new {
+                        nif = nif,
+                        rol = rol 
+                    });
                 case constDefinidas.rolAlumno:
-                    TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nif))!;
-                    return RedirectToAction("modificarProfesor", "TProfesores", new { nif = nif, rol = rol });
+                    TAlumno alumno = (await _context.TAlumnos
+                        .FirstOrDefaultAsync(a => a.Nif == nif))!;
+                    return RedirectToAction("modificarProfesor", "TProfesores", new {
+                        nif = nif,
+                        rol = rol 
+                    });
                 case constDefinidas.rolMedico:
-                    TAlumno medico = (await _context.TAlumnos.FirstOrDefaultAsync(m => m.Nif == nif))!;
-                    return RedirectToAction("modificarMedico", "TMedicos", new { nif = nif, rol = rol });
-                default:
-                    return View();
+                    TAlumno medico = (await _context.TAlumnos
+                        .FirstOrDefaultAsync(m => m.Nif == nif))!;
+                    return RedirectToAction("modificarMedico", "TMedicos", new {
+                        nif = nif, 
+                        rol = rol 
+                    });                
             }
-        }
-
-        // GET: TUsuarios/Create
-        public IActionResult Create()
-        {
-            ViewData["IdRol"] = new SelectList(_context.TRols, "Id", "Id");
-            return View();
-        }
-
-        // POST: TUsuarios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nif,Usuario,Password,IdRol")] TUsuario tUsuario)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tUsuario);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdRol"] = new SelectList(_context.TRols, "Id", "Id", tUsuario.IdRol);
-            return View(tUsuario);
-        }
-
-        // GET: TUsuarios/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null || _context.TUsuarios == null)
-            {
-                return NotFound();
-            }
-
-            var tUsuario = await _context.TUsuarios.FindAsync(id);
-            if (tUsuario == null)
-            {
-                return NotFound();
-            }
-            ViewData["IdRol"] = new SelectList(_context.TRols, "Id", "Id", tUsuario.IdRol);
-            return View(tUsuario);
-        }
-
-        // POST: TUsuarios/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Nif,Usuario,Password,IdRol")] TUsuario tUsuario)
-        {
-            if (id != tUsuario.Nif)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tUsuario);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TUsuarioExists(tUsuario.Nif))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdRol"] = new SelectList(_context.TRols, "Id", "Id", tUsuario.IdRol);
-            return View(tUsuario);
-        }
-
-        // GET: TUsuarios/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null || _context.TUsuarios == null)
-            {
-                return NotFound();
-            }
-
-            var tUsuario = await _context.TUsuarios
-                .Include(t => t.IdRolNavigation)
-                .FirstOrDefaultAsync(m => m.Nif == id);
-            if (tUsuario == null)
-            {
-                return NotFound();
-            }
-
-            return View(tUsuario);
-        }
-
-        // POST: TUsuarios/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            if (_context.TUsuarios == null)
-            {
-                return Problem("Entity set 'TfgContext.TUsuarios'  is null.");
-            }
-            var tUsuario = await _context.TUsuarios.FindAsync(id);
-            if (tUsuario != null)
-            {
-                _context.TUsuarios.Remove(tUsuario);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TUsuarioExists(string id)
-        {
-          return (_context.TUsuarios?.Any(e => e.Nif == id)).GetValueOrDefault();
+            return RedirectToAction("volverPerfil", "TUsuarios", new {
+                nif = nif,
+                rol = rol
+            });
         }
     }
 }
