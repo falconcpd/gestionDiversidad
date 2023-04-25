@@ -11,6 +11,7 @@
         public const string keyNif = "_nif";
         public const string keyActualUser = "_actualUser";
         public const string keyInformePDF = "_PDF";
+        public const string keyMedicoTemporal = "Medico_Temporal";
         ///////////////////////////////
         public const int screenAlumno = 1;
         public const int screenProfesor = 2;

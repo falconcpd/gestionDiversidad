@@ -11,6 +11,7 @@ using gestionDiversidad.Interfaces;
 using gestionDiversidad.ViewModels;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace gestionDiversidad.Controllers
 {
@@ -189,6 +190,77 @@ namespace gestionDiversidad.Controllers
             modificarMedicoView.Apellido2 = medico.Apellido2;
 
             return View(modificarMedicoView);
+        }
+
+        // GET: TMedicos/borrarMedico
+        public async Task<IActionResult> borrarMedico(string nifMedico)
+        {
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            TMedico medico = (await _context.TMedicos
+                .Include(m => m.TInformes)
+                .FirstOrDefaultAsync(a => a.Nif == nifMedico))!;
+
+            BorrarMedicoView vistaBorrarMedico = new BorrarMedicoView();
+            vistaBorrarMedico.Medico = medico;
+            vistaBorrarMedico.ActualNif = actualUser.nif;
+            vistaBorrarMedico.ActualRol = actualUser.rol;
+
+            return View(vistaBorrarMedico);
+
+        }
+
+        // POST: TMedicos/confirmarBorradoMedico
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> confirmarBorradoMedico(string nifMedico, int actualRol, string actualNif)
+        {
+            TMedico medico = (await _context.TMedicos
+                .Include(m => m.TInformes)
+                .FirstOrDefaultAsync(m => m.Nif == nifMedico))!;
+            TMedico medicoTemporal = (await _context.TMedicos
+                .FirstOrDefaultAsync(m => m.Nif == constDefinidas.keyMedicoTemporal))!;
+            List<TInforme> informes = medico.TInformes.ToList();
+            DateTime fechaTime;  //DateTime.ParseExact(fecha, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            string nifAlumno;
+            TAlumno alumno;
+            byte[] contenido;
+
+            foreach (TInforme informe in informes)
+            {
+                fechaTime = informe.Fecha;
+                nifAlumno = informe.NifAlumno;
+                alumno = (await _context.TAlumnos
+                .Include(a => a.TInformes)
+                .FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+                //Borramos del medico y el alumno el informe
+                medico.TInformes.Remove(informe);
+                alumno.TInformes.Remove(informe);
+                //Copiamos el contenido y lo borramos de la base de datos
+                contenido = informe.Contenido; 
+                _context.TInformes.Remove(informe);
+                //Creamos el nuevo informe
+                var nuevoInforme = new TInforme
+                {
+                    NifMedico = constDefinidas.keyMedicoTemporal,
+                    NifAlumno = nifAlumno,
+                    Fecha = fechaTime,
+                    Contenido = contenido
+                };
+                _context.Add(nuevoInforme);
+                await _context.SaveChangesAsync();
+            }
+
+            _context.TMedicos.Remove(medico);
+            TUsuario usuario = (await _context.TUsuarios
+                .FirstOrDefaultAsync(u => u.Nif == nifMedico))!;
+            _context.TUsuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("listaMedicos", "TMedicos", new
+            {
+                volverPadre = "false"
+            });
         }
 
         // GET: TMedicos/Create

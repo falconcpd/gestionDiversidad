@@ -44,6 +44,14 @@
                         </form>
                     </td>
                 }
+                @if (Model.Permiso.Borrar)
+                {<td>
+                    <form method="get" asp-action="borrarMedico" asp-controller="TMedicos">
+                        <input type="hidden" name="nifMedico" value=@item.Nif />
+                        <button type="submit">Borrar Medico</button>
+                    </form>
+                </td>
+                }
 
             </tr>
         }
