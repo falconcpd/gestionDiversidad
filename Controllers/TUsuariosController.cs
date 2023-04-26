@@ -11,6 +11,7 @@ using gestionDiversidad.ViewModels;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using gestionDiversidad.ViewModels.TAlumnos;
 
 namespace gestionDiversidad.Controllers
 {

@@ -1,8 +1,8 @@
 ﻿using gestionDiversidad.Models;
 
-namespace gestionDiversidad.ViewModels
+namespace gestionDiversidad.ViewModels.TAlumnos
 {
-    public class MatriculaView
+    public class ListaMatriculasView
     {
         public List<TAlumno> LAlumnos { get; set; } = null!;
         public string SesionNif { get; set; } = null!;

@@ -1,7 +1,7 @@
 ﻿using gestionDiversidad.Models;
 using gestionDiversidad.Navigation;
 
-namespace gestionDiversidad.ViewModels
+namespace gestionDiversidad.ViewModels.TAlumnos
 {
     public partial class AlumnoView
     {

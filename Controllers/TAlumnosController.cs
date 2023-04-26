@@ -11,6 +11,7 @@ using gestionDiversidad.Interfaces;
 using gestionDiversidad.Navigation;
 using gestionDiversidad.Constantes;
 using Newtonsoft.Json;
+using gestionDiversidad.ViewModels.TAlumnos;
 
 namespace gestionDiversidad.Controllers
 {
@@ -170,7 +171,7 @@ namespace gestionDiversidad.Controllers
             int sesionRol = giveSesionRol();
 
             List<TAlumno> alumnos = (await _serviceController.listaAlumnos(sesionNif, sesionRol));
-            MatriculaView vistaMatricula = new MatriculaView();
+            ListaMatriculasView vistaMatricula = new ListaMatriculasView();
             vistaMatricula.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaMatriculas, sesionRol);
             vistaMatricula.LAlumnos = alumnos;

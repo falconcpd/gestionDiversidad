@@ -1,7 +1,7 @@
 ﻿using gestionDiversidad.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace gestionDiversidad.ViewModels
+namespace gestionDiversidad.ViewModels.TAlumnos
 {
     public class CrearMatriculaView
     {
