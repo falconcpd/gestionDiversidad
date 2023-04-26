@@ -4,9 +4,9 @@
     ViewData["Title"] = "CrearAlumno";
 }
 
-<h1>Crear Alumno</h1>
+<h1>Crear nuevo alumno</h1>
 
-<h4>TAlumno</h4>
+<h4>Un alumno nuevo deberá tener un informe asignado mínimo</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -25,8 +25,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <input asp-for="Password" class="form-control" type="password" />
                 <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.ConfirmPassword" class="control-label">Confirmar Password</label>
+                <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Nombre" class="control-label"></label>
@@ -34,27 +39,36 @@
                 <span asp-validation-for="@Model.Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="@Model.Apellido1" class="control-label"></label>
+                <label asp-for="@Model.Apellido1" class="control-label">Primer apellido</label>
                 <input asp-for="Apellido1" class="form-control" />
                 <span asp-validation-for="@Model.Apellido1" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="@Model.Apellido2" class="control-label"></label>
+                <label asp-for="@Model.Apellido2" class="control-label">Segundo apellido</label>
                 <input asp-for="Apellido2" class="form-control" />
                 <span asp-validation-for="@Model.Apellido2" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
                 <label asp-for="@Model.PDF">Seleccione el archivo PDF:</label>
                 <input asp-for="@Model.PDF" type="file" accept=".pdf">
                 <span asp-validation-for="@Model.PDF" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="@Model.MedicoNif" class="control-label"></label>
-                <select asp-for="MedicoNif" asp-items="@Model.ListaMedicos.Select(m => new SelectListItem { Text = m.Nombre, Value = m.Nif })"></select>
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+                <label asp-for="@Model.MedicoNif" class="control-label">Médico encargado: </label>
+                <select asp-for="MedicoNif" asp-items="@Model.ListaMedicos?.Select(m => new SelectListItem { Text = m.Nombre, Value = m.Nif })"></select>
                 <span asp-validation-for="@Model.MedicoNif" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+                <input type="hidden" name="actualRol" value="@Model.ActualRol" />
+                <input type="hidden" name="actualNif" value="@Model.ActualNif" />
+                <input type="submit" value="Crear alumno" class="btn btn-primary" />
+            </div>
+            <div>
+                <a asp-action="listaAlumnos" asp-controller="TAlumnos"
+                   asp-route-nif="@Model.ActualNif" asp-route-rol="@Model.ActualRol"
+                   asp-route-volverPadre="false">
+                    Volver a la lista de alumnos.
+                </a>
             </div>
         </form>
     </div>

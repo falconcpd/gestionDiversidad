@@ -2,23 +2,27 @@
 @using gestionDiversidad.Constantes
 
 @{
-    ViewData["Title"] = "listaInformes";
+    ViewData["Title"] = "listaAlumnos";
 }
 
-<h1>Lista alumnos</h1>
+<h1>Lista de alumnos</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<table class="table" style="text-align:center; vertical-align:middle">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ListaAlumnos.First().Nombre)
+                <strong>@Html.DisplayNameFor(model => model.ListaAlumnos.First().Nombre)</strong>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ListaAlumnos.First().Nif)
+                <strong>Primer apellido: </strong>
             </th>
+            <th>
+                <strong>Segundo apellido: </strong>
+            </th>
+            <th>
+                <strong>@Html.DisplayNameFor(model => model.ListaAlumnos.First().Nif)</strong>
+            </th>
+
         </tr>
     </thead>
     <tbody>
@@ -29,19 +33,20 @@
                     @Html.DisplayFor(modelItem => item.Nombre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Nif)
+                    @Html.DisplayFor(modelItem => item.Apellido1)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @Html.DisplayFor(modelItem => item.Apellido2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nif)
                 </td>
                 @if (Model.Alumno.Acceder)
                 {
                     <td>
                         <form method="get" asp-action="infoBasica" asp-controller="TAlumnos">
                             <input type="hidden" name="id" value=@item.Nif />
-                            <button type="submit">Detalles informe</button>
+                            <button type="submit">Detalles Alumno</button>
                         </form>
                     </td>
                 }
@@ -50,7 +55,7 @@
                     <td>
                         <form method="get" asp-action="borrarAlumno" asp-controller="TAlumnos">
                             <input type="hidden" name="nifAlumno" value=@item.Nif />
-                            <button type="submit">Borrar</button>
+                            <button type="submit" class="btn btn-danger">Borrar Alumno</button>
                         </form>
                     </td>
                 }
@@ -59,7 +64,13 @@
         }
     </tbody>
 </table>
-
+@if (Model.Permiso.Insertar && Model.ActualRol == constDefinidas.rolAdmin)
+{
+    <div style="margin-top: 10px; margin-bottom: 10px;">
+        <a asp-controller="TAlumnos" asp-action="insertarAlumno"
+           class="btn btn-primary">Crear nuevo alumno</a>
+    </div>
+}
 @if (Model.Rol == Model.SesionRol)
 {
     <div>
@@ -76,11 +87,5 @@ else
     <div>
         <a asp-controller="TUsuarios" asp-action="volverPerfil"
        asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a perfil principal</a>
-    </div>
-}
-@if(Model.Permiso.Insertar && Model.ActualRol == constDefinidas.rolAdmin){
-    <div>
-        <a asp-controller="TAlumnos" asp-action="insertarAlumno"
-           class="btn btn-primary">Crear nuevo alumno</a>
     </div>
 }

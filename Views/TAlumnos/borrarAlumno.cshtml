@@ -1,43 +1,57 @@
 ﻿@model gestionDiversidad.ViewModels.BorrarAlumnoView
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "borrarAlumno";
 }
 
-<h1>Delete</h1>
-
-<h3>¿Seguro que quieres borrar esto?</h3>
+<h3>¿Seguro que quieres borrar el alumno?</h3>
 <div>
-    <h4>TAlumno</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Alumno.Nombre)
+        <dt class="col-sm-3">
+            <strong>@Html.DisplayNameFor(model => model.Alumno.Nombre)</strong>
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-11">
             @Html.DisplayFor(model => model.Alumno.Nombre)
         </dd>
     </dl>
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Alumno.Nif)
+        <dt class="col-sm-3">
+            <strong>Primer Apellido</strong>
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.Alumno.Apellido1)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            <strong>Segundo Apellido</strong>
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.Alumno.Apellido2)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            <strong>@Html.DisplayNameFor(model => model.Alumno.Nif)</strong>
+        </dt>
+        <dd class="col-sm-11">
             @Html.DisplayFor(model => model.Alumno.Nif)
         </dd>
     </dl>
 
-    <form asp-action="confirmarBorradoAlumno" asp-controller="TAlumnos" method="post">
+    <form asp-action="confirmarBorradoAlumno" asp-controller="TAlumnos" method="post"
+    style="margin-top: 10px; margin-bottom: 10px;">
         <input type="hidden" name="nifAlumno" value="@Model.Alumno.Nif" />
         <input type="hidden" name="actualRol" value="@Model.ActualRol" />
         <input type="hidden" name="actualNif" value="@Model.ActualNif" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <input type="submit" value="Borrar Alumno" class="btn btn-danger" /> 
     </form>
     <div>
         <a asp-action="listaAlumnos" asp-controller="TAlumnos"
            asp-route-nif="@Model.ActualNif" asp-route-rol="@Model.ActualRol" 
            asp-route-volverPadre="false">
-            Volver lista de Alumnos.
+            Volver a la lista de alumnos.
         </a>
     </div>
 </div>

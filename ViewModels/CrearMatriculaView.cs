@@ -7,7 +7,7 @@ namespace gestionDiversidad.ViewModels
     {
         public List<TAlumno>? LAlumnos { get; set; }
         public List<TAsignatura>? LAsignaturas { get; set; }
-        [Required(ErrorMessage = "Debes elegir un alumno.")]
+        [Required(ErrorMessage = "Debes elegir una asignatura.")]
         public string IdAsignatura { get; set; } = null!;
         [Required(ErrorMessage = "Debes elegir un alumno.")]
         public string NifAlumno { get; set; } = null!;

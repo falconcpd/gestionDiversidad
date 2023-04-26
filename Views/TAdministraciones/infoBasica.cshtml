@@ -81,9 +81,13 @@
 <div>
     <a asp-controller="TProfesores" asp-action="listaDocencias">Ver Docencias</a>
 </div>
-<div>
-    <a asp-controller="TAlumnos" asp-action="listaMatriculas">Ver Matriculas</a>
-</div>
+@if (Model.LMatriculas.Acceder)
+{
+    <div>
+        <a asp-controller="TAlumnos" asp-action="listaMatriculas">Ver Matriculas</a>
+    </div>
+}
+
 <div>
     <a>@Context.Session.GetInt32("_rol").ToString()</a>
 </div>

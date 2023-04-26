@@ -4,21 +4,19 @@
     ViewData["Title"] = "inicioSesion";
 }
 
-<h2>Inicio sesion</h2>
+<h2>Inicio sesión</h2>
 
 <form asp-controller="TUsuarios" asp-action="logging">
-    <div>
-        <label for="usuario">Usuario: </label>
-        <input type="text" name="usuario" id="usuario"><br>
-        <br>
+    <div style="margin-bottom: 10px;">
+        <label for="usuario" style="display: block;">Usuario:</label>
+        <input type="text" name="usuario" id="usuario" style="margin-left: 5px;">
     </div>
-    <div>
-        <label for="password">Password: </label>
-        <input type="text" name="password" id="password"><br>
-        <br>
+    <div style="margin-bottom: 10px;">
+        <label for="password" style="display: block;">Password:</label>
+        <input type="text" name="password" id="password" style="margin-left: 5px;">
     </div>
 
-    <input type="submit" value="Iniciar Sesion">
+    <input type="submit" value="Iniciar Sesión">
 
     @if (TempData["ErrorSesion"] != null)
     {

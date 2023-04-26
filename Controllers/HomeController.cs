@@ -17,14 +17,7 @@ namespace gestionDiversidad.Controllers
         {
             return RedirectToAction("InicioSesion", "TUsuarios");
         } 
-
         
-        /* public IActionResult Index()
-        {
-            return View();
-        } */
-         
-
         public IActionResult Privacy()
         {
             return View();

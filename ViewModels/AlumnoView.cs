@@ -12,9 +12,7 @@ namespace gestionDiversidad.ViewModels
         public TPermiso LAlumnos { get; set; } = null!;
         public int SesionRol { get; set; }
         public string SesionNif { get; set; } = null!;
-        public int PadreRol { get; set; } 
-        public string PadreNif { get; set; } = null!;
-        public UserNavigation? ActualUser { get; set; }
-
+        public int? PadreRol { get; set; }
+        public string? PadreNif { get; set; }
     }
 }

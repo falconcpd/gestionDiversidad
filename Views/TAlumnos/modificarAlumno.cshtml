@@ -4,9 +4,8 @@
     ViewData["Title"] = "modificarAlumno";
 }
 
-<h1>ModificarAlumnos</h1>
+<h1>Modificar alumno</h1>
 
-<h4>TAlumno</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -18,16 +17,16 @@
                 <span asp-validation-for="@Model.Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="@Model.Apellido1" class="control-label"></label>
+                <label asp-for="@Model.Apellido1" class="control-label">Primer Apellido</label>
                 <input asp-for="Apellido1" class="form-control" />
                 <span asp-validation-for="@Model.Apellido1" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="@Model.Apellido2" class="control-label"></label>
+                <label asp-for="@Model.Apellido2" class="control-label">Segundo Apellido</label>
                 <input asp-for="Apellido2" class="form-control" />
                 <span asp-validation-for="@Model.Apellido2" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
                 <input type="hidden" asp-for="Nif" />
                 <input type="hidden" asp-for="Rol" />
                 <input type="submit" value="Modificar" class="btn btn-primary" />
@@ -35,9 +34,9 @@
         </form>
     </div>
 </div>
-<div>
+<div >
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
-       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver para atrás</a>
+       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver al perfil del alumno</a>
 </div>
 
 @section Scripts {

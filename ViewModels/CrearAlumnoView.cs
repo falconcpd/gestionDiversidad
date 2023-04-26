@@ -14,6 +14,9 @@ namespace gestionDiversidad.ViewModels
         public string? Usuario { get; set; }
         [Required(ErrorMessage = "La contraseña no puede estar vacía.")]
         public string? Password { get; set; }
+        [Required(ErrorMessage = "La confirmación de la contraseña no puede estar vacía.")]
+        [Compare("Password", ErrorMessage ="Las contraseñas no coinciden.")]
+        public string? ConfirmPassword { get; set; }
         [Required(ErrorMessage = "El nombre no puede estar vacío.")]
         public string? Nombre { get; set; }
         [Required(ErrorMessage = "El primer apellido no puede estar vacío.")]
@@ -25,5 +28,7 @@ namespace gestionDiversidad.ViewModels
         [Required(ErrorMessage = "Un alumno no se puede almacenar sin un informe.")]
         public IFormFile PDF { get; set; } = null!;
         public List<TMedico>? ListaMedicos { get; set; }
+        public int ActualRol { get; set; }
+        public string ActualNif { get; set; } = null!;
     }
 }

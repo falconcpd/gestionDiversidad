@@ -6,39 +6,58 @@
     ViewData["Title"] = "listaMatriculas";
 }
 
-<h1>Lista Matriculas</h1>
+<h1>Lista matrículas de alumnos</h1>
+<table class="table" style="text-align:center; vertical-align:middle">
+    <thead>
+        <tr>
+            <th>
+                <strong>Alumno</strong>
+            </th>
+            <th>
+                <strong>@Html.DisplayNameFor(model => model.LAlumnos.First().Nif)</strong>
+            </th>
+            <th>
+                <strong>Asignatura </strong>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var alumno in Model.LAlumnos)
+        {
+                @foreach (var asignatura in alumno.IdAsignaturas)
+                {
+                <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => alumno.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => alumno.Nif)
+                        </td>
+                        <td>@asignatura.Nombre</td>
+                        @if(Model.Permiso.Borrar)
+                        {
+                        <td>
+                            <a asp-controller="TAlumnos" asp-action="borrarMatricula"
+                             asp-route-idAsignatura="@asignatura.Id" asp-route-nifAlumno="@alumno.Nif"
+                               class="btn btn-danger">Borrar matrícula</a>
+                        </td>
+                        }
+                </tr>
+                }
+        }
+    </tbody>
+</table>
+@if (Model.Permiso.Insertar)
+{
+    <div style="margin-top: 10px; margin-bottom: 10px;">
+        <a asp-controller="TAlumnos" asp-action="insertarMatricula"
+           class="btn btn-primary">Crear nueva matrícula</a>
+    </div>
+}
 
-<div>
-    <h4>Alumnos y asignaturas</h4>
-    <hr />
-    @foreach (var alumno in Model.LAlumnos)
-    {
-        <h2>@alumno.Nombre</h2>
-        <ul>
-            @foreach (var asignatura in alumno.IdAsignaturas)
-            {
-                <li>@asignatura.Nombre</li>
-                <li>
-                    <a asp-controller="TAlumnos" asp-action="borrarMatricula"
-               asp-route-idAsignatura="@asignatura.Id" asp-route-nifAlumno="@alumno.Nif"
-                       class="btn btn-primary">Borrar matricula</a>
-                </li>
-            }
-        </ul>
-    }
-</div>
-<div>
-    <a asp-controller="TAlumnos" asp-action="insertarMatricula"
-       class="btn btn-primary">Crear nueva Matricula</a>
-</div>
 <div>
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
        asp-route-nif="@Model.SesionNif" asp-route-rol="@Model.SesionRol">
-        Volver usuario principal
+        Volver al usuario anterior
     </a>
-</div>
-
-
-<div>
-    <a>@Context.Session.GetInt32("_rol").ToString()</a>
 </div>

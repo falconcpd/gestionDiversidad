@@ -25,5 +25,7 @@
         public const int screenListaAsignaturas = 10;
         public const int screenListaPantallas = 11;
         public const int screenListalInformes = 12;
+        public const int screenListaMatriculas = 13;
+        public const int screenListaDocencias = 15;
     }
 }
