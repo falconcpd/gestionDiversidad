@@ -12,6 +12,7 @@ using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using gestionDiversidad.ViewModels.TAlumnos;
+using gestionDiversidad.ViewModels.TProfesores;
 
 namespace gestionDiversidad.Controllers
 {
