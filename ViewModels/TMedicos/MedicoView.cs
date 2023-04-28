@@ -1,6 +1,6 @@
 ﻿using gestionDiversidad.Models;
 
-namespace gestionDiversidad.ViewModels
+namespace gestionDiversidad.ViewModels.TMedicos
 {
     public class MedicoView
     {

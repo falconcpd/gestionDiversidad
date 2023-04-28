@@ -12,6 +12,7 @@ using gestionDiversidad.ViewModels;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
 using System.Globalization;
+using gestionDiversidad.ViewModels.TMedicos;
 
 namespace gestionDiversidad.Controllers
 {
