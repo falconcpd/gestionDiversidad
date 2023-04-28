@@ -4,34 +4,48 @@
     ViewData["Title"] = "borrarMedico";
 }
 
-<h1>Delete</h1>
-
-<h3>¿Seguro que quieres borrar esto?</h3>
+<h3>¿Seguro que quieres borrar el médico?</h3>
 <div>
-    <h4>TMedico</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Medico.Nombre)
+        <dt class="col-sm-3">
+            <strong>@Html.DisplayNameFor(model => model.Medico.Nombre)</strong>
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-11">
             @Html.DisplayFor(model => model.Medico.Nombre)
         </dd>
     </dl>
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Medico.Nif)
+        <dt class="col-sm-3">
+            <strong>Primer Apellido</strong>
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.Medico.Apellido1)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            <strong>Segundo Apellido</strong>
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.Medico.Apellido2)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            <strong>@Html.DisplayNameFor(model => model.Medico.Nif)</strong>
+        </dt>
+        <dd class="col-sm-11">
             @Html.DisplayFor(model => model.Medico.Nif)
         </dd>
     </dl>
 
-    <form asp-action="confirmarBorradoMedico" asp-controller="TMedicos" method="post">
+    <form asp-action="confirmarBorradoMedico" asp-controller="TMedicos" method="post"
+          style="margin-top: 10px; margin-bottom: 10px;">
         <input type="hidden" name="nifMedico" value="@Model.Medico.Nif" />
         <input type="hidden" name="actualRol" value="@Model.ActualRol" />
         <input type="hidden" name="actualNif" value="@Model.ActualNif" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <input type="submit" value="Borrar Médico" class="btn btn-danger" /> 
     </form>
     <div>
         <a asp-action="listaMedicos" asp-controller="TMedicos"

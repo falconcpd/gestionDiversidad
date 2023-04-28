@@ -135,9 +135,12 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> insertarAlumno()
         {
             UserNavigation actualUser = giveActualUser();
+            TMedico medicoTemporal = (await _context.TMedicos
+                .FirstOrDefaultAsync(m => m.Nif == constDefinidas.keyMedicoTemporal))!;
 
             CrearAlumnoView vistaCrearAlumno = new CrearAlumnoView();
             vistaCrearAlumno.ListaMedicos = (await _serviceController.listaMedicos());
+            vistaCrearAlumno.ListaMedicos.Remove(medicoTemporal);
             vistaCrearAlumno.ActualRol = actualUser.rol;
             vistaCrearAlumno.ActualNif = actualUser.nif;
 

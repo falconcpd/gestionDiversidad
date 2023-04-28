@@ -13,6 +13,9 @@ namespace gestionDiversidad.ViewModels
         public string? Usuario { get; set; }
         [Required(ErrorMessage = "La contraseña no puede estar vacía.")]
         public string? Password { get; set; }
+        [Required(ErrorMessage = "La confirmación de la contraseña no puede estar vacía.")]
+        [Compare("Password", ErrorMessage = "Las contraseñas no coinciden.")]
+        public string? ConfirmPassword { get; set; }
         [Required(ErrorMessage = "El nombre no puede estar vacío.")]
         public string? Nombre { get; set; }
         [Required(ErrorMessage = "El primer apellido no puede estar vacío.")]
