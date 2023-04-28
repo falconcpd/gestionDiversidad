@@ -6,10 +6,9 @@
     ViewData["Title"] = "infoBasica";
 }
 
-<h1>Details</h1>
+<h1>Información del profesor</h1>
 
 <div>
-    <h4>TProfesor</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -18,37 +17,33 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Profesor.Nombre)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Profesor.Apellido1)
-        </dt>
+        <dd class="col-sm-2">
+            <strong>Primer apellido: </strong>
+        </dd>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Profesor.Apellido1)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Profesor.Apellido2)
-        </dt>
+        <dd class="col-sm-2">
+            <strong>Segundo apellido: </strong>
+        </dd>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Profesor.Apellido2)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Profesor.NifNavigation)
-        </dt>
+        <dd class="col-sm-2">
+            <strong>Nif del profesor: </strong>
+        </dd>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Profesor.NifNavigation.Nif)
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Profesor.Nif">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
-@if (Model!.Permiso.Modificar)
+
+@if (Model.Permiso.Modificar)
 {
     <div>
-        <a asp-controller="TProfesores" asp-action="modificarProfesor"
-       asp-route-nif="@Model.Profesor.Nif">
-            Modificar info de profesor
-        </a>
+        <form asp-controller="TProfesores" asp-action="modificarProfesor" asp-route-nif="@Model.Profesor.Nif">
+            <button type="submit">Modificar profesor</button>
+        </form>
     </div>
 }
 @if (Model.LDocencias.Acceder)
@@ -57,32 +52,27 @@
         <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
             <input type="hidden" name="nif" value="@Model?.Profesor.Nif" />
             <input type="hidden" name="rol" value=@constDefinidas.rolProfesor />
-            <button type="submit">Ver lista de asignaturas</button>
+            <button type="submit">Lista de asignaturas del profesor</button>
         </form>
     </div>
 }
 
-@if (Model.LAlumnos.Acceder)
+@if (Model!.LAlumnos.Acceder)
 {
     <div>
         <form method="get" asp-action="listaAlumnos" asp-controller="TAlumnos">
             <input type="hidden" name="nif" value="@Model?.Profesor.Nif" />
             <input type="hidden" name="rol" value=@constDefinidas.rolProfesor />
             <input type="hidden" name="volverPadre" value="false" />
-            <button type="submit">Ver lista de los alumnos</button>
+            <button type="submit">Ver lista de alumnos del profesor</button>
         </form>
     </div>
 }
-@if (Model.LProfesores.Acceder)
+@if (Model!.LProfesores.Acceder)
 {
-    @if (!(Model.PadreRol == constDefinidas.rolProfesor))
-    {
-        <div>
-        <a asp-controller="TProfesores" asp-action="listaProfesores"
-       asp-route-volverPadre="true">Volver a la lista de profesores</a>
-        </div>
-    }
+    <div>
+    <a asp-controller="TProfesores" asp-action="listaProfesores"
+    asp-route-volverPadre="true">Volver a la lista de profesores</a>
+    </div>
 }
-<div>
-    <a>@Context.Session.GetInt32("_rol").ToString()</a>
-</div>
+

@@ -1,38 +1,49 @@
 ﻿@model gestionDiversidad.ViewModels.BorrarDocenciaView
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "borrarDocencia";
 }
 
-<h1>Delete</h1>
+<h1>Borrar docencia</h1>
 
-<h3>¿Seguro que quieres borrar esto?</h3>
+<h3>¿Seguro que quieres borrar esta docencia?</h3>
 <div>
-    <h4>TDocencia</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NifProfesor)
+        <dt class="col-sm-3">
+            <strong>Alumno </strong>
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NifProfesor)
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.Profesor.Nombre)
         </dd>
     </dl>
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IdAsignatura)
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Profesor.Nif)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdAsignatura)
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.Profesor.Nif)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class="col-sm-3">
+            <strong>Asignatura </strong>
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.Asignatura.Nombre)
         </dd>
     </dl>
 
-    <form asp-action="confirmarBorradoDocencia" asp-controller="TProfesores">
-        <input type="hidden" asp-for="NifProfesor" />
-        <input type="hidden" asp-for="IdAsignatura" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="listaDocencias" asp-controller="TProfesores">
-            Volver lista de docencias.
-        </a>
+    <form asp-action="confirmarBorradoDocencia" asp-controller="TProfesores"
+          style="margin-top: 10px; margin-bottom: 10px;">
+        <input type="hidden" name="nifProfesor" value=@Model.Profesor.Nif />
+        <input type="hidden" name="idAsignatura" value=@Model.Asignatura.Id />
+        <input type="submit" value="Borrar docencia" class="btn btn-danger" /> |
+
     </form>
+</div>
+<div>
+    <a asp-action="listaDocencias" asp-controller="TProfesores">
+        Volver lista de docencias
+    </a>
 </div>

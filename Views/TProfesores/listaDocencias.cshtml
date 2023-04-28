@@ -1,44 +1,64 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using gestionDiversidad.Constantes
-@model gestionDiversidad.ViewModels.DocenciaView
+@model gestionDiversidad.ViewModels.ListaDocenciasView
 
 @{
     ViewData["Title"] = "listaDocencias";
 }
 
-<h1>Lista Docencias</h1>
-
-<div>
-    <h4>Profesores y asignaturas</h4>
-    <hr />
-    @foreach (var profesor in Model.LProfesores)
-    {
-        <h2>@profesor.Nombre</h2>
-        <ul>
+<h1>Lista docencias de profesores</h1>
+<table class="table" style="text-align:center; vertical-align:middle">
+    <thead>
+        <tr>
+            <th>
+                <strong>Alumno</strong>
+            </th>
+            <th>
+                <strong>@Html.DisplayNameFor(model => model.LProfesores.First().Nif)</strong>
+            </th>
+            <th>
+                <strong>Asignatura </strong>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var profesor in Model.LProfesores)
+        {
             @foreach (var asignatura in profesor.IdAsignaturas)
             {
-                <li>@asignatura.Nombre</li>
-                <li>
-                    <a asp-controller="TProfesores" asp-action="borrarDocencia"
-               asp-route-idAsignatura="@asignatura.Id" asp-route-nifProfesor="@profesor.Nif"
-                       class="btn btn-primary">Borrar docencia</a>
-                </li>
-
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => profesor.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => profesor.Nif)
+                    </td>
+                    <td>@asignatura.Nombre</td>
+                    @if (Model.Pantalla.Borrar)
+                    {
+                        <td>
+                            <a asp-controller="TProfesores" asp-action="borrarDocencia"
+                             asp-route-idAsignatura="@asignatura.Id" asp-route-nifProfesor="@profesor.Nif"
+                               class="btn btn-danger">Borrar docencia</a>
+                        </td>
+                    }
+                </tr>
             }
-        </ul>
-    }
-</div>
-<div>
-    <a asp-controller="TProfesores" asp-action="insertarDocencia"
-       class="btn btn-primary">Crear nueva docencia</a>
-</div>
+        }
+    </tbody>
+</table>
+
+@if (Model.Pantalla.Insertar)
+{
+    <div>
+        <a asp-controller="TProfesores" asp-action="insertarDocencia"
+           class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">
+           Crear nueva docencia</a>
+    </div>
+}
+
 <div>
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
        asp-route-nif="@Model.SesionNif" asp-route-rol="@Model.SesionRol">
-       Volver usuario principal</a>
-</div>
-
-
-<div>
-    <a>@Context.Session.GetInt32("_rol").ToString()</a>
+       Volver al usuario aterior</a>
 </div>

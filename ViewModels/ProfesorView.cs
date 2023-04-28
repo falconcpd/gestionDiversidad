@@ -12,7 +12,7 @@ namespace gestionDiversidad.ViewModels
         public int Rol { get; set; }
         public int SesionRol { get; set; }
         public string SesionNif { get; set; } = null!;
-        public int PadreRol { get; set; }
-        public string PadreNif { get; set; } = null!;
+        public int? PadreRol { get; set; }
+        public string? PadreNif { get; set; }
     }
 }

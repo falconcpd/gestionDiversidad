@@ -1,30 +1,29 @@
 ﻿@model gestionDiversidad.ViewModels.CrearDocenciaView
 
 @{
-    ViewData["Title"] = "CrearDocencia";
+    ViewData["Title"] = "crearDocencia";
 }
 
-<h1>Crear Docencia</h1>
+<h1>Crear nueva docencia</h1>
 
-<h4>TAlumno</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="crearDocencia" asp-controller="TProfesores"
               method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="@Model.NifProfesor" class="control-label"></label>
-                <select asp-for="NifProfesor" asp-items="@Model.LProfesores.Select(p => new SelectListItem { Text = p.Nombre, Value = p.Nif })"></select>
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+                <label asp-for="@Model.NifProfesor" class="control-label">Profesor: </label>
+                <select asp-for="NifProfesor" asp-items="@Model.LProfesores!.Select(p => new SelectListItem { Text = p.Nombre, Value = p.Nif })"></select>
                 <span asp-validation-for="@Model.NifProfesor" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="@Model.IdAsignatura" class="control-label"></label>
-                <select asp-for="IdAsignatura" asp-items="@Model.LAsignaturas.Select(a => new SelectListItem { Text = a.Nombre, Value = a.Id.ToString() })"></select>
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+                <label asp-for="@Model.IdAsignatura" class="control-label">Asignatura: </label>
+                <select asp-for="IdAsignatura" asp-items="@Model.LAsignaturas!.Select(a => new SelectListItem { Text = a.Nombre, Value = a.Id.ToString() })"></select>
                 <span asp-validation-for="@Model.IdAsignatura" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+                <input type="submit" value="Crear docencia" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -35,7 +34,7 @@
 }
 <div>
     <a asp-controller="TProfesores" asp-action="listaDocencias"
-       asp-route-volverPadre="false">Volver Docencias</a>
+       asp-route-volverPadre="false">Volver a docencias</a>
 </div>
 
 

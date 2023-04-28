@@ -34,7 +34,7 @@
                             @Html.DisplayFor(modelItem => alumno.Nif)
                         </td>
                         <td>@asignatura.Nombre</td>
-                        @if(Model.Permiso.Borrar)
+                        @if(Model.Pantalla.Borrar)
                         {
                         <td>
                             <a asp-controller="TAlumnos" asp-action="borrarMatricula"
@@ -47,11 +47,12 @@
         }
     </tbody>
 </table>
-@if (Model.Permiso.Insertar)
+@if (Model.Pantalla.Insertar)
 {
     <div style="margin-top: 10px; margin-bottom: 10px;">
         <a asp-controller="TAlumnos" asp-action="insertarMatricula"
-           class="btn btn-primary">Crear nueva matrícula</a>
+           class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">
+           Crear nueva matrícula</a>
     </div>
 }
 

@@ -90,8 +90,8 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenListaAlumnos, sesionRol);
             vistaAlumno.SesionRol = sesionRol;
             vistaAlumno.SesionNif = sesionNif;
-            vistaAlumno.PadreNif = actualUser?.padre?.nif;               
-            vistaAlumno.PadreRol = actualUser?.padre?.rol;
+            vistaAlumno.PadreNif = actualUser.padre?.nif;               
+            vistaAlumno.PadreRol = actualUser.padre?.rol;
 
             return View(vistaAlumno);
         }
@@ -172,7 +172,7 @@ namespace gestionDiversidad.Controllers
 
             List<TAlumno> alumnos = (await _serviceController.listaAlumnos(sesionNif, sesionRol));
             ListaMatriculasView vistaMatricula = new ListaMatriculasView();
-            vistaMatricula.Permiso = await _serviceController
+            vistaMatricula.Pantalla = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaMatriculas, sesionRol);
             vistaMatricula.LAlumnos = alumnos;
             vistaMatricula.SesionRol = sesionRol;

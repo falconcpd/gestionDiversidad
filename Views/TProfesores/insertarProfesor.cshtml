@@ -1,12 +1,11 @@
 ﻿@model gestionDiversidad.ViewModels.CrearProfesorView
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "crearProfesor";
 }
 
-<h1>Crear Profesor</h1>
+<h1>Crear nuevo profesor</h1>
 
-<h4>Tprofesor</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -24,8 +23,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <input asp-for="Password" class="form-control" type="password" />
                 <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.ConfirmPassword" class="control-label">Confirmar Password</label>
+                <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Nombre" class="control-label"></label>
@@ -42,8 +46,14 @@
                 <input asp-for="Apellido2" class="form-control" />
                 <span asp-validation-for="@Model.Apellido2" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+                <input type="submit" value="Crear profesor" class="btn btn-primary" />
+            </div>
+            <div>
+                <a asp-action="listaProfesores" asp-controller="TProfesores"
+                   asp-route-volverPadre="false">
+                    Volver a la lista de profesores.
+                </a>
             </div>
         </form>
     </div>
