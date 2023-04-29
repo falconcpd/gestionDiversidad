@@ -12,5 +12,6 @@ namespace gestionDiversidad.Interfaces
         Task<List<TInforme>> listaInformes(string nif, int rol);
         Task<List<TProfesor>> listaProfesores();
         Task<List<TMedico>> listaMedicos();
+        Task<TInforme> buscarInforme(string nifAlumno, string nifMedico, string fecha);
     }
 }

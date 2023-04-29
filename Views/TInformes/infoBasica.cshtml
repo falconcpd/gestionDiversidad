@@ -5,52 +5,51 @@
     ViewData["Title"] = "infoBasica";
 }
 
-<h1>Details</h1>
+<h1>Información del informe</h1>
 
 <div>
-    <h4>TInforme</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Informe.NifAlumno)
+            <strong>Nombre alumno: </strong>
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Informe.NifAlumno)
+            @Html.DisplayFor(model => model.Alumno.Nombre)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Informe.NifMedico)
+            <strong>Nombre médico: </strong>
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Informe.NifMedico)
+            @Html.DisplayFor(model => model.Medico.Nombre)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Informe.Fecha)
+            <strong>Fecha de creación: </strong>
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Informe.Fecha)
         </dd>
         <dd class="col-sm-10">
-            <a href="@Url.Action("verInforme", "TInformes", new {nifAlumno = Model.Informe.NifAlumno, nifMedico = Model.Informe.NifMedico, fecha = Model.Informe.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")})" target="_blank">Descargar</a>
+            <a href="@Url.Action("verInforme", "TInformes", 
+            new {nifAlumno = Model.Informe.NifAlumno, 
+                nifMedico = Model.Informe.NifMedico, 
+                fecha = Model.Informe.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")})"
+                target="_blank">Ver informe</a>
         </dd>
     </dl>
 </div>
 
-@*<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-controller="TInformes" asp-action="listaInformes" asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver a la lista</a>
-</div> *@
-@if (Model.Rol == Model.SesionRol)
+@if (Model.ActualRol == Model.SesionRol)
 {
     <div>
         <a asp-controller="TInformes" asp-action="listaInformes"
-       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver lista de informes</a>
+       asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver lista de informes</a>
     </div>
 }
 else
 {
     <div>
         <a asp-controller="TInformes" asp-action="listaInformes"
-       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver lista informes</a>
+       asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver lista informes</a>
     </div>
     @if (!(Model.SesionRol == constDefinidas.rolProfesor))
     {

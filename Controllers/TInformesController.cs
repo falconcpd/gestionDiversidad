@@ -30,44 +30,37 @@ namespace gestionDiversidad.Controllers
             _serviceController = sc;
         }
 
-        // GET: TInformes
-        public async Task<IActionResult> Index()
+        //Función para recuperar el rol del usuario que ha iniciado sesión
+        public int giveSesionRol()
         {
-            var tfgContext = _context.TInformes.Include(t => t.NifAlumnoNavigation).Include(t => t.NifMedicoNavigation);
-            return View(await tfgContext.ToListAsync());
+            int? rolRaw = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            int rol = rolRaw ?? 0;
+            return rol;
         }
 
-        // GET: TInformes/Details/5
-        public async Task<IActionResult> Details(string id)
+        //Función para recuperar el nif del usuario que ha iniciado sesión 
+        public string giveSesionNif()
         {
-            if (id == null || _context.TInformes == null)
-            {
-                return NotFound();
-            }
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            return sesionNif;
+        }
 
-            var tInforme = await _context.TInformes
-                .Include(t => t.NifAlumnoNavigation)
-                .Include(t => t.NifMedicoNavigation)
-                .FirstOrDefaultAsync(m => m.NifMedico == id);
-            if (tInforme == null)
-            {
-                return NotFound();
-            }
-
-            return View(tInforme);
+        //Función que devuelve el usuario en el que nos encontramos
+        public UserNavigation giveActualUser()
+        {
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            return actualUser;
         }
 
         // GET: TInformes/listaInformes
         public async Task<IActionResult> listaInformes(string nif, int rol)
         {
-            //Cuidado, es perezoso, utilizar el include
             List<TInforme> informes = new List<TInforme>();
             ListaInformesView vistaListaInformes = new ListaInformesView();
-            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            int sesionRol = rawRol ?? 0;
-            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
-            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
-            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            int sesionRol = giveSesionRol();
+            string sesionNif = giveSesionNif();
+            UserNavigation actualUser = giveActualUser();
 
             informes = await _serviceController.listaInformes(nif, rol);
 
@@ -85,50 +78,36 @@ namespace gestionDiversidad.Controllers
 
         }
 
-        //Función para buscar informes
-        public async Task<TInforme> buscarInforme(string nifAlumno, string nifMedico, string fecha)
-        {
-            DateTime fechaTime = DateTime.ParseExact(fecha, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-            return  (await _context.TInformes.FirstOrDefaultAsync(t => t.NifAlumno == nifAlumno && t.NifMedico == nifMedico && t.Fecha == fechaTime))!;
-        }
-
         // GET: TInformes/infoBasica
         public async Task<IActionResult> infoBasica(string nifAlumno, string nifMedico, string fecha)
         {
             InformeView informeView = new InformeView();
             TInforme informe;
-            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            int sesionRol = rawRol ?? 0;
-            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
-            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
-            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
-            /* if (DateTime.TryParseExact(fecha, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaTime))
-             {
+            int sesionRol = giveSesionRol();
+            string sesionNif = giveSesionNif();
+            UserNavigation actualUser = giveActualUser();
+            TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+            TMedico medico = (await _context.TMedicos.FirstOrDefaultAsync(m => m.Nif == nifMedico))!;
 
-             } */
-            informe = await buscarInforme(nifAlumno, nifMedico, fecha);
+            informe = await _serviceController.buscarInforme(nifAlumno, nifMedico, fecha);
 
             informeView.Informe = informe;
-            informeView.Permiso = await _serviceController.permisoPantalla(constDefinidas.screenInforme, sesionRol);
-            informeView.Rol = actualUser.rol;
+            informeView.Permiso = await _serviceController.
+                permisoPantalla(constDefinidas.screenInforme, sesionRol);
+            informeView.Alumno = alumno;
+            informeView.Medico = medico;
+            informeView.ActualRol = actualUser.rol;
             informeView.SesionRol = sesionRol;
             informeView.SesionNif = sesionNif;
-            informeView.Nif = actualUser.nif;
-            /*if (sesionRol == 4)
-            {
-                informeView.Nif = nifMedico;
-            }
-            else 
-            {
-                informeView.Nif = nifAlumno;
-            }*/
+            informeView.ActualNif = actualUser.nif;
+
             return View(informeView);
         }
 
         // GET: TInformes/verInforme
         public async Task<IActionResult> verInforme(string nifAlumno, string nifMedico, string fecha)
         {
-            TInforme informe = await buscarInforme(nifAlumno, nifMedico, fecha);
+            TInforme informe = await _serviceController.buscarInforme(nifAlumno, nifMedico, fecha);
             MemoryStream stream = new MemoryStream(informe.Contenido);
             return new FileStreamResult(stream, "application/pdf");
             
@@ -140,16 +119,13 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> ActualizarPDF(string nifMedico, string nifAlumno, 
             string fecha, IFormFile PDF)
         {
-            // Buscar el informe en la base de datos
-            // busca el informe en la base de datos
-            var informe = await buscarInforme(nifAlumno, nifMedico, fecha);
+            var informe = await _serviceController.buscarInforme(nifAlumno, nifMedico, fecha);
 
             if (informe == null)
             {
                 return NotFound();
             }
 
-            // actualiza el contenido del informe con el archivo PDF subido
             using (var ms = new MemoryStream())
             {
                 await PDF.CopyToAsync(ms);
@@ -159,39 +135,35 @@ namespace gestionDiversidad.Controllers
             _context.TInformes.Update(informe);
             await _context.SaveChangesAsync();
 
-            //(string nifAlumno, string nifMedico, string fecha, int rolInforme, string nifInforme)
-
-            return RedirectToAction("infoBasica", "TInformes", new { nifMedico = nifMedico, nifAlumno = nifAlumno
-                , fecha = fecha});
-
+            return RedirectToAction("infoBasica", "TInformes", new { 
+                nifMedico = nifMedico, 
+                nifAlumno = nifAlumno, 
+                fecha = fecha
+            });
         }
         //Función que utilizo para la fecha de ahora
         public DateTime fechaPresente()
         {
             DateTime fechaActual = DateTime.Now;
-            string fechaActualFormateada = fechaActual.ToString("yyyy-MM-ddTHH:mm:ss");
-            DateTime fechaActualFinal = DateTime.ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            string fechaActualFormateada = fechaActual
+                .ToString("yyyy-MM-ddTHH:mm:ss");
+            DateTime fechaActualFinal = DateTime
+                .ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
             return fechaActualFinal;
         }
 
         //Función que crea un informe: TInformes/crearInforme
         public async Task<IActionResult> crearInforme(string nifMedico, string nifAlumno)
         {
-            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            int sesionRol = rawRol ?? 0;
-            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
-            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
-            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            int sesionRol = giveSesionRol();
+            string sesionNif = giveSesionNif();
+            UserNavigation actualUser = giveActualUser();
 
             var filepdf = TempData[constDefinidas.keyInformePDF] as string;
             byte[] filestream = Convert.FromBase64String(filepdf!);
-            //Hago que se pueda almacenar el pdf. 
 
-
-            //Ahora obtengo la fecha actual.
             DateTime fechaActualFinal = fechaPresente();
 
-            //Creo el informe y lo añado
             var informe = new TInforme
             {
                 NifMedico = nifMedico,
@@ -202,8 +174,13 @@ namespace gestionDiversidad.Controllers
 
             _context.Add(informe);
             await _context.SaveChangesAsync();
+
             return RedirectToAction("listaAlumnos", "TAlumnos",
-                new { nif = actualUser.nif, rol = actualUser.rol, volverPadre = "false" });
+                new {
+                    nif = actualUser.nif,
+                    rol = actualUser.rol
+                    , volverPadre = "false" 
+                });
         }
 
         // POST : TInformes/crearInformeNuevo
@@ -211,11 +188,10 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> crearInformeNuevo(CrearInformeView model)
         {
-            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            int sesionRol = rawRol ?? 0;
-            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
-            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
-            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            int sesionRol = giveSesionRol();
+            string sesionNif = giveSesionNif();
+            UserNavigation actualUser = giveActualUser();
+
             if (ModelState.IsValid)
             {
                 byte[] contenido;
@@ -226,7 +202,7 @@ namespace gestionDiversidad.Controllers
                     await model.PDF.CopyToAsync(ms);
                     contenido = ms.ToArray();
                 }
-                //Ahora obtengo la fecha actual.
+
                 DateTime fechaActualFinal = fechaPresente();
 
                 var informe = new TInforme
@@ -240,7 +216,10 @@ namespace gestionDiversidad.Controllers
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("listaInformes", "TInformes", 
-                    new { nif = actualUser.nif, rol = actualUser.rol });
+                    new {
+                        nif = actualUser.nif,
+                        rol = actualUser.rol 
+                    });
             }
 
             return RedirectToAction("insertarInforme", "TInformes"); 
@@ -249,13 +228,18 @@ namespace gestionDiversidad.Controllers
         //Funcion que redirecciona para crear informe.
         public async Task<IActionResult> insertarInforme()
         {
-            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            int sesionRol = rawRol ?? 0;
-            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            int sesionRol = giveSesionRol();
+            string sesionNif = giveSesionNif();
+            UserNavigation actualUser = giveActualUser();
+            TMedico medicoTemporal = (await _context.TMedicos
+                .FirstOrDefaultAsync(m => m.Nif == constDefinidas.keyMedicoTemporal))!;
 
             CrearInformeView vistaCrearInforme = new CrearInformeView();
             vistaCrearInforme.ListaMedicos = (await _serviceController.listaMedicos());
+            vistaCrearInforme.ListaMedicos.Remove(medicoTemporal);
             vistaCrearInforme.ListaAlumnos = (await _serviceController.listaAlumnos(sesionNif, sesionRol));
+            vistaCrearInforme.ActualNif = actualUser.nif;
+            vistaCrearInforme.ActualRol = actualUser.rol;
 
             return View(vistaCrearInforme);
         }
@@ -263,8 +247,7 @@ namespace gestionDiversidad.Controllers
         // GET: TInformes/borrarInforme
         public async Task<IActionResult> borrarInforme(string nifMedico, string nifAlumno, string fecha)
         {
-            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
-            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            UserNavigation actualUser = giveActualUser();
             TAlumno alumno = (await _context.TAlumnos
                 .Include(a => a.TInformes)
                 .FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
@@ -302,7 +285,7 @@ namespace gestionDiversidad.Controllers
         {
             if (ModelState.IsValid)
             {
-                TInforme informe = await buscarInforme(model.NifAlumno, model.NifMedico, model.Fecha);
+                TInforme informe = await _serviceController.buscarInforme(model.NifAlumno, model.NifMedico, model.Fecha);
                 _context.TInformes.Remove(informe);
                 await _context.SaveChangesAsync();
 
@@ -324,13 +307,12 @@ namespace gestionDiversidad.Controllers
         // GET: TInformes/elegirMedicoInforme
         public async Task<IActionResult> elegirMedicoInforme(string nifMedico, string nifAlumno, string fecha)
         {
-            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
-            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            UserNavigation actualUser = giveActualUser();
 
             List<TMedico> listaMedicos = (await _context.TMedicos.ToListAsync())!;
             if(listaMedicos.Count <= 1)
             {
-                TempData["UnSoloMedicoParaCambiar"] = "Solo existe un médico, por lo que no tiene" +
+                TempData["UnSoloMedicoParaCambiar"] = "No hay médicos, por lo que no tiene" +
                     "sentido cambiarlo";
 
                 return RedirectToAction("listaInformes", "TInformes", new
@@ -340,8 +322,10 @@ namespace gestionDiversidad.Controllers
                 });
             }
 
-            TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
-            TMedico medico = (await _context.TMedicos.FirstOrDefaultAsync(m => m.Nif == nifMedico))!;
+            TAlumno alumno = (await _context.TAlumnos
+                .FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+            TMedico medico = (await _context.TMedicos
+                .FirstOrDefaultAsync(m => m.Nif == nifMedico))!;
 
             listaMedicos.Remove(medico);
 
@@ -360,19 +344,22 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> confirmarCambioMedicoInforme(string nifAnteriorMedico, string nifAlumno, string fecha, string actualNif, int actualRol, string nifNuevoMedico)
         {
-            TInforme informe = await buscarInforme(nifAlumno, nifAnteriorMedico, fecha);
-            TMedico anteriorMedico = (await _context.TMedicos.FirstOrDefaultAsync(m => m.Nif == nifAnteriorMedico))!;
-            TMedico nuevoMedico = (await _context.TMedicos.FirstOrDefaultAsync(m => m.Nif == nifNuevoMedico))!;
-            TAlumno alumno = (await _context.TAlumnos.FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+            TInforme informe = await _serviceController.buscarInforme(nifAlumno, nifAnteriorMedico, fecha);
+            TMedico anteriorMedico = (await _context.TMedicos
+                .FirstOrDefaultAsync(m => m.Nif == nifAnteriorMedico))!;
+            TMedico nuevoMedico = (await _context.TMedicos
+                .FirstOrDefaultAsync(m => m.Nif == nifNuevoMedico))!;
+            TAlumno alumno = (await _context.TAlumnos
+                .FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
 
-            //Removemos del antiguo médico y el alumno el informe
             anteriorMedico.TInformes.Remove(informe);
             alumno.TInformes.Remove(informe);
-            //Almacenamos el contenido y lo borramos
+
             byte[] contenido = informe.Contenido;
             _context.TInformes.Remove(informe);
-            //Creamos el nuevo informe
-            DateTime fechaTime = DateTime.ParseExact(fecha, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+
+            DateTime fechaTime = DateTime
+                .ParseExact(fecha, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
             var nuevoInforme = new TInforme
             {
                 NifMedico = nifNuevoMedico,
@@ -388,132 +375,6 @@ namespace gestionDiversidad.Controllers
                 nif = actualNif,
                 rol = actualRol
             });
-        }
-
-
-            // GET: TInformes/Create
-            public IActionResult Create()
-        {
-            ViewData["NifAlumno"] = new SelectList(_context.TAlumnos, "Nif", "Nif");
-            ViewData["NifMedico"] = new SelectList(_context.TMedicos, "Nif", "Nif");
-            return View();
-        }
-
-        // POST: TInformes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("NifMedico,NifAlumno,Fecha,Contenido")] TInforme tInforme)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tInforme);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["NifAlumno"] = new SelectList(_context.TAlumnos, "Nif", "Nif", tInforme.NifAlumno);
-            ViewData["NifMedico"] = new SelectList(_context.TMedicos, "Nif", "Nif", tInforme.NifMedico);
-            return View(tInforme);
-        }
-
-        // GET: TInformes/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null || _context.TInformes == null)
-            {
-                return NotFound();
-            }
-
-            var tInforme = await _context.TInformes.FindAsync(id);
-            if (tInforme == null)
-            {
-                return NotFound();
-            }
-            ViewData["NifAlumno"] = new SelectList(_context.TAlumnos, "Nif", "Nif", tInforme.NifAlumno);
-            ViewData["NifMedico"] = new SelectList(_context.TMedicos, "Nif", "Nif", tInforme.NifMedico);
-            return View(tInforme);
-        }
-
-        // POST: TInformes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("NifMedico,NifAlumno,Fecha,Contenido")] TInforme tInforme)
-        {
-            if (id != tInforme.NifMedico)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tInforme);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TInformeExists(tInforme.NifMedico))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["NifAlumno"] = new SelectList(_context.TAlumnos, "Nif", "Nif", tInforme.NifAlumno);
-            ViewData["NifMedico"] = new SelectList(_context.TMedicos, "Nif", "Nif", tInforme.NifMedico);
-            return View(tInforme);
-        }
-
-        // GET: TInformes/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null || _context.TInformes == null)
-            {
-                return NotFound();
-            }
-
-            var tInforme = await _context.TInformes
-                .Include(t => t.NifAlumnoNavigation)
-                .Include(t => t.NifMedicoNavigation)
-                .FirstOrDefaultAsync(m => m.NifMedico == id);
-            if (tInforme == null)
-            {
-                return NotFound();
-            }
-
-            return View(tInforme);
-        }
-
-        // POST: TInformes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            if (_context.TInformes == null)
-            {
-                return Problem("Entity set 'TfgContext.TInformes'  is null.");
-            }
-            var tInforme = await _context.TInformes.FindAsync(id);
-            if (tInforme != null)
-            {
-                _context.TInformes.Remove(tInforme);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TInformeExists(string id)
-        {
-          return (_context.TInformes?.Any(e => e.NifMedico == id)).GetValueOrDefault();
         }
     }
 }

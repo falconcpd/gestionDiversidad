@@ -6,20 +6,17 @@
 
 <h1>Lista de informes</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<table class="table" style="text-align:center; vertical-align:middle">
     <thead>
         <tr>
             <th>
-                @Html.DisplayName("Nombre alumno")
+                <strong>Alumno </strong>
             </th>
             <th>
-                @Html.DisplayName("Nombre medico")
+                <strong>Médico </strong>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ListaInformes.First().Fecha)
+                <strong>@Html.DisplayNameFor(model => model.ListaInformes.First().Fecha)</strong>
             </th>
         </tr>
     </thead>
@@ -35,11 +32,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Fecha)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
                 </td>
                 @if (Model.Informe.Acceder)
                 {
@@ -58,7 +50,7 @@
                         <a asp-controller="TInformes" asp-action="borrarInforme"
                    asp-route-nifMedico="@item.NifMedico" asp-route-nifAlumno="@item.NifAlumno"
                    asp-route-fecha="@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")"
-                           class="btn btn-primary">Borrar informe</a>
+                           class="btn btn-danger">Borrar informe</a>
                     </td>
                 }
                 @if (Model.Permiso.Modificar)
@@ -67,7 +59,7 @@
                     <a asp-controller="TInformes" asp-action="elegirMedicoInforme"
                    asp-route-nifMedico="@item.NifMedico" asp-route-nifAlumno="@item.NifAlumno"
                    asp-route-fecha="@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")"
-                           class="btn btn-primary">Cambiar Medico informe</a>
+                           class="btn btn-primary">Cambiar médico informe</a>
                     </td>
                 }
                 
@@ -77,25 +69,25 @@
 </table>
 @if (Model.Permiso.Insertar)
 {
-    <div>
+    <div style="margin-top: 10px; margin-bottom: 10px;">
         <a asp-controller="TInformes" asp-action="insertarInforme"
            class="btn btn-primary">Nuevo Informe</a>
     </div>
 }
 @if (Model.Rol == Model.SesionRol)
 {
-    <div>
+    <div style="margin-top: 10px; margin-bottom: 10px;">
         <a asp-controller="TUsuarios" asp-action="volverPerfil"
        asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver al perfil principal</a>
     </div>
 }
 else
 {
-    <div>
+    <div style="margin-top: 10px; margin-bottom: 10px;">
         <a asp-controller="TUsuarios" asp-action="volverPerfil"
        asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver para atrás</a>
     </div>
-    <div>
+    <div style="margin-top: 10px; margin-bottom: 10px;">
         <a asp-controller="TUsuarios" asp-action="volverPerfil"
        asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a perfil principal</a>
     </div>

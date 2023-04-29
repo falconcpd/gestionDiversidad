@@ -14,6 +14,8 @@ namespace gestionDiversidad.ViewModels
         public IFormFile PDF { get; set; } = null!;
         public List<TMedico>? ListaMedicos { get; set; }
         public List<TAlumno>? ListaAlumnos { get; set; }
+        public int ActualRol { get; set; }
+        public string ActualNif { get; set; } = null!;
     }
 }
 

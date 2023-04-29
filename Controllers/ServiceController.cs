@@ -12,6 +12,7 @@ using System.Drawing.Text;
 using gestionDiversidad.Interfaces;
 using System.ComponentModel;
 using gestionDiversidad.Constantes;
+using System.Globalization;
 
 namespace gestionDiversidad.Controllers
 {
@@ -40,6 +41,17 @@ namespace gestionDiversidad.Controllers
             TPermiso permiso = r_permisos.FirstOrDefault(p => p.IdPantalla == pantalla && p.IdRol == rol)!;
             
             return permiso;
+        }
+
+        //Función para buscar informes
+        public async Task<TInforme> buscarInforme(string nifAlumno, string nifMedico, string fecha)
+        {
+            DateTime fechaTime = DateTime
+                .ParseExact(fecha, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            return (await _context.TInformes
+                .Include(t => t.NifAlumnoNavigation)
+                .Include(t => t.NifMedicoNavigation)
+                .FirstOrDefaultAsync(t => t.NifAlumno == nifAlumno && t.NifMedico == nifMedico && t.Fecha == fechaTime))!;
         }
 
         //Retorna una lista de Asignaturas según el rol y el nif 
@@ -128,6 +140,7 @@ namespace gestionDiversidad.Controllers
             TAlumno alumno;
             TMedico medico;
             List<TInforme> informes = new List<TInforme>();
+            List<TInforme> wakeInformes = new List<TInforme>();
 
             switch (rol)
             {
@@ -136,21 +149,35 @@ namespace gestionDiversidad.Controllers
                         .Include(u => u.TInformes)
                         .FirstOrDefaultAsync(u => u.Nif == nif))!;
                     informes = alumno.TInformes.ToList();
-                    return informes;
+                    foreach(var informe in informes)
+                    {
+                        string fechaFormateada = informe.Fecha
+                        .ToString("yyyy-MM-ddTHH:mm:ss");
+                        wakeInformes
+                            .Add(await buscarInforme(informe.NifAlumno, informe.NifMedico, fechaFormateada));
+                    }
+                    return wakeInformes;
                 case constDefinidas.rolMedico:
                     medico = (await _context.TMedicos
                         .Include(u => u.TInformes)
                         .FirstOrDefaultAsync(u => u.Nif == nif))!;
                     informes = medico.TInformes.ToList();
-                    return informes;
+                    foreach (var informe in informes)
+                    {
+                        string fechaFormateada = informe.Fecha
+                        .ToString("yyyy-MM-ddTHH:mm:ss");
+                        wakeInformes
+                            .Add(await buscarInforme(informe.NifAlumno, informe.NifMedico, fechaFormateada));
+                    }
+                    return wakeInformes;
                 case constDefinidas.rolAdmin:
-                    informes = (await _context.TInformes
+                    wakeInformes = (await _context.TInformes
                         .Include(i => i.NifMedicoNavigation)
                         .Include(i => i.NifAlumnoNavigation)
                         .OrderBy(i => i.NifAlumnoNavigation.Nombre).ToListAsync());
-                    return informes;
+                    return wakeInformes;
                 default:
-                    return informes;
+                    return wakeInformes;
             }
         }
 
