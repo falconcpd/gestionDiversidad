@@ -1,4 +1,4 @@
-﻿namespace gestionDiversidad.ViewModels
+﻿namespace gestionDiversidad.ViewModels.TInformes
 {
     public class BorrarInformeView
     {

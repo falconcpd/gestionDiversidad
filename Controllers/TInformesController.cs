@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Diagnostics.CodeAnalysis;
+using gestionDiversidad.ViewModels.TInformes;
 
 namespace gestionDiversidad.Controllers
 {
