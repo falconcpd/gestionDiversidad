@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
 using gestionDiversidad.Interfaces;
 using gestionDiversidad.Constantes;
-using gestionDiversidad.ViewModels;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
+using gestionDiversidad.ViewModels.TAdministracion;
 
 namespace gestionDiversidad.Controllers
 {
