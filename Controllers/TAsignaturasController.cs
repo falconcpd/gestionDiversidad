@@ -12,6 +12,7 @@ using gestionDiversidad.Constantes;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using gestionDiversidad.ViewModels.TAsignaturas;
 
 namespace gestionDiversidad.Controllers
 {

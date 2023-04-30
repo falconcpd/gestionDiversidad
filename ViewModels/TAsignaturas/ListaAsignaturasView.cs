@@ -1,6 +1,6 @@
 ﻿using gestionDiversidad.Models;
 
-namespace gestionDiversidad.ViewModels
+namespace gestionDiversidad.ViewModels.TAsignaturas
 {
     public class ListaAsignaturasView
     {
@@ -9,6 +9,6 @@ namespace gestionDiversidad.ViewModels
         public string ActualNif { get; set; } = null!;
         public int ActualRol { get; set; }
         public int SesionRol { get; set; }
-        public string SesionNif { get;set; } = null!;
+        public string SesionNif { get; set; } = null!;
     }
 }
