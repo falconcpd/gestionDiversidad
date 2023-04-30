@@ -11,7 +11,7 @@ using gestionDiversidad.ViewModels;
 using gestionDiversidad.Constantes;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
-//using System.Data.Entity;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace gestionDiversidad.Controllers
 {
@@ -26,32 +26,44 @@ namespace gestionDiversidad.Controllers
             _serviceController = sc;
         }
 
-        // GET: TAsignaturas
-        public async Task<IActionResult> Index()
+        //Función para recuperar el rol del usuario que ha iniciado sesión
+        public int giveSesionRol()
         {
-              return _context.TAsignaturas != null ? 
-                          View(await _context.TAsignaturas.ToListAsync()) :
-                          Problem("Entity set 'TfgContext.TAsignaturas'  is null.");
+            int? rolRaw = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            int rol = rolRaw ?? 0;
+            return rol;
+        }
+
+        //Función para recuperar el nif del usuario que ha iniciado sesión 
+        public string giveSesionNif()
+        {
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            return sesionNif;
+        }
+
+        //Función que devuelve el usuario en el que nos encontramos
+        public UserNavigation giveActualUser()
+        {
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            return actualUser;
         }
 
         //GET: TAsignaturas/listaAsignaturas
-        public async Task<IActionResult> listaAsignaturas(string nif, int rol)
+        public async Task<IActionResult> listaAsignaturas()
         {
-            //Cuidado, es perezoso, utilizar el include
             ListaAsignaturasView vistaListaAsignaturas= new ListaAsignaturasView();
-            List<TAsignatura> asignaturas = await _serviceController.listaAsignaturas(nif, rol);
-            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            string rawNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
-            int sesionRol = rawRol ?? 0;           
-            string sesionNif = rawNif;
-            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
-            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            string sesionNif = giveSesionNif();
+            int sesionRol = giveSesionRol();
+            UserNavigation actualUser = giveActualUser();
+            List<TAsignatura> asignaturas = await _serviceController
+                .listaAsignaturas(actualUser.nif, actualUser.rol);
 
             vistaListaAsignaturas.ListaAsignaturas = asignaturas;
             vistaListaAsignaturas.Permiso = await _serviceController.
                 permisoPantalla(constDefinidas.screenListaAsignaturas, sesionRol);
-            vistaListaAsignaturas.Rol = actualUser.rol;
-            vistaListaAsignaturas.Nif = actualUser.nif;
+            vistaListaAsignaturas.ActualRol = actualUser.rol;
+            vistaListaAsignaturas.ActualNif = actualUser.nif;
             vistaListaAsignaturas.SesionRol = sesionRol;
             vistaListaAsignaturas.SesionNif = sesionNif;
 
@@ -59,64 +71,39 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        //Funcion que te devuelve los nombres de las asignaturas
         public async Task<List<string>> nombresAsignatura()
         {
             List<string> nombres = new List<string>();
-            nombres = (await _context.TAsignaturas.Select(a => a.Nombre).ToListAsync());
+            nombres = (await _context.TAsignaturas
+                .Select(a => a.Nombre)
+                .ToListAsync());
             return nombres;
 
         }
 
-        // GET: TAsignaturas/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.TAsignaturas == null)
-            {
-                return NotFound();
-            }
-
-            var tAsignatura = await _context.TAsignaturas
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tAsignatura == null)
-            {
-                return NotFound();
-            }
-
-            return View(tAsignatura);
-        }
-
         //GET: TAsignaturas/insertarAsignatura
-        public IActionResult insertarAsignatura(string nif, int rol)
+        public IActionResult insertarAsignatura()
         {
-            int? rawRol = HttpContext.Session.GetInt32(constDefinidas.keyRol);
-            string rawNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
-            int sesionRol = rawRol ?? 0;
-            string sesionNif = rawNif;
-
-            CrearView vistaCrearAsignatura = new CrearView();
-            vistaCrearAsignatura.Nif = nif;
-            vistaCrearAsignatura.Rol= rol;
+            UserNavigation actualUser = giveActualUser();
+            CrearAsignaturaView vistaCrearAsignatura = new CrearAsignaturaView();
+            vistaCrearAsignatura.ActualNif = actualUser.nif;
+            vistaCrearAsignatura.ActualRol = actualUser.rol;
 
             return View(vistaCrearAsignatura);
-        }
-
-        // GET: TAsignaturas/Create
-        public IActionResult Create()
-        {
-            return View();
         }
 
         //POST: TAsignaturas/crearAsignatura
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> crearAsignatura(int rol, string nif, CrearView model)
+        public async Task<IActionResult> crearAsignatura(CrearAsignaturaView model)
         {
             List<string> nombres = await nombresAsignatura();
 
-            if (nombres.Contains(model.Asignatura.Nombre))
+            if (nombres.Contains(model.Asignatura!.Nombre))
             {
                 TempData["NombreRepetido"] = "El nombre ya está cogido.";
-                return RedirectToAction("insertarAsignatura", "TAsignaturas", new { nif = nif, rol = rol });
+                return RedirectToAction("insertarAsignatura", "TAsignaturas");
             }
 
             if (ModelState.IsValid)
@@ -124,80 +111,12 @@ namespace gestionDiversidad.Controllers
                 _context.Add(model.Asignatura);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction("listaAsignaturas", "TAsignaturas", new { nif = nif, rol = rol});
+            return RedirectToAction("listaAsignaturas", "TAsignaturas");
         }
 
-        // POST: TAsignaturas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre")] TAsignatura tAsignatura)
-        {
-
-
-            if (ModelState.IsValid)
-            {
-                _context.Add(tAsignatura);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tAsignatura);
-        }
-
-        // GET: TAsignaturas/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.TAsignaturas == null)
-            {
-                return NotFound();
-            }
-
-            var tAsignatura = await _context.TAsignaturas.FindAsync(id);
-            if (tAsignatura == null)
-            {
-                return NotFound();
-            }
-            return View(tAsignatura);
-        }
-
-        // POST: TAsignaturas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre")] TAsignatura tAsignatura)
-        {
-            if (id != tAsignatura.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tAsignatura);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TAsignaturaExists(tAsignatura.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tAsignatura);
-        }
 
         // GET: TAsignaturas/borrarAsignatura/5
-        public async Task<IActionResult> borrarAsignatura(string nif, int rol,int? id)
+        public async Task<IActionResult> borrarAsignatura(string actualNif, int actualRol,int? id)
         {
             AsignaturaView vistaAsignatura = new AsignaturaView();
 
@@ -215,8 +134,8 @@ namespace gestionDiversidad.Controllers
             }
 
             vistaAsignatura.Asignatura = tAsignatura;
-            vistaAsignatura.Rol = rol;
-            vistaAsignatura.Nif = nif;
+            vistaAsignatura.ActualRol = actualRol;
+            vistaAsignatura.ActualNif = actualNif;
 
             return View(vistaAsignatura);
         }
@@ -224,7 +143,7 @@ namespace gestionDiversidad.Controllers
         // POST: TAsignaturas/confirmarBorrado/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> confirmarBorrado(string nif, int rol, int id)
+        public async Task<IActionResult> confirmarBorrado(int id)
         {
             if (_context.TAsignaturas == null)
             {
@@ -238,7 +157,7 @@ namespace gestionDiversidad.Controllers
             {
                 List<TProfesor> profesores = tAsignatura.NifProfesors.ToList();
                 List<TAlumno> alumnos = tAsignatura.NifAlumnos.ToList();    
-                /////
+
                 foreach(var profesor in profesores)
                 {
                     profesor.IdAsignaturas.Remove(tAsignatura);
@@ -252,12 +171,7 @@ namespace gestionDiversidad.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction("listaAsignaturas", "TAsignaturas", new { nif = nif, rol = rol });
-        }
-
-        private bool TAsignaturaExists(int id)
-        {
-          return (_context.TAsignaturas?.Any(e => e.Id == id)).GetValueOrDefault();
+            return RedirectToAction("listaAsignaturas", "TAsignaturas");
         }
     }
 }

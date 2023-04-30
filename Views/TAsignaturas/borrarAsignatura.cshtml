@@ -1,14 +1,11 @@
 ﻿@model gestionDiversidad.ViewModels.AsignaturaView
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "borrarAsignatura";
 }
 
-<h1>Delete</h1>
-
-<h3>¿Seguro que quieres borrar esto?</h3>
+<h3>¿Seguro que quieres borrar esta asignatura?</h3>
 <div>
-    <h4>TAsignatura</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -18,13 +15,18 @@
             @Html.DisplayFor(model => model.Asignatura.Nombre)
         </dd>
     </dl>
-    
+</div>
+<div style="margin-top: 10px; margin-bottom: 10px;">
     <form asp-action="confirmarBorrado" asp-controller="TAsignaturas">
         <input type="hidden" name="id" value="@Model.Asignatura.Id" />
-        <input type="hidden" name="rol" value="@Model.Rol" />
-        <input type="hidden" name="nif" value="@Model.Nif" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="listaAsignaturas" asp-controller="TAsignaturas"
-         asp-route-nif="@Model.Nif" asp-route-rol="@Model.Rol">Vuelve a la lista de asignaturas</a>
+        <input type="submit" value="Borrar Asignatura" class="btn btn-danger" />
     </form>
 </div>
+<div>
+    <a asp-action="listaAsignaturas" asp-controller="TAsignaturas">
+        Volver a la lista de asignaturas
+    </a>
+</div>
+
+
+

@@ -4,12 +4,9 @@
     ViewData["Title"] = "listAsignaturas";
 }
 
-<h1>Index</h1>
+<h1>Lista de asignaturas</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<table class="table" style="text-align:center; vertical-align:middle">
     <thead>
         <tr>
             <th>
@@ -21,33 +18,48 @@
     <tbody>
         @foreach (var item in Model.ListaAsignaturas)
         {
-                <tr>
-                    <td>
+            <tr>
+                <td>
                     @Html.DisplayFor(modelItem => item.Nombre)
                     </td>
+                @if (Model.Permiso.Borrar)
+                {
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="borrarAsignatura" asp-controller="TAsignaturas" 
-                    asp-route-id="@item.Id"
-                   asp-route-nif="@Model.Nif" asp-route-rol="@Model.Rol">Borrar</a>
+                        <form asp-action="borrarAsignatura" asp-controller="TAsignaturas">
+                            <input type="hidden" name="actualNif" value=@Model.ActualNif />
+                            <input type="hidden" name="actualRol" value=@Model.ActualRol />
+                            <input type="hidden" name="id" value=@item.Id />
+                            <button type="submit" class="btn btn-danger">Borrar Asignatura</button>
+                        </form>
                     </td>
+                }
+
                 </tr>
         }
     </tbody>
 </table>
-@if(Model.Rol == Model.SesionRol)
+
+@if (Model.Permiso.Insertar)
+{
+    <div style="margin-top: 10px; margin-bottom: 10px;">
+        <a asp-controller="TAsignaturas" asp-action="insertarAsignatura" class="btn btn-primary">
+            Crear asignatura
+        </a>
+    </div>
+}
+
+@if(Model.ActualRol == Model.SesionRol)
 {
     <div>
         <a asp-controller="TUsuarios" asp-action="volverPerfil" 
-        asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver al perfil principal</a>
+        asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver al perfil principal</a>
     </div>
 }
 else
 {
         <div>
             <a asp-controller="TUsuarios" asp-action="volverPerfil" 
-            asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver para atrás</a>
+            asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver para atrás</a>
         </div>
     <div>
         <a asp-controller="TUsuarios" asp-action="volverPerfil" 
@@ -55,12 +67,5 @@ else
     </div>
 }
 
-@if (Model.Permiso.Insertar)
-{
-    <div>
-        <a asp-controller="TAsignaturas" asp-action="insertarAsignatura"
-       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>
-            Crear asignatura</a>
-    </div>
-}
+
 

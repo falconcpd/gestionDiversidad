@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using gestionDiversidad.Models;
 using System.Globalization;
 using gestionDiversidad.Interfaces;
-using gestionDiversidad.ViewModels;
 using gestionDiversidad.Constantes;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
