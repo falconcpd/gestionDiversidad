@@ -11,5 +11,7 @@ public partial class TPantalla
 
     public string Descripcion { get; set; } = null!;
 
-    public virtual ICollection<TPermiso> TPermisos { get; } = new List<TPermiso>();
+    public virtual ICollection<TAuditorium> TAuditoria { get; set; } = new List<TAuditorium>();
+
+    public virtual ICollection<TPermiso> TPermisos { get; set; } = new List<TPermiso>();
 }

@@ -15,5 +15,5 @@ public partial class TProfesor
 
     public virtual TUsuario NifNavigation { get; set; } = null!;
 
-    public virtual ICollection<TAsignatura> IdAsignaturas { get; } = new List<TAsignatura>();
+    public virtual ICollection<TAsignatura> IdAsignaturas { get; set; } = new List<TAsignatura>();
 }

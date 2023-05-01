@@ -15,7 +15,7 @@ public partial class TAlumno
 
     public virtual TUsuario NifNavigation { get; set; } = null!;
 
-    public virtual ICollection<TInforme> TInformes { get; } = new List<TInforme>();
+    public virtual ICollection<TInforme> TInformes { get; set; } = new List<TInforme>();
 
-    public virtual ICollection<TAsignatura> IdAsignaturas { get; } = new List<TAsignatura>();
+    public virtual ICollection<TAsignatura> IdAsignaturas { get; set; } = new List<TAsignatura>();
 }

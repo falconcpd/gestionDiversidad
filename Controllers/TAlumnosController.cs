@@ -159,7 +159,7 @@ namespace gestionDiversidad.Controllers
             };
 
             _context.Add(alumno);
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("crearInforme", "TInformes", new {
                 nifMedico = medico,

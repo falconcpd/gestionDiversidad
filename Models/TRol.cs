@@ -11,7 +11,7 @@ public partial class TRol
 
     public string Descripcion { get; set; } = null!;
 
-    public virtual ICollection<TPermiso> TPermisos { get; } = new List<TPermiso>();
+    public virtual ICollection<TPermiso> TPermisos { get; set; } = new List<TPermiso>();
 
-    public virtual ICollection<TUsuario> TUsuarios { get; } = new List<TUsuario>();
+    public virtual ICollection<TUsuario> TUsuarios { get; set; } = new List<TUsuario>();
 }

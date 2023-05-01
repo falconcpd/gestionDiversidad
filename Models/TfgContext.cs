@@ -178,6 +178,11 @@ public partial class TfgContext : DbContext
                 .HasForeignKey(d => d.NifUsuario)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_tAuditoria_tUsuario");
+
+            entity.HasOne(d => d.PantallaNavigation).WithMany(p => p.TAuditoria)
+                .HasForeignKey(d => d.Pantalla)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_tAuditoria_tPantalla");
         });
 
         modelBuilder.Entity<TInforme>(entity =>

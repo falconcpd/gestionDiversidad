@@ -15,5 +15,5 @@ public partial class TMedico
 
     public virtual TUsuario NifNavigation { get; set; } = null!;
 
-    public virtual ICollection<TInforme> TInformes { get; } = new List<TInforme>();
+    public virtual ICollection<TInforme> TInformes { get; set; } = new List<TInforme>();
 }

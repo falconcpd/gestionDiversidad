@@ -13,6 +13,10 @@
         public const string keyInformePDF = "_PDF";
         public const string keyMedicoTemporal = "Medico_Temporal";
         ///////////////////////////////
+        public const int accionCrear = 1;
+        public const int accionBorrar = 2;
+        public const int accionModificar = 3;
+        //////////////////////////////
         public const int screenAlumno = 1;
         public const int screenProfesor = 2;
         public const int screenMedico = 3;

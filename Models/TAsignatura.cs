@@ -9,7 +9,7 @@ public partial class TAsignatura
 
     public string Nombre { get; set; } = null!;
 
-    public virtual ICollection<TAlumno> NifAlumnos { get; } = new List<TAlumno>();
+    public virtual ICollection<TAlumno> NifAlumnos { get; set; } = new List<TAlumno>();
 
-    public virtual ICollection<TProfesor> NifProfesors { get; } = new List<TProfesor>();
+    public virtual ICollection<TProfesor> NifProfesors { get; set; } = new List<TProfesor>();
 }
