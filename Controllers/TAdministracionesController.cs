@@ -10,7 +10,7 @@ using gestionDiversidad.Interfaces;
 using gestionDiversidad.Constantes;
 using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
-using gestionDiversidad.ViewModels.TAdministracion;
+using gestionDiversidad.ViewModels.TAdministraciones;
 
 namespace gestionDiversidad.Controllers
 {

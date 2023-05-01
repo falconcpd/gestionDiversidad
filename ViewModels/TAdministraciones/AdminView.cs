@@ -1,6 +1,6 @@
 ﻿using gestionDiversidad.Models;
 
-namespace gestionDiversidad.ViewModels.TAdministracion
+namespace gestionDiversidad.ViewModels.TAdministraciones
 {
     public class AdminView
     {
