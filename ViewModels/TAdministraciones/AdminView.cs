@@ -13,6 +13,7 @@ namespace gestionDiversidad.ViewModels.TAdministraciones
         public TPermiso LAlumnos { get; set; } = null!;
         public TPermiso LInformes { get; set; } = null!;
         public TPermiso LDocencias { get; set; } = null!;
+        public TPermiso LPantallas { get; set; } = null!;
         public int Rol { get; set; }
         public string Nif { get; set; } = null!;
         public int SesionRol { get; set; }

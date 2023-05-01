@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gestionDiversidad.Models;
+using gestionDiversidad.Constantes;
+using gestionDiversidad.ViewModels.TPantallas;
 
 namespace gestionDiversidad.Controllers
 {
@@ -18,145 +20,35 @@ namespace gestionDiversidad.Controllers
             _context = context;
         }
 
-        // GET: TPantallas
-        public async Task<IActionResult> Index()
+        //Función para recuperar el rol del usuario que ha iniciado sesión
+        public int giveSesionRol()
         {
-              return _context.TPantallas != null ? 
-                          View(await _context.TPantallas.ToListAsync()) :
-                          Problem("Entity set 'TfgContext.TPantallas'  is null.");
+            int? rolRaw = HttpContext.Session.GetInt32(constDefinidas.keyRol);
+            int rol = rolRaw ?? 0;
+            return rol;
         }
 
-        // GET: TPantallas/Details/5
-        public async Task<IActionResult> Details(int? id)
+        //Función para recuperar el nif del usuario que ha iniciado sesión 
+        public string giveSesionNif()
         {
-            if (id == null || _context.TPantallas == null)
-            {
-                return NotFound();
-            }
-
-            var tPantalla = await _context.TPantallas
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tPantalla == null)
-            {
-                return NotFound();
-            }
-
-            return View(tPantalla);
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            return sesionNif;
         }
 
-        // GET: TPantallas/Create
-        public IActionResult Create()
+        // GET: TPantallas/listaPantallas
+        public async Task<IActionResult> listaPantallas()
         {
-            return View();
-        }
+            List<TPantalla> listaPantallas = (await _context.TPantallas.ToListAsync());
+            ListaPantallasView vistaListaPantallas = new ListaPantallasView();
+            string sesionNif = giveSesionNif();
+            int sesionRol = giveSesionRol();
 
-        // POST: TPantallas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion")] TPantalla tPantalla)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tPantalla);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tPantalla);
-        }
+            vistaListaPantallas.ListaPantallas = listaPantallas;
+            vistaListaPantallas.SesionNif = sesionNif;
+            vistaListaPantallas.SesionRol = sesionRol;
 
-        // GET: TPantallas/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.TPantallas == null)
-            {
-                return NotFound();
-            }
+            return View(vistaListaPantallas);
 
-            var tPantalla = await _context.TPantallas.FindAsync(id);
-            if (tPantalla == null)
-            {
-                return NotFound();
-            }
-            return View(tPantalla);
-        }
-
-        // POST: TPantallas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion")] TPantalla tPantalla)
-        {
-            if (id != tPantalla.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tPantalla);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TPantallaExists(tPantalla.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tPantalla);
-        }
-
-        // GET: TPantallas/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.TPantallas == null)
-            {
-                return NotFound();
-            }
-
-            var tPantalla = await _context.TPantallas
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tPantalla == null)
-            {
-                return NotFound();
-            }
-
-            return View(tPantalla);
-        }
-
-        // POST: TPantallas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.TPantallas == null)
-            {
-                return Problem("Entity set 'TfgContext.TPantallas'  is null.");
-            }
-            var tPantalla = await _context.TPantallas.FindAsync(id);
-            if (tPantalla != null)
-            {
-                _context.TPantallas.Remove(tPantalla);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TPantallaExists(int id)
-        {
-          return (_context.TPantallas?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

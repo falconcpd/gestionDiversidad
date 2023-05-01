@@ -91,6 +91,8 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenListaDocencias, sesionRol);
             vistaAdmin.LMatriculas = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaMatriculas, sesionRol);
+            vistaAdmin.LPantallas = await _serviceController
+                .permisoPantalla(constDefinidas.screenListaPantallas, sesionRol);
             vistaAdmin.Rol = constDefinidas.rolAdmin;
             vistaAdmin.Nif = nif;
             vistaAdmin.SesionRol = sesionRol;

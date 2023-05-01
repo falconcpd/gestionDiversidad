@@ -1,0 +1,48 @@
+﻿@model gestionDiversidad.ViewModels.TPantallas.ListaPantallasView
+
+@{
+    ViewData["Title"] = "listaPantallas";
+}
+
+<h1>Lista de pantallas</h1>
+
+<table class="table" style="text-align:center; vertical-align:middle">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ListaPantallas.First().Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ListaPantallas.First().Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ListaPantallas.First().Descripcion)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListaPantallas)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripcion)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-controller="TUsuarios" asp-action="volverPerfil"
+    asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver al perfil principal</a>
+</div>
+
+
+
+
