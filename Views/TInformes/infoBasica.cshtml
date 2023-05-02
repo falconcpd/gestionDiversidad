@@ -66,11 +66,11 @@ else
     <form asp-controller="TInformes" asp-action="actualizarPDF" asp-route-nifAlumno="@Model.Informe.NifAlumno"
       asp-route-nifMedico=@Model.Informe.NifMedico asp-route-fecha=@Model.Informe.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")
        method="post" enctype="multipart/form-data">
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
             <label asp-for="@Model.PDF" >Seleccione el archivo PDF:</label>
             <input asp-for="@Model.PDF" type="file" accept=".pdf">
         </div>
-        <button type="submit" class="btn btn-primary">Subir archivo</button>
+        <button type="submit" class="btn btn-primary">Modificar archivo</button>
     </form>
 
 }

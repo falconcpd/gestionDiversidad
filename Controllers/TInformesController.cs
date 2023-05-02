@@ -119,6 +119,7 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> ActualizarPDF(string nifMedico, string nifAlumno, 
             string fecha, IFormFile PDF)
         {
+            string sesionNif = giveSesionNif();
             var informe = await _serviceController.buscarInforme(nifAlumno, nifMedico, fecha);
 
             if (informe == null)
@@ -134,22 +135,14 @@ namespace gestionDiversidad.Controllers
 
             _context.TInformes.Update(informe);
             await _context.SaveChangesAsync();
+            await _serviceController
+                .guardarAuditoria(sesionNif, constDefinidas.screenInforme, constDefinidas.accionModificar);
 
             return RedirectToAction("infoBasica", "TInformes", new { 
                 nifMedico = nifMedico, 
                 nifAlumno = nifAlumno, 
                 fecha = fecha
             });
-        }
-        //Función que utilizo para la fecha de ahora
-        public DateTime fechaPresente()
-        {
-            DateTime fechaActual = DateTime.Now;
-            string fechaActualFormateada = fechaActual
-                .ToString("yyyy-MM-ddTHH:mm:ss");
-            DateTime fechaActualFinal = DateTime
-                .ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-            return fechaActualFinal;
         }
 
         //Función que crea un informe: TInformes/crearInforme
@@ -162,7 +155,7 @@ namespace gestionDiversidad.Controllers
             var filepdf = TempData[constDefinidas.keyInformePDF] as string;
             byte[] filestream = Convert.FromBase64String(filepdf!);
 
-            DateTime fechaActualFinal = fechaPresente();
+            DateTime fechaActualFinal = _serviceController.fechaPresente();
 
             var informe = new TInforme
             {
@@ -203,7 +196,7 @@ namespace gestionDiversidad.Controllers
                     contenido = ms.ToArray();
                 }
 
-                DateTime fechaActualFinal = fechaPresente();
+                DateTime fechaActualFinal = _serviceController.fechaPresente();
 
                 var informe = new TInforme
                 {
@@ -214,6 +207,8 @@ namespace gestionDiversidad.Controllers
                 };
                 _context.Add(informe);
                 await _context.SaveChangesAsync();
+                await _serviceController
+                    .guardarAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionCrear);
 
                 return RedirectToAction("listaInformes", "TInformes", 
                     new {
@@ -285,9 +280,12 @@ namespace gestionDiversidad.Controllers
         {
             if (ModelState.IsValid)
             {
+                string sesionNif = giveSesionNif();
                 TInforme informe = await _serviceController.buscarInforme(model.NifAlumno, model.NifMedico, model.Fecha);
                 _context.TInformes.Remove(informe);
                 await _context.SaveChangesAsync();
+                await _serviceController
+                    .guardarAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionBorrar);
 
                 return RedirectToAction("listaInformes", "TInformes", new
                 {
@@ -344,6 +342,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> confirmarCambioMedicoInforme(string nifAnteriorMedico, string nifAlumno, string fecha, string actualNif, int actualRol, string nifNuevoMedico)
         {
+            string sesionNif = giveSesionNif();
             TInforme informe = await _serviceController.buscarInforme(nifAlumno, nifAnteriorMedico, fecha);
             TMedico anteriorMedico = (await _context.TMedicos
                 .FirstOrDefaultAsync(m => m.Nif == nifAnteriorMedico))!;
@@ -369,6 +368,9 @@ namespace gestionDiversidad.Controllers
             };
             _context.Add(nuevoInforme);
             await _context.SaveChangesAsync();
+            await _serviceController
+                .guardarAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionModificar);
+
 
             return RedirectToAction("listaInformes", "TInformes", new
             {

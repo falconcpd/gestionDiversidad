@@ -13,5 +13,8 @@ namespace gestionDiversidad.Interfaces
         Task<List<TProfesor>> listaProfesores();
         Task<List<TMedico>> listaMedicos();
         Task<TInforme> buscarInforme(string nifAlumno, string nifMedico, string fecha);
+        DateTime fechaPresente();
+        Task guardarAuditoria(string nif, int pantalla, int accion);
+        Task<List<TAuditorium>> listaAuditorias();
     }
 }

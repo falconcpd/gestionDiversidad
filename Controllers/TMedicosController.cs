@@ -140,6 +140,7 @@ namespace gestionDiversidad.Controllers
         //Función que crea al medico: TProfesores/crearMedico
         public async Task<IActionResult> crearMedico(string nif, string nombre, string apellido1, string apellido2)
         {
+            string sesionNif = giveSesionNif();
             var medico = new TMedico
             {
                 Nif = nif,
@@ -150,6 +151,8 @@ namespace gestionDiversidad.Controllers
 
             _context.Add(medico);
             await _context.SaveChangesAsync();
+            await _serviceController
+                .guardarAuditoria(sesionNif, constDefinidas.screenListaMedicos, constDefinidas.accionCrear);
             return RedirectToAction("listaMedicos", "TMedicos",
                 new { volverPadre = "false" });
         }
@@ -192,6 +195,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> confirmarBorradoMedico(string nifMedico, int actualRol, string actualNif)
         {
+            string sesionNif = giveSesionNif();
             TMedico medico = (await _context.TMedicos
                 .Include(m => m.TInformes)
                 .FirstOrDefaultAsync(m => m.Nif == nifMedico))!;
@@ -233,6 +237,8 @@ namespace gestionDiversidad.Controllers
                 .FirstOrDefaultAsync(u => u.Nif == nifMedico))!;
             _context.TUsuarios.Remove(usuario);
             await _context.SaveChangesAsync();
+            await _serviceController
+                .guardarAuditoria(sesionNif, constDefinidas.screenListaMedicos, constDefinidas.accionBorrar);
 
             return RedirectToAction("listaMedicos", "TMedicos", new
             {

@@ -13,16 +13,19 @@ using Newtonsoft.Json;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using gestionDiversidad.ViewModels.TAlumnos;
 using gestionDiversidad.ViewModels.TProfesores;
+using gestionDiversidad.Interfaces;
 
 namespace gestionDiversidad.Controllers
 {
     public class TUsuariosController : Controller
     {
         private readonly TfgContext _context;
+        private readonly IServiceController _serviceController;
 
-        public TUsuariosController(TfgContext context)
+        public TUsuariosController(TfgContext context, IServiceController sc)
         {
             _context = context;
+            _serviceController = sc;
         }
 
         // GET: TUsuarios/InicioSesion
@@ -72,6 +75,14 @@ namespace gestionDiversidad.Controllers
                 rol = rol
             });
         }
+
+        //Función para recuperar el nif del usuario que ha iniciado sesión 
+        public string giveSesionNif()
+        {
+            string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
+            return sesionNif;
+        }
+
         // Función para volver/iniciar un usuario
         public IActionResult volverPerfil(string nif, int rol)
         {
@@ -214,6 +225,7 @@ namespace gestionDiversidad.Controllers
 
             if (ModelState.IsValid)
             {
+                string sesionNif = giveSesionNif();
                 switch (rol)
                 {
                     case constDefinidas.rolAlumno:
@@ -223,6 +235,8 @@ namespace gestionDiversidad.Controllers
                         alumno.Apellido1 = model.Apellido1;
                         alumno.Apellido2 = model.Apellido2;
                         await _context.SaveChangesAsync();
+                        await _serviceController
+                            .guardarAuditoria(sesionNif, constDefinidas.screenAlumno, constDefinidas.accionModificar);
                         return RedirectToAction("volverPerfil", "TUsuarios", new { 
                             nif = nif, 
                             rol = rol 
@@ -234,6 +248,8 @@ namespace gestionDiversidad.Controllers
                         profesor.Apellido1 = model.Apellido1;
                         profesor.Apellido2 = model.Apellido2;
                         await _context.SaveChangesAsync();
+                        await _serviceController
+                            .guardarAuditoria(sesionNif, constDefinidas.screenProfesor, constDefinidas.accionModificar);
                         return RedirectToAction("volverPerfil", "TUsuarios", new { 
                             nif = nif,
                             rol = rol 
@@ -245,6 +261,8 @@ namespace gestionDiversidad.Controllers
                         medico.Apellido1 = model.Apellido1;
                         medico.Apellido2 = model.Apellido2;
                         await _context.SaveChangesAsync();
+                        await _serviceController
+                            .guardarAuditoria(sesionNif, constDefinidas.screenMedico, constDefinidas.accionModificar);
                         return RedirectToAction("volverPerfil", "TUsuarios", new { 
                             nif = nif,
                             rol = rol 

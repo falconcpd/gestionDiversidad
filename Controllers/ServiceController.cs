@@ -13,6 +13,7 @@ using gestionDiversidad.Interfaces;
 using System.ComponentModel;
 using gestionDiversidad.Constantes;
 using System.Globalization;
+using System.IO;
 
 namespace gestionDiversidad.Controllers
 {
@@ -199,6 +200,76 @@ namespace gestionDiversidad.Controllers
         {
             List<TMedico> medicos = await _context.TMedicos.ToListAsync();
             return medicos;
+        }
+
+        //Función que utilizo para la fecha de ahora
+        public DateTime fechaPresente()
+        {
+            DateTime fechaActual = DateTime.Now;
+            string fechaActualFormateada = fechaActual
+                .ToString("yyyy-MM-ddTHH:mm:ss");
+            DateTime fechaActualFinal = DateTime
+                .ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            return fechaActualFinal;
+        }
+
+        //Guarda en la base de datos los cambios realizados
+        public async Task guardarAuditoria(string nif, int pantalla, int accion)
+        {
+            DateTime fechaActual = fechaPresente();
+
+            switch (accion)
+            {
+                case constDefinidas.accionCrear:
+                    var auditoriaCrear = new TAuditorium
+                    {
+                        NifUsuario = nif,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = "Crear nuevo elemento"
+                    };
+                    _context.Add(auditoriaCrear);
+                    await _context.SaveChangesAsync();
+
+                    return;
+                case constDefinidas.accionBorrar:
+                    var auditoriaBorrar = new TAuditorium
+                    {
+                        NifUsuario = nif,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = "Borrar un elemento"
+                    };
+                    _context.Add(auditoriaBorrar);
+                    await _context.SaveChangesAsync();
+
+                    return;
+                case constDefinidas.accionModificar:
+                    var auditoriaModificar = new TAuditorium
+                    {
+                        NifUsuario = nif,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = "Modificar un elemento"
+                    };
+                    _context.Add(auditoriaModificar);
+                    await _context.SaveChangesAsync();
+
+                    return;
+
+            }
+        }
+
+        //Retorna una lista de todos las auditorias.
+        //Esta función solo está disponible para un administrador.
+        public async Task<List<TAuditorium>> listaAuditorias()
+        {
+            List<TAuditorium> auditorias = await _context.TAuditoria
+                .Include(a => a.PantallaNavigation)
+                .OrderByDescending(a => a.FechaHora)
+                .ToListAsync();
+
+            return auditorias;
         }
     }
 

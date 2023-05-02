@@ -109,10 +109,20 @@
 
 @if (Model.LPantallas.Acceder)
 {
-    <div>
+    <div style="margin-top: 10px; margin-bottom: 10px;">
         <form asp-controller="TPantallas" asp-action="listaPantallas">
             <button type="submit">Ver lista de pantallas</button>
         </form>
     </div>
+}
+
+@if (Model.LPantallas.Acceder)
+{
+    <div>
+        <form asp-controller="TAuditoriums" asp-action="listaAuditorias">
+            <button type="submit">Ver lista de auditorías</button>
+        </form>
+    </div>
+
 }
 

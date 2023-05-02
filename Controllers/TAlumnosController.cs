@@ -57,7 +57,7 @@ namespace gestionDiversidad.Controllers
             int sesionRol = giveSesionRol();
             UserNavigation actualUser = giveActualUser();
             int actualRol = actualUser.rol;
-            String actualJson;
+            string actualJson;
 
             if (id == null || _context.TAlumnos == null || sesionRol == 0)
             {
@@ -150,6 +150,8 @@ namespace gestionDiversidad.Controllers
         //Función que crea al alumno: TAlumnos/crearAlumno
         public async Task<IActionResult> crearAlumno(string nif, string nombre, string apellido1, string apellido2, string medico)
         {
+            string sesionNif = giveSesionNif();
+
             var alumno = new TAlumno
             {
                 Nif = nif,
@@ -160,6 +162,8 @@ namespace gestionDiversidad.Controllers
 
             _context.Add(alumno);
             await _context.SaveChangesAsync();
+            await _serviceController
+                .guardarAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionCrear);
 
             return RedirectToAction("crearInforme", "TInformes", new {
                 nifMedico = medico,
@@ -201,6 +205,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> crearMatricula(CrearMatriculaView model)
         {
+            string sesionNif = giveSesionNif();
             int idAsignatura = Int32.Parse(model.IdAsignatura);
             var alumno = await _context.TAlumnos
                 .Include(a => a.IdAsignaturas)
@@ -213,6 +218,8 @@ namespace gestionDiversidad.Controllers
             {
                 alumno!.IdAsignaturas.Add(asignatura!);
                 await _context.SaveChangesAsync();
+                await _serviceController
+                    .guardarAuditoria(sesionNif, constDefinidas.screenListaMatriculas, constDefinidas.accionCrear);
 
                 return RedirectToAction("listaMatriculas", "TAlumnos");
 
@@ -254,6 +261,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> confirmarBorradoMatricula(string nifAlumno, int idAsignatura)
         {
+            string sesionNif = giveSesionNif();
             TAlumno alumno = (await _context.TAlumnos
                 .Include(a => a.IdAsignaturas)
                 .FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
@@ -264,6 +272,8 @@ namespace gestionDiversidad.Controllers
              asignatura.NifAlumnos.Remove(alumno);
 
             await _context.SaveChangesAsync();
+            await _serviceController
+                .guardarAuditoria(sesionNif, constDefinidas.screenListaMatriculas, constDefinidas.accionBorrar);
             return RedirectToAction("listaMatriculas", "TAlumnos");
             
         }
@@ -291,6 +301,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> confirmarBorradoAlumno(string nifAlumno, int actualRol, string actualNif)
         {
+            string sesionNif = giveSesionNif();
             TAlumno alumno = (await _context.TAlumnos
                 .Include(a => a.IdAsignaturas)
                 .FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
@@ -314,6 +325,8 @@ namespace gestionDiversidad.Controllers
             _context.TUsuarios.Remove(usuario);
 
             await _context.SaveChangesAsync();
+            await _serviceController
+                .guardarAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionBorrar);
 
             return RedirectToAction("listaAlumnos", "TAlumnos", new
             {

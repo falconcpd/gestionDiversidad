@@ -165,6 +165,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> crearDocencia(CrearDocenciaView model)
         {
+            string sesionNif = giveSesionNif();
             int idAsignatura = int.Parse(model.IdAsignatura);
             var profesor = await _context.TProfesors
                 .Include(p => p.IdAsignaturas)
@@ -177,6 +178,8 @@ namespace gestionDiversidad.Controllers
             {
                 profesor!.IdAsignaturas.Add(asignatura!);
                 await _context.SaveChangesAsync();
+                await _serviceController
+                    .guardarAuditoria(sesionNif, constDefinidas.screenListaDocencias, constDefinidas.accionCrear);
 
                 return RedirectToAction("listaDocencias", "TProfesores");
 
@@ -211,6 +214,7 @@ namespace gestionDiversidad.Controllers
         //Función que crea al profesor: TProfesores/crearProfesor
         public async Task<IActionResult> crearProfesor(string nif, string nombre, string apellido1, string apellido2)
         {
+            string sesionNif = giveSesionNif();
             var profesor = new TProfesor
             {
                 Nif = nif,
@@ -221,6 +225,9 @@ namespace gestionDiversidad.Controllers
 
             _context.Add(profesor);
             await _context.SaveChangesAsync();
+            await _serviceController
+               .guardarAuditoria(sesionNif, constDefinidas.screenListaProfesores, constDefinidas.accionCrear);
+
             return RedirectToAction("listaProfesores", "TProfesores", 
                 new { volverPadre = "false" });
         }
@@ -241,6 +248,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> confirmarBorradoDocencia(int idAsignatura, string nifProfesor)
         {
+            string sesionNif = giveSesionNif();
             TProfesor profesor = (await _context.TProfesors
                 .Include(p => p.IdAsignaturas)
                 .FirstOrDefaultAsync(p => p.Nif == nifProfesor))!;
@@ -251,6 +259,8 @@ namespace gestionDiversidad.Controllers
             asignatura.NifProfesors.Remove(profesor);
 
             await _context.SaveChangesAsync();
+            await _serviceController
+                .guardarAuditoria(sesionNif, constDefinidas.screenListaDocencias, constDefinidas.accionBorrar);
             return RedirectToAction("listaDocencias", "TProfesores");
 
         }
@@ -274,6 +284,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> confirmarBorradoProfesor(string nifProfesor)
         {
+            string sesionNif = giveSesionNif();
             TProfesor profesor = (await _context.TProfesors
                     .FirstOrDefaultAsync(p => p.Nif == nifProfesor))!;
             _context.TProfesors.Remove(profesor);
@@ -288,6 +299,8 @@ namespace gestionDiversidad.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _serviceController
+                .guardarAuditoria(sesionNif, constDefinidas.screenListaProfesores, constDefinidas.accionBorrar);
 
             return RedirectToAction("listaProfesores", "TProfesores", new
             {

@@ -90,6 +90,7 @@ namespace gestionDiversidad.Controllers
             vistaCrearAsignatura.ActualNif = actualUser.nif;
             vistaCrearAsignatura.ActualRol = actualUser.rol;
 
+
             return View(vistaCrearAsignatura);
         }
 
@@ -98,6 +99,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> crearAsignatura(CrearAsignaturaView model)
         {
+            string sesionNif = giveSesionNif();
             List<string> nombres = await nombresAsignatura();
 
             if (nombres.Contains(model.Asignatura!.Nombre))
@@ -110,6 +112,8 @@ namespace gestionDiversidad.Controllers
             {
                 _context.Add(model.Asignatura);
                 await _context.SaveChangesAsync();
+                await _serviceController
+                    .guardarAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, constDefinidas.accionCrear);
             }
             return RedirectToAction("listaAsignaturas", "TAsignaturas");
         }
@@ -145,6 +149,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> confirmarBorrado(int id)
         {
+            string sesionNif = giveSesionNif();
             if (_context.TAsignaturas == null)
             {
                 return Problem("Entity set 'TfgContext.TAsignaturas'  is null.");
@@ -171,6 +176,8 @@ namespace gestionDiversidad.Controllers
             }
             
             await _context.SaveChangesAsync();
+            await _serviceController
+                .guardarAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, constDefinidas.accionBorrar);
             return RedirectToAction("listaAsignaturas", "TAsignaturas");
         }
     }
