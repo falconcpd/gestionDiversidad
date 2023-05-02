@@ -237,6 +237,10 @@ namespace gestionDiversidad.Controllers
             if (ModelState.IsValid)
             {
                 string sesionNif = giveSesionNif();
+                TUsuario usuario = (await _context.TUsuarios
+                            .FirstOrDefaultAsync(a => a.Nif == nif))!;
+                usuario.Password = model.Password!;
+                usuario.Usuario = model.Usuario!;
                 switch (rol)
                 {
                     case constDefinidas.rolAlumno:

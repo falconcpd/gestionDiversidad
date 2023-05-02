@@ -157,11 +157,11 @@ namespace gestionDiversidad.Controllers
                 new { volverPadre = "false" });
         }
 
-
         //GET: TMedicos/modificarMedico
         public async Task<IActionResult> modificarMedico(string nif)
         {
             TMedico medico = (await _context.TMedicos
+                .Include(a => a.NifNavigation)
                 .FirstOrDefaultAsync(m => m.Nif == nif))!;
             ModificarUsuarios modificarMedicoView = new ModificarUsuarios();
             modificarMedicoView.Nif = nif;
@@ -169,6 +169,9 @@ namespace gestionDiversidad.Controllers
             modificarMedicoView.Nombre = medico.Nombre;
             modificarMedicoView.Apellido1 = medico.Apellido1;
             modificarMedicoView.Apellido2 = medico.Apellido2;
+            modificarMedicoView.Password = medico.NifNavigation.Password;
+            modificarMedicoView.ConfirmPassword = medico.NifNavigation.Password;
+            modificarMedicoView.Usuario = medico.NifNavigation.Usuario;
 
             return View(modificarMedicoView);
         }

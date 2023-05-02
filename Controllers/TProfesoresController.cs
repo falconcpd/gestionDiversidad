@@ -192,6 +192,7 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> modificarProfesor(string nif)
         {
             TProfesor profesor = (await _context.TProfesors
+                .Include(p => p.NifNavigation)
                 .FirstOrDefaultAsync(p => p.Nif == nif))!;
             ModificarUsuarios modificarProfesorView = new ModificarUsuarios();
             modificarProfesorView.Nif = nif;
@@ -199,6 +200,9 @@ namespace gestionDiversidad.Controllers
             modificarProfesorView.Nombre = profesor.Nombre;
             modificarProfesorView.Apellido1 = profesor.Apellido1;
             modificarProfesorView.Apellido2 = profesor.Apellido2;
+            modificarProfesorView.Password = profesor.NifNavigation.Password;
+            modificarProfesorView.ConfirmPassword = profesor.NifNavigation.Password;
+            modificarProfesorView.Usuario = profesor.NifNavigation.Usuario;
 
             return View(modificarProfesorView);
         }

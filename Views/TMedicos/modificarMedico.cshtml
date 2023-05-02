@@ -26,6 +26,21 @@
                 <input asp-for="Apellido2" class="form-control" />
                 <span asp-validation-for="@Model.Apellido2" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="@Model.Usuario" class="control-label">Usuario</label>
+                <input asp-for="Usuario" class="form-control" />
+                <span asp-validation-for="@Model.Usuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Password" class="control-label">Contraseña</label>
+                <input asp-for="Password" class="form-control" type="password" autocomplete="current-password" value="@Model.Password" />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.ConfirmPassword" class="control-label">Confirmar Password</label>
+                <input asp-for="ConfirmPassword" class="form-control" type="password" autocomplete="current-password" value="@Model.ConfirmPassword" />
+                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+            </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
                 <input type="hidden" asp-for="Nif" />
                 <input type="hidden" asp-for="Rol" />
