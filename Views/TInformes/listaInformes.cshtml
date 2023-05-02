@@ -74,24 +74,12 @@
            class="btn btn-primary">Nuevo Informe</a>
     </div>
 }
-@if (Model.Rol == Model.SesionRol)
-{
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <a asp-controller="TUsuarios" asp-action="volverPerfil"
-       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver al perfil principal</a>
-    </div>
-}
-else
-{
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <a asp-controller="TUsuarios" asp-action="volverPerfil"
-       asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver para atrás</a>
-    </div>
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <a asp-controller="TUsuarios" asp-action="volverPerfil"
-       asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a perfil principal</a>
-    </div>
-}
+
+<div style="margin-top: 10px; margin-bottom: 10px;">
+    <a asp-controller="TUsuarios" asp-action="volverPerfil"
+     asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver al perfil anterior</a>
+</div>
+
 @if (TempData["UnSoloInforme"] != null)
 {
     <div class="alert alert-danger">@TempData["UnSoloInforme"]</div>

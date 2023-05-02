@@ -41,17 +41,18 @@ namespace gestionDiversidad.Controllers
                 .FirstOrDefault(u => u.Usuario == usuario && u.Password == password);
             string nif;
             int rol;
-            
-            if(usuario == null)
+
+            if (usuario == null)
             {
                 TempData["ErrorSesion"] = "El usuario está vacío.";
                 return View("InicioSesion");
-            }else if(password == null)
+            }
+            else if (password == null)
             {
                 TempData["ErrorSesion"] = "La contraseña está vacía.";
                 return View("InicioSesion");
             }
-            else if(user == null)
+            else if (user == null)
             {
                 TempData["ErrorSesion"] = "El usuario o contraseña son incorrectos.";
                 return View("InicioSesion");
@@ -81,6 +82,14 @@ namespace gestionDiversidad.Controllers
         {
             string sesionNif = HttpContext.Session.GetString(constDefinidas.keyNif)!;
             return sesionNif;
+        }
+
+        //Función que devuelve el usuario en el que nos encontramos
+        public UserNavigation giveActualUser()
+        {
+            string userNavigationJson = HttpContext.Session.GetString(constDefinidas.keyActualUser)!;
+            UserNavigation actualUser = JsonConvert.DeserializeObject<UserNavigation>(userNavigationJson!)!;
+            return actualUser;
         }
 
         // Función para volver/iniciar un usuario
@@ -133,14 +142,15 @@ namespace gestionDiversidad.Controllers
                     IdRol = constDefinidas.rolProfesor
                 };
 
-                 _context.Add(user);
+                _context.Add(user);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("crearProfesor", "TProfesores", new {
-                    nif = user.Nif, 
-                    nombre = model.Nombre, 
+                return RedirectToAction("crearProfesor", "TProfesores", new
+                {
+                    nif = user.Nif,
+                    nombre = model.Nombre,
                     apellido1 = model.Apellido1,
-                    apellido2 = model.Apellido2 
+                    apellido2 = model.Apellido2
                 });
             }
             return RedirectToAction("insertarProfesor", "TProfesores");
@@ -177,9 +187,9 @@ namespace gestionDiversidad.Controllers
             return RedirectToAction("insertarMedico", "TMedicos");
         }
 
-       //POST: TUsuarios/crearUsuarioAlumno
-       [HttpPost]
-       [ValidateAntiForgeryToken]
+        //POST: TUsuarios/crearUsuarioAlumno
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> crearUsuarioAlumno(CrearAlumnoView model)
         {
             if (ModelState.IsValid)
@@ -198,18 +208,19 @@ namespace gestionDiversidad.Controllers
                     Usuario = model.Usuario!,
                     Password = model.Password!,
                     IdRol = constDefinidas.rolAlumno
-                }; 
+                };
 
                 _context.Add(user);
-                await _context.SaveChangesAsync(); 
+                await _context.SaveChangesAsync();
 
-                return RedirectToAction("crearAlumno", "TAlumnos", new {
-                        nif = model.Nif,
-                        nombre = model.Nombre,
-                        apellido1 = model.Apellido1,
-                        apellido2 = model.Apellido2, 
-                        medico = model.MedicoNif
-                    });
+                return RedirectToAction("crearAlumno", "TAlumnos", new
+                {
+                    nif = model.Nif,
+                    nombre = model.Nombre,
+                    apellido1 = model.Apellido1,
+                    apellido2 = model.Apellido2,
+                    medico = model.MedicoNif
+                });
 
             }
             return RedirectToAction("insertarAlumno", "TAlumnos");
@@ -237,9 +248,10 @@ namespace gestionDiversidad.Controllers
                         await _context.SaveChangesAsync();
                         await _serviceController
                             .guardarAuditoria(sesionNif, constDefinidas.screenAlumno, constDefinidas.accionModificar);
-                        return RedirectToAction("volverPerfil", "TUsuarios", new { 
-                            nif = nif, 
-                            rol = rol 
+                        return RedirectToAction("volverPerfil", "TUsuarios", new
+                        {
+                            nif = nif,
+                            rol = rol
                         });
                     case constDefinidas.rolProfesor:
                         TProfesor profesor = (await _context.TProfesors
@@ -250,9 +262,10 @@ namespace gestionDiversidad.Controllers
                         await _context.SaveChangesAsync();
                         await _serviceController
                             .guardarAuditoria(sesionNif, constDefinidas.screenProfesor, constDefinidas.accionModificar);
-                        return RedirectToAction("volverPerfil", "TUsuarios", new { 
+                        return RedirectToAction("volverPerfil", "TUsuarios", new
+                        {
                             nif = nif,
-                            rol = rol 
+                            rol = rol
                         });
                     case constDefinidas.rolMedico:
                         TMedico medico = (await _context.TMedicos
@@ -263,9 +276,10 @@ namespace gestionDiversidad.Controllers
                         await _context.SaveChangesAsync();
                         await _serviceController
                             .guardarAuditoria(sesionNif, constDefinidas.screenMedico, constDefinidas.accionModificar);
-                        return RedirectToAction("volverPerfil", "TUsuarios", new { 
+                        return RedirectToAction("volverPerfil", "TUsuarios", new
+                        {
                             nif = nif,
-                            rol = rol 
+                            rol = rol
                         });
                 }
             }
@@ -275,29 +289,72 @@ namespace gestionDiversidad.Controllers
                 case constDefinidas.rolProfesor:
                     TProfesor profesor = (await _context.TProfesors
                         .FirstOrDefaultAsync(p => p.Nif == nif))!;
-                    return RedirectToAction("modificarAlumno", "TAlumnos", new {
+                    return RedirectToAction("modificarAlumno", "TAlumnos", new
+                    {
                         nif = nif,
-                        rol = rol 
+                        rol = rol
                     });
                 case constDefinidas.rolAlumno:
                     TAlumno alumno = (await _context.TAlumnos
                         .FirstOrDefaultAsync(a => a.Nif == nif))!;
-                    return RedirectToAction("modificarProfesor", "TProfesores", new {
+                    return RedirectToAction("modificarProfesor", "TProfesores", new
+                    {
                         nif = nif,
-                        rol = rol 
+                        rol = rol
                     });
                 case constDefinidas.rolMedico:
                     TAlumno medico = (await _context.TAlumnos
                         .FirstOrDefaultAsync(m => m.Nif == nif))!;
-                    return RedirectToAction("modificarMedico", "TMedicos", new {
-                        nif = nif, 
-                        rol = rol 
-                    });                
+                    return RedirectToAction("modificarMedico", "TMedicos", new
+                    {
+                        nif = nif,
+                        rol = rol
+                    });
             }
-            return RedirectToAction("volverPerfil", "TUsuarios", new {
+            return RedirectToAction("volverPerfil", "TUsuarios", new
+            {
                 nif = nif,
                 rol = rol
             });
         }
+
+        //POST : TUsuarios/cerrarSesion
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult cerrarSesion()
+        {
+            string sessionKeyRol = constDefinidas.keyRol;
+            string sessionKeyNif = constDefinidas.keyNif;
+            string sessionActualUser = constDefinidas.keyActualUser;
+
+            HttpContext.Session.Remove(sessionKeyRol);
+            HttpContext.Session.Remove(sessionKeyNif);
+            HttpContext.Session.Remove(sessionActualUser);
+
+            return RedirectToAction("InicioSesion", "TUsuarios");
+        }
+
+        //POST : TUsuarios/volverPerfilPrincipal
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult volverPerfilPrincipal(string nif, int rol)
+        {
+            string actualJson;
+            UserNavigation actualUser = giveActualUser();
+
+            if(actualUser.padre != null)
+            {
+                actualUser.padre = null;
+                actualJson = JsonConvert.SerializeObject(actualUser);
+                HttpContext.Session.SetString(constDefinidas.keyActualUser, actualJson);
+            }
+
+            return RedirectToAction("volverPerfil", "TUsuarios", new
+            {
+                nif = nif,
+                rol = rol
+            });
+        }
+
     }
 }
