@@ -148,10 +148,6 @@ namespace gestionDiversidad.Controllers
         //Función que crea un informe: TInformes/crearInforme
         public async Task<IActionResult> crearInforme(string nifMedico, string nifAlumno)
         {
-            int sesionRol = giveSesionRol();
-            string sesionNif = giveSesionNif();
-            UserNavigation actualUser = giveActualUser();
-
             var filepdf = TempData[constDefinidas.keyInformePDF] as string;
             byte[] filestream = Convert.FromBase64String(filepdf!);
 
@@ -170,9 +166,7 @@ namespace gestionDiversidad.Controllers
 
             return RedirectToAction("listaAlumnos", "TAlumnos",
                 new {
-                    nif = actualUser.nif,
-                    rol = actualUser.rol
-                    , volverPadre = "false" 
+                     volverPadre = "false" 
                 });
         }
 

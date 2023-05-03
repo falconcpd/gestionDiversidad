@@ -290,29 +290,21 @@ namespace gestionDiversidad.Controllers
 
             switch (rol)
             {
+                case constDefinidas.rolAlumno:
+                    return RedirectToAction("modificarAlumno", "TAlumnos");
                 case constDefinidas.rolProfesor:
                     TProfesor profesor = (await _context.TProfesors
                         .FirstOrDefaultAsync(p => p.Nif == nif))!;
-                    return RedirectToAction("modificarAlumno", "TAlumnos", new
-                    {
-                        nif = nif,
-                        rol = rol
-                    });
-                case constDefinidas.rolAlumno:
-                    TAlumno alumno = (await _context.TAlumnos
-                        .FirstOrDefaultAsync(a => a.Nif == nif))!;
                     return RedirectToAction("modificarProfesor", "TProfesores", new
                     {
-                        nif = nif,
-                        rol = rol
+                        nif = nif
                     });
                 case constDefinidas.rolMedico:
                     TAlumno medico = (await _context.TAlumnos
                         .FirstOrDefaultAsync(m => m.Nif == nif))!;
                     return RedirectToAction("modificarMedico", "TMedicos", new
                     {
-                        nif = nif,
-                        rol = rol
+                        nif = nif
                     });
             }
             return RedirectToAction("volverPerfil", "TUsuarios", new

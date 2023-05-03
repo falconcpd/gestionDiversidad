@@ -43,13 +43,10 @@
     <form asp-action="confirmarBorradoAlumno" asp-controller="TAlumnos" method="post"
     style="margin-top: 10px; margin-bottom: 10px;">
         <input type="hidden" name="nifAlumno" value="@Model.Alumno.Nif" />
-        <input type="hidden" name="actualRol" value="@Model.ActualRol" />
-        <input type="hidden" name="actualNif" value="@Model.ActualNif" />
         <input type="submit" value="Borrar Alumno" class="btn btn-danger" /> 
     </form>
     <div>
         <a asp-action="listaAlumnos" asp-controller="TAlumnos"
-           asp-route-nif="@Model.ActualNif" asp-route-rol="@Model.ActualRol" 
            asp-route-volverPadre="false">
             Volver a la lista de alumnos.
         </a>

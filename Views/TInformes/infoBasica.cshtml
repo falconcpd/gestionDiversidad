@@ -38,28 +38,12 @@
     </dl>
 </div>
 
-@if (Model.ActualRol == Model.SesionRol)
-{
-    <div>
-        <a asp-controller="TInformes" asp-action="listaInformes"
-       asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver lista de informes</a>
-    </div>
-}
-else
-{
-    <div>
-        <a asp-controller="TInformes" asp-action="listaInformes"
-       asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver lista informes</a>
-    </div>
-    @if (!(Model.SesionRol == constDefinidas.rolProfesor))
-    {
-        <div>
-            <a asp-controller="TInformes" asp-action="listaInformes"
-       asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver a perfil principal</a>
-        </div>
-    }
-    
-}
+<div>
+    <a asp-controller="TInformes" asp-action="listaInformes"
+     asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver lista de informes</a>
+</div>
+
+
 
 @if (Model.Permiso.Modificar)
 {

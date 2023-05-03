@@ -64,7 +64,7 @@
         }
     </tbody>
 </table>
-@if (Model.Permiso.Insertar && Model.ActualRol == constDefinidas.rolAdmin)
+@if (Model.Permiso.Insertar)
 {
     <div style="margin-top: 10px; margin-bottom: 10px;">
         <a asp-controller="TAlumnos" asp-action="insertarAlumno"
@@ -74,6 +74,6 @@
 
 <div>
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
-    asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver al perfil anterior</a>
+    asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver al perfil anterior</a>
 </div>
 

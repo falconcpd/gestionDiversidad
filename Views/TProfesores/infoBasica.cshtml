@@ -59,8 +59,6 @@
 {
     <div>
         <form method="get" asp-action="listaAlumnos" asp-controller="TAlumnos">
-            <input type="hidden" name="nif" value="@Model?.Profesor.Nif" />
-            <input type="hidden" name="rol" value=@constDefinidas.rolProfesor />
             <input type="hidden" name="volverPadre" value="false" />
             <button type="submit">Ver lista de alumnos del profesor</button>
         </form>

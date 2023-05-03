@@ -53,7 +53,6 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> infoBasica(string id)
         {
             AlumnoView vistaAlumno = new AlumnoView();
-            string sesionNif = giveSesionNif();
             int sesionRol = giveSesionRol();
             UserNavigation actualUser = giveActualUser();
             int actualRol = actualUser.rol;
@@ -88,8 +87,6 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenListaAsignaturas, sesionRol);
             vistaAlumno.LAlumnos = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaAlumnos, sesionRol);
-            vistaAlumno.SesionRol = sesionRol;
-            vistaAlumno.SesionNif = sesionNif;
             vistaAlumno.PadreNif = actualUser.padre?.nif;               
             vistaAlumno.PadreRol = actualUser.padre?.rol;
 
@@ -97,11 +94,10 @@ namespace gestionDiversidad.Controllers
         }
 
         //GET: TAlumnos/listaAlumnos
-        public async Task<IActionResult> listaAlumnos(string nif, int rol, string volverPadre)
+        public async Task<IActionResult> listaAlumnos(string volverPadre)
         {
             List<TAlumno> listaAlumnos;
             ListaAlumnosView vistaListasAlumno = new ListaAlumnosView();
-            string sesionNif = giveSesionNif();
             int sesionRol = giveSesionRol();
             bool volverPadreValue;
             UserNavigation actualUser = giveActualUser();
@@ -114,19 +110,15 @@ namespace gestionDiversidad.Controllers
                 actualUser = giveActualUser();
             }
 
-            listaAlumnos = await _serviceController.listaAlumnos(nif, rol);
+            listaAlumnos = await _serviceController.listaAlumnos(actualUser.nif, actualUser.rol);
 
             vistaListasAlumno.ListaAlumnos = listaAlumnos;
             vistaListasAlumno.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaAlumnos, sesionRol);
             vistaListasAlumno.Alumno = await _serviceController
                 .permisoPantalla(constDefinidas.screenAlumno, sesionRol);
-            vistaListasAlumno.Rol = rol;
-            vistaListasAlumno.Nif = nif;
             vistaListasAlumno.ActualNif = actualUser.nif;
             vistaListasAlumno.ActualRol = actualUser.rol;
-            vistaListasAlumno.SesionRol = sesionRol;
-            vistaListasAlumno.SesionNif = sesionNif;
 
             return View(vistaListasAlumno);
         }
@@ -230,13 +222,14 @@ namespace gestionDiversidad.Controllers
         }
 
         //GET: TAlumnos/modificarAlumno
-        public async Task<IActionResult> modificarAlumno(string nif)
+        public async Task<IActionResult> modificarAlumno()
         {
+            UserNavigation actualUser = giveActualUser();
             TAlumno alumno = (await _context.TAlumnos
                 .Include(a => a.NifNavigation)
-                .FirstOrDefaultAsync(a => a.Nif == nif))!;
+                .FirstOrDefaultAsync(a => a.Nif == actualUser.nif))!;
             ModificarUsuarios modificarAlumnoView = new ModificarUsuarios();
-            modificarAlumnoView.Nif = nif;
+            modificarAlumnoView.Nif = alumno.Nif;
             modificarAlumnoView.Rol = constDefinidas.rolAlumno;
             modificarAlumnoView.Nombre = alumno.Nombre;
             modificarAlumnoView.Apellido1 = alumno.Apellido1;
@@ -292,8 +285,6 @@ namespace gestionDiversidad.Controllers
             int actualRol = actualUser.rol;
 
             BorrarAlumnoView vistaBorrarAlumno = new BorrarAlumnoView();
-            vistaBorrarAlumno.ActualNif = actualNif;
-            vistaBorrarAlumno.ActualRol = actualRol;
             vistaBorrarAlumno.Alumno = alumno;
 
             return View(vistaBorrarAlumno);
@@ -303,7 +294,7 @@ namespace gestionDiversidad.Controllers
         // POST: TAlumnos/confirmarBorradoAlumno
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> confirmarBorradoAlumno(string nifAlumno, int actualRol, string actualNif)
+        public async Task<IActionResult> confirmarBorradoAlumno(string nifAlumno)
         {
             string sesionNif = giveSesionNif();
             TAlumno alumno = (await _context.TAlumnos
@@ -334,9 +325,7 @@ namespace gestionDiversidad.Controllers
 
             return RedirectToAction("listaAlumnos", "TAlumnos", new
             {
-                rol = actualRol,
-                volverPadre = "false",
-                nif = actualNif
+                volverPadre = "false"
             });
         }
     }
