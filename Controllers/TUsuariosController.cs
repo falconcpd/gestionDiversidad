@@ -57,6 +57,11 @@ namespace gestionDiversidad.Controllers
                 TempData["ErrorSesion"] = "El usuario o contraseña son incorrectos.";
                 return View("InicioSesion");
             }
+            else if(usuario == constDefinidas.keyMedicoTemporal)
+            {
+                TempData["ErrorSesion"] = "No se puede iniciar sesión como un médico temporal.";
+                return View("InicioSesion");
+            }
 
             rol = user.IdRol;
             nif = user.Nif;
