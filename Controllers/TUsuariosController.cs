@@ -120,10 +120,19 @@ namespace gestionDiversidad.Controllers
 
         //[Remote] para que no se repitan nombre de usuarios en un usuario
         //GET : TUsuarios/verificarNombreUsuario
-        public async Task<IActionResult> verificarNombreUsuario(string usuario)
+        public async Task<IActionResult> verificarNombreUsuario(string usuario, string nif)
         {
+            string prueba = nif;
+            TUsuario user = (await _context.TUsuarios
+                .FirstOrDefaultAsync(m => m.Nif == nif))!;
+
             var TUsuario = await _context.TUsuarios
                 .AnyAsync(u => u.Usuario == usuario);
+
+            if(user.Usuario == usuario)
+            {
+                return Json(TUsuario);
+            }
             return Json(!TUsuario);
         }
 

@@ -21,7 +21,7 @@ namespace gestionDiversidad.ViewModels
         [DataType(DataType.Password)]
         public string? ConfirmPassword { get; set; }
         [Required(ErrorMessage = "El Usuario no puede estar vacío.")]
-        [Remote(action: "verificarNombreUsuario", controller: "TUsuarios", ErrorMessage = "El nombre del usuario ya está en uso")]
+        [Remote(action: "verificarNombreUsuario", controller: "TUsuarios", AdditionalFields = nameof(Nif), ErrorMessage = "El nombre del usuario ya está en uso")]
         public string? Usuario { get; set; }
     }
 }
