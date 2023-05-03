@@ -9,7 +9,5 @@ namespace gestionDiversidad.ViewModels.TProfesores
         public TPermiso LDocencias { get; set; } = null!;
         public TPermiso LAlumnos { get; set; } = null!;
         public TPermiso LProfesores { get; set; } = null!;
-        public int? PadreRol { get; set; }
-        public string? PadreNif { get; set; }
     }
 }

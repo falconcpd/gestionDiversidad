@@ -89,11 +89,7 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenListaAlumnos, sesionRol);
             vistaMedico.LMedicos = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaMedicos, sesionRol);
-            vistaMedico.Rol = constDefinidas.rolMedico;
-            vistaMedico.SesionRol = sesionRol;
-            vistaMedico.SesionNif = sesionNif;
-            vistaMedico.PadreNif = actualUser.padre?.nif;
-            vistaMedico.PadreRol = actualUser.padre?.rol;
+
             return View(vistaMedico);
         }
 
@@ -158,13 +154,14 @@ namespace gestionDiversidad.Controllers
         }
 
         //GET: TMedicos/modificarMedico
-        public async Task<IActionResult> modificarMedico(string nif)
+        public async Task<IActionResult> modificarMedico()
         {
+            UserNavigation actualUser = giveActualUser();
             TMedico medico = (await _context.TMedicos
                 .Include(a => a.NifNavigation)
-                .FirstOrDefaultAsync(m => m.Nif == nif))!;
+                .FirstOrDefaultAsync(m => m.Nif == actualUser.nif))!;
             ModificarUsuarios modificarMedicoView = new ModificarUsuarios();
-            modificarMedicoView.Nif = nif;
+            modificarMedicoView.Nif = medico.Nif;
             modificarMedicoView.Rol = constDefinidas.rolMedico;
             modificarMedicoView.Nombre = medico.Nombre;
             modificarMedicoView.Apellido1 = medico.Apellido1;
@@ -186,8 +183,6 @@ namespace gestionDiversidad.Controllers
 
             BorrarMedicoView vistaBorrarMedico = new BorrarMedicoView();
             vistaBorrarMedico.Medico = medico;
-            vistaBorrarMedico.ActualNif = actualUser.nif;
-            vistaBorrarMedico.ActualRol = actualUser.rol;
 
             return View(vistaBorrarMedico);
 
@@ -196,7 +191,7 @@ namespace gestionDiversidad.Controllers
         // POST: TMedicos/confirmarBorradoMedico
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> confirmarBorradoMedico(string nifMedico, int actualRol, string actualNif)
+        public async Task<IActionResult> confirmarBorradoMedico(string nifMedico)
         {
             string sesionNif = giveSesionNif();
             TMedico medico = (await _context.TMedicos

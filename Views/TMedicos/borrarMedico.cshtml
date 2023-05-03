@@ -43,8 +43,6 @@
     <form asp-action="confirmarBorradoMedico" asp-controller="TMedicos" method="post"
           style="margin-top: 10px; margin-bottom: 10px;">
         <input type="hidden" name="nifMedico" value="@Model.Medico.Nif" />
-        <input type="hidden" name="actualRol" value="@Model.ActualRol" />
-        <input type="hidden" name="actualNif" value="@Model.ActualNif" />
         <input type="submit" value="Borrar Médico" class="btn btn-danger" /> 
     </form>
     <div>

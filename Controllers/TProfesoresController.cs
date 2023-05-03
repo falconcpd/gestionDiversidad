@@ -89,8 +89,6 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenListaAlumnos, sesionRol);
             vistaProfesor.LProfesores = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaProfesores, sesionRol);
-            vistaProfesor.PadreNif = actualUser.padre?.nif;
-            vistaProfesor.PadreRol = actualUser.padre?.rol;
 
             return View(vistaProfesor);
         }
