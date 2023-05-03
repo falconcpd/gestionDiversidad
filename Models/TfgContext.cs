@@ -162,7 +162,7 @@ public partial class TfgContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Accion)
-                .HasMaxLength(50)
+                .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("accion");
             entity.Property(e => e.FechaHora)
