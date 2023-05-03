@@ -10,7 +10,5 @@ namespace gestionDiversidad.ViewModels.TAlumnos
         public TPermiso LMatriculas { get; set; } = null!;
         public TPermiso LInformes { get; set; } = null!;
         public TPermiso LAlumnos { get; set; } = null!;
-        public int? PadreRol { get; set; }
-        public string? PadreNif { get; set; }
     }
 }

@@ -120,9 +120,8 @@ namespace gestionDiversidad.Controllers
 
         //[Remote] para que no se repitan nombre de usuarios en un usuario
         //GET : TUsuarios/verificarNombreUsuario
-        public async Task<IActionResult> verificarNombreUsuario(string usuario, string nif)
+        public async Task<IActionResult> verificarModificarNombreUsuario(string usuario, string nif)
         {
-            string prueba = nif;
             TUsuario user = (await _context.TUsuarios
                 .FirstOrDefaultAsync(m => m.Nif == nif))!;
 
@@ -133,6 +132,16 @@ namespace gestionDiversidad.Controllers
             {
                 return Json(TUsuario);
             }
+            return Json(!TUsuario);
+        }
+
+        //[Remote] para que no se repitan nombre de usuarios en un usuario
+        //GET : TUsuarios/verificarCrearNombreUsuario
+        public async Task<IActionResult> verificarCrearNombreUsuario(string usuario)
+        {
+            var TUsuario = await _context.TUsuarios
+                .AnyAsync(u => u.Usuario == usuario);
+
             return Json(!TUsuario);
         }
 
@@ -304,10 +313,7 @@ namespace gestionDiversidad.Controllers
                 case constDefinidas.rolProfesor:
                     TProfesor profesor = (await _context.TProfesors
                         .FirstOrDefaultAsync(p => p.Nif == nif))!;
-                    return RedirectToAction("modificarProfesor", "TProfesores", new
-                    {
-                        nif = nif
-                    });
+                    return RedirectToAction("modificarProfesor", "TProfesores");
                 case constDefinidas.rolMedico:
                     TAlumno medico = (await _context.TAlumnos
                         .FirstOrDefaultAsync(m => m.Nif == nif))!;

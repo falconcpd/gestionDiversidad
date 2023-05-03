@@ -57,7 +57,6 @@ namespace gestionDiversidad.Controllers
         {
             ProfesorView vistaProfesor = new ProfesorView();
             int sesionRol = giveSesionRol();
-            string sesionNif = giveSesionNif();
             UserNavigation actualUser = giveActualUser();
             string actualJson;
 
@@ -90,9 +89,6 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenListaAlumnos, sesionRol);
             vistaProfesor.LProfesores = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaProfesores, sesionRol);
-            vistaProfesor.Rol = constDefinidas.rolProfesor;
-            vistaProfesor.SesionRol = sesionRol;
-            vistaProfesor.SesionNif = sesionNif;
             vistaProfesor.PadreNif = actualUser.padre?.nif;
             vistaProfesor.PadreRol = actualUser.padre?.rol;
 
@@ -189,13 +185,14 @@ namespace gestionDiversidad.Controllers
         }
 
         //GET: TProfesores/modificarProfesor
-        public async Task<IActionResult> modificarProfesor(string nif)
+        public async Task<IActionResult> modificarProfesor()
         {
+            UserNavigation actualUser = giveActualUser();
             TProfesor profesor = (await _context.TProfesors
                 .Include(p => p.NifNavigation)
-                .FirstOrDefaultAsync(p => p.Nif == nif))!;
+                .FirstOrDefaultAsync(p => p.Nif == actualUser.nif))!;
             ModificarUsuarios modificarProfesorView = new ModificarUsuarios();
-            modificarProfesorView.Nif = nif;
+            modificarProfesorView.Nif = profesor.Nif;
             modificarProfesorView.Rol = constDefinidas.rolProfesor;
             modificarProfesorView.Nombre = profesor.Nombre;
             modificarProfesorView.Apellido1 = profesor.Apellido1;
@@ -247,6 +244,7 @@ namespace gestionDiversidad.Controllers
 
             return View(vistaBorrarDocencia);
         }
+
         // POST: TAsignaturas/confirmarBorradoDocencia/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -275,9 +273,6 @@ namespace gestionDiversidad.Controllers
             BorrarProfesorView vistaBorrarProfesor = new BorrarProfesorView();
             TProfesor profesor = (await _context.TProfesors
                     .FirstOrDefaultAsync(p => p.Nif == nifProfesor))!;
-
-            vistaBorrarProfesor.ActualNif = giveSesionNif();
-            vistaBorrarProfesor.ActualRol = giveSesionRol();
             vistaBorrarProfesor.Profesor = profesor;
 
             return View(vistaBorrarProfesor);
