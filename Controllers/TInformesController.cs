@@ -54,7 +54,7 @@ namespace gestionDiversidad.Controllers
         }
 
         // GET: TInformes/listaInformes
-        public async Task<IActionResult> listaInformes(string nif, int rol)
+        public async Task<IActionResult> listaInformes()
         {
             List<TInforme> informes = new List<TInforme>();
             ListaInformesView vistaListaInformes = new ListaInformesView();
@@ -62,17 +62,15 @@ namespace gestionDiversidad.Controllers
             string sesionNif = giveSesionNif();
             UserNavigation actualUser = giveActualUser();
 
-            informes = await _serviceController.listaInformes(nif, rol);
+            informes = await _serviceController.listaInformes(actualUser.nif, actualUser.rol);
 
              vistaListaInformes.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenListalInformes, sesionRol);
             vistaListaInformes.Informe = await _serviceController
                 .permisoPantalla(constDefinidas.screenInforme, sesionRol);
             vistaListaInformes.ListaInformes = informes;
-            vistaListaInformes.Rol = actualUser.rol;
-            vistaListaInformes.Nif = actualUser.nif;
-            vistaListaInformes.SesionRol= sesionRol;
-            vistaListaInformes.SesionNif = sesionNif;
+            vistaListaInformes.ActualRol = actualUser.rol;
+            vistaListaInformes.ActualNif = actualUser.nif;
 
             return View(vistaListaInformes);
 
@@ -96,10 +94,6 @@ namespace gestionDiversidad.Controllers
                 permisoPantalla(constDefinidas.screenInforme, sesionRol);
             informeView.Alumno = alumno;
             informeView.Medico = medico;
-            informeView.ActualRol = actualUser.rol;
-            informeView.SesionRol = sesionRol;
-            informeView.SesionNif = sesionNif;
-            informeView.ActualNif = actualUser.nif;
 
             return View(informeView);
         }
@@ -113,7 +107,7 @@ namespace gestionDiversidad.Controllers
             
         }
 
-        // POST : TInformes/actualizarPDF
+        // POST : TInformes/ActualizarPDF
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizarPDF(string nifMedico, string nifAlumno, 
@@ -175,9 +169,7 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> crearInformeNuevo(CrearInformeView model)
         {
-            int sesionRol = giveSesionRol();
             string sesionNif = giveSesionNif();
-            UserNavigation actualUser = giveActualUser();
 
             if (ModelState.IsValid)
             {
@@ -204,11 +196,7 @@ namespace gestionDiversidad.Controllers
                 await _serviceController
                     .guardarAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionCrear);
 
-                return RedirectToAction("listaInformes", "TInformes", 
-                    new {
-                        nif = actualUser.nif,
-                        rol = actualUser.rol 
-                    });
+                return RedirectToAction("listaInformes", "TInformes");
             }
 
             return RedirectToAction("insertarInforme", "TInformes"); 
@@ -248,11 +236,7 @@ namespace gestionDiversidad.Controllers
                     "Como es obligatorio que tenga al menos uno, por favor, borre el alumno " +
                     "completamente o añada otro informe";
 
-                return RedirectToAction("listaInformes", "TInformes", new
-                {
-                    nif = actualUser.nif,
-                    rol = actualUser.rol
-                });
+                return RedirectToAction("listaInformes", "TInformes");
                     
             }
 
@@ -260,8 +244,6 @@ namespace gestionDiversidad.Controllers
             vistaBorrarInforme.NifAlumno = nifAlumno;
             vistaBorrarInforme.NifMedico = nifMedico;
             vistaBorrarInforme.Fecha = fecha;
-            vistaBorrarInforme.ActualNif = actualUser.nif;
-            vistaBorrarInforme.ActualRol = actualUser.rol;
 
             return View(vistaBorrarInforme);
 
@@ -281,11 +263,7 @@ namespace gestionDiversidad.Controllers
                 await _serviceController
                     .guardarAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionBorrar);
 
-                return RedirectToAction("listaInformes", "TInformes", new
-                {
-                    nif = model.ActualNif,
-                    rol = model.ActualRol
-                });
+                return RedirectToAction("listaInformes", "TInformes");
             }
 
             return RedirectToAction("borrarInforme", "TInformes", new
@@ -307,11 +285,7 @@ namespace gestionDiversidad.Controllers
                 TempData["UnSoloMedicoParaCambiar"] = "No hay médicos, por lo que no tiene" +
                     "sentido cambiarlo";
 
-                return RedirectToAction("listaInformes", "TInformes", new
-                {
-                    nif = actualUser.nif,
-                    rol = actualUser.rol
-                });
+                return RedirectToAction("listaInformes", "TInformes");
             }
 
             TAlumno alumno = (await _context.TAlumnos
@@ -325,8 +299,6 @@ namespace gestionDiversidad.Controllers
             modificar.Medico = medico;
             modificar.Alumno = alumno;
             modificar.Fecha = fecha;
-            modificar.ActualNif = actualUser.nif;
-            modificar.ActualRol = actualUser.rol;
             modificar.ListaMedicos = listaMedicos;
 
             return View(modificar);
@@ -334,7 +306,7 @@ namespace gestionDiversidad.Controllers
         // POST: TInformes/confirmarCambioMedicoInforme
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> confirmarCambioMedicoInforme(string nifAnteriorMedico, string nifAlumno, string fecha, string actualNif, int actualRol, string nifNuevoMedico)
+        public async Task<IActionResult> confirmarCambioMedicoInforme(string nifAnteriorMedico, string nifAlumno, string fecha, string nifNuevoMedico)
         {
             string sesionNif = giveSesionNif();
             TInforme informe = await _serviceController.buscarInforme(nifAlumno, nifAnteriorMedico, fecha);
@@ -366,11 +338,7 @@ namespace gestionDiversidad.Controllers
                 .guardarAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionModificar);
 
 
-            return RedirectToAction("listaInformes", "TInformes", new
-            {
-                nif = actualNif,
-                rol = actualRol
-            });
+            return RedirectToAction("listaInformes", "TInformes");
         }
     }
 }

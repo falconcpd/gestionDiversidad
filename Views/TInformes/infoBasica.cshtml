@@ -38,13 +38,6 @@
     </dl>
 </div>
 
-<div>
-    <a asp-controller="TInformes" asp-action="listaInformes"
-     asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver lista de informes</a>
-</div>
-
-
-
 @if (Model.Permiso.Modificar)
 {
     <form asp-controller="TInformes" asp-action="actualizarPDF" asp-route-nifAlumno="@Model.Informe.NifAlumno"
@@ -58,3 +51,9 @@
     </form>
 
 }
+
+<div>
+    <a asp-controller="TInformes" asp-action="listaInformes">
+        Volver lista de informes
+    </a>
+</div>

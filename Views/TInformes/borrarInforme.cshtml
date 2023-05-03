@@ -10,12 +10,11 @@
         <input type="hidden" asp-for="NifAlumno" />
         <input type="hidden" asp-for="NifMedico" />
         <input type="hidden" asp-for="Fecha" />
-        <input type="hidden" asp-for="ActualRol" />
-        <input type="hidden" asp-for="ActualNif" />
         <input type="submit" value="Borrar Informe" class="btn btn-danger"
            style="margin-top: 10px; margin-bottom: 10px;" />
     </form>
 <div>
-    <a asp-action="listaInformes" asp-controller="TInformes"
-       asp-route-nif="@Model.ActualNif" asp-route-rol="@Model.ActualRol">Volver a la lista de informes</a>
+    <a asp-action="listaInformes" asp-controller="TInformes">
+        Volver a la lista de informes
+    </a>
 </div>

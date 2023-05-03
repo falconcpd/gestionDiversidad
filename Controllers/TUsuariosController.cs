@@ -119,7 +119,7 @@ namespace gestionDiversidad.Controllers
         }
 
         //[Remote] para que no se repitan nombre de usuarios en un usuario
-        //GET : TUsuarios/verificarNombreUsuario
+        //GET : TUsuarios/verificarModificarNombreUsuario
         public async Task<IActionResult> verificarModificarNombreUsuario(string usuario, string nif)
         {
             TUsuario user = (await _context.TUsuarios
@@ -317,10 +317,7 @@ namespace gestionDiversidad.Controllers
                 case constDefinidas.rolMedico:
                     TAlumno medico = (await _context.TAlumnos
                         .FirstOrDefaultAsync(m => m.Nif == nif))!;
-                    return RedirectToAction("modificarMedico", "TMedicos", new
-                    {
-                        nif = nif
-                    });
+                    return RedirectToAction("modificarMedico", "TMedicos");
             }
             return RedirectToAction("volverPerfil", "TUsuarios", new
             {

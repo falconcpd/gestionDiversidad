@@ -77,7 +77,7 @@
 
 <div style="margin-top: 10px; margin-bottom: 10px;">
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
-     asp-route-nif=@Model.Nif asp-route-rol=@Model.Rol>Volver al perfil anterior</a>
+     asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver al perfil anterior</a>
 </div>
 
 @if (TempData["UnSoloInforme"] != null)

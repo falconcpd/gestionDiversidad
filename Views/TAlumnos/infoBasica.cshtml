@@ -59,8 +59,6 @@
 {
     <div>
         <form method="get" asp-action="listaInformes" asp-controller="TInformes">
-            <input type="hidden" name="nif" value="@Model?.Alumno.Nif" />
-            <input type="hidden" name="rol" value="@constDefinidas.rolAlumno" />
             <button type="submit">Lista de informes del alumno</button>
         </form>
     </div>
