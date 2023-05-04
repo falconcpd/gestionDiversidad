@@ -194,7 +194,7 @@ namespace gestionDiversidad.Controllers
                 _context.Add(informe);
                 await _context.SaveChangesAsync();
                 await _serviceController
-                    .guardarAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionCrear);
+                    .guardarCrearBorrarInformeAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionCrearElemento, informe);
 
                 return RedirectToAction("listaInformes", "TInformes");
             }
@@ -258,10 +258,10 @@ namespace gestionDiversidad.Controllers
             {
                 string sesionNif = giveSesionNif();
                 TInforme informe = await _serviceController.buscarInforme(model.NifAlumno, model.NifMedico, model.Fecha);
+                await _serviceController
+                    .guardarCrearBorrarInformeAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionBorrarElemento, informe);
                 _context.TInformes.Remove(informe);
                 await _context.SaveChangesAsync();
-                await _serviceController
-                    .guardarAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionBorrar);
 
                 return RedirectToAction("listaInformes", "TInformes");
             }

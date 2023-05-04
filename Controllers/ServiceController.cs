@@ -269,7 +269,7 @@ namespace gestionDiversidad.Controllers
 
             switch (accion)
             {
-                case constDefinidas.accionCrearUsuario:
+                case constDefinidas.accionCrearElemento:
                     switch (usuario.IdRol)
                     {
                         case constDefinidas.rolAlumno:
@@ -307,7 +307,7 @@ namespace gestionDiversidad.Controllers
                             break;
                     }
                     return;
-                case constDefinidas.accionBorrarUsuario:
+                case constDefinidas.accionBorrarElemento:
                     switch (usuario.IdRol)
                     {
                         case constDefinidas.rolAlumno:
@@ -473,9 +473,55 @@ namespace gestionDiversidad.Controllers
 
         }
 
-            //Retorna una lista de todos las auditorias.
-            //Esta función solo está disponible para un administrador.
-            public async Task<List<TAuditorium>> listaAuditorias()
+        public async Task guardarCrearBorrarInformeAuditoria(string nifAutor, int pantalla, int accion, TInforme informe)
+        {
+            string fechaFormateada = informe.Fecha
+                .ToString("dd/MM/yyyy HH:mm:ss");
+            DateTime fechaActual = fechaPresente();
+
+            switch (accion)
+            {
+                case constDefinidas.accionCrearElemento:
+                    string mensajeCreacion = "Nuevo informe creado con los siguientes atributos: \n";
+                    mensajeCreacion += "Nif Alumno: " + informe.NifAlumno + "\n";
+                    mensajeCreacion += "Nif Médico: " + informe.NifMedico + "\n";
+                    mensajeCreacion += "Fecha Creación: " + fechaFormateada + "\n";
+
+                    mensajeCreacion = mensajeCreacion.Replace("\n", "<br/>");
+                    var auditoriaCrearInforme = new TAuditorium
+                    {
+                        NifUsuario = nifAutor,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = mensajeCreacion
+                    };
+                    _context.Add(auditoriaCrearInforme);
+                    await _context.SaveChangesAsync();
+                    return;
+                case constDefinidas.accionBorrarElemento:
+                    string mensajeBorrado = "Un informe con los siguientes atributos ha sido borrado : \n";
+                    mensajeBorrado += "Nif Alumno: " + informe.NifAlumno + "\n";
+                    mensajeBorrado += "Nif Médico: " + informe.NifMedico + "\n";
+                    mensajeBorrado += "Fecha Creación: " + fechaFormateada + "\n";
+
+                    mensajeBorrado = mensajeBorrado.Replace("\n", "<br/>");
+                    var auditoriaBorrarInforme = new TAuditorium
+                    {
+                        NifUsuario = nifAutor,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = mensajeBorrado
+                    };
+                    _context.Add(auditoriaBorrarInforme);
+                    await _context.SaveChangesAsync();
+                    return;
+            }
+
+        }
+
+        //Retorna una lista de todos las auditorias.
+        //Esta función solo está disponible para un administrador.
+        public async Task<List<TAuditorium>> listaAuditorias()
         {
             List<TAuditorium> auditorias = await _context.TAuditoria
                 .Include(a => a.PantallaNavigation)

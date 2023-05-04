@@ -225,7 +225,7 @@ namespace gestionDiversidad.Controllers
             _context.Add(profesor);
             await _context.SaveChangesAsync();
             await _serviceController
-               .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaProfesores, constDefinidas.accionCrearUsuario, nif);
+               .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaProfesores, constDefinidas.accionCrearElemento, nif);
 
             return RedirectToAction("listaProfesores", "TProfesores", 
                 new { volverPadre = "false" });
@@ -295,7 +295,7 @@ namespace gestionDiversidad.Controllers
             TUsuario usuario = (await _context.TUsuarios
                 .FirstOrDefaultAsync(u => u.Nif == nifProfesor))!;
             await _serviceController
-                .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaProfesores, constDefinidas.accionBorrar, nifProfesor);
+                .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaProfesores, constDefinidas.accionBorrarElemento, nifProfesor);
 
             _context.TUsuarios.Remove(usuario);
 

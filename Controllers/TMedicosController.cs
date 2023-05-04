@@ -148,7 +148,7 @@ namespace gestionDiversidad.Controllers
             _context.Add(medico);
             await _context.SaveChangesAsync();
             await _serviceController
-                .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaMedicos, constDefinidas.accionCrearUsuario, nif);
+                .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaMedicos, constDefinidas.accionCrearElemento, nif);
             return RedirectToAction("listaMedicos", "TMedicos",
                 new { volverPadre = "false" });
         }
@@ -233,7 +233,7 @@ namespace gestionDiversidad.Controllers
             _context.TMedicos.Remove(medico);
 
             await _serviceController
-                .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaMedicos, constDefinidas.accionBorrarUsuario, nifMedico);
+                .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaMedicos, constDefinidas.accionBorrarElemento, nifMedico);
 
             TUsuario usuario = (await _context.TUsuarios
                 .FirstOrDefaultAsync(u => u.Nif == nifMedico))!;
