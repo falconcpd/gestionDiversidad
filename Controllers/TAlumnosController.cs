@@ -209,7 +209,7 @@ namespace gestionDiversidad.Controllers
                 alumno!.IdAsignaturas.Add(asignatura!);
                 await _context.SaveChangesAsync();
                 await _serviceController
-                    .guardarAuditoria(sesionNif, constDefinidas.screenListaMatriculas, constDefinidas.accionCrear);
+                    .guardarCrearBorrarMatriculaAuditoria(sesionNif, constDefinidas.screenListaMatriculas, constDefinidas.accionCrearElemento, alumno.Nif, asignatura!.Nombre);
 
                 return RedirectToAction("listaMatriculas", "TAlumnos");
 
@@ -268,7 +268,7 @@ namespace gestionDiversidad.Controllers
 
             await _context.SaveChangesAsync();
             await _serviceController
-                .guardarAuditoria(sesionNif, constDefinidas.screenListaMatriculas, constDefinidas.accionBorrar);
+                .guardarCrearBorrarMatriculaAuditoria(sesionNif, constDefinidas.screenListaMatriculas, constDefinidas.accionBorrarElemento, alumno.Nif, asignatura!.Nombre);
             return RedirectToAction("listaMatriculas", "TAlumnos");
             
         }

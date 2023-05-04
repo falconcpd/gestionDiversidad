@@ -604,6 +604,45 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        //Guarda en la base de datos los cambios realizados que tengan que ver con la creacion o borrado de las asignaturas
+        public async Task guardarCrearBorrarMatriculaAuditoria(string nifAutor, int pantalla, int accion, string nifAlumno, string nombreAsignatura)
+        {
+            DateTime fechaActual = fechaPresente();
+
+            switch (accion)
+            {
+                case constDefinidas.accionCrearElemento:
+                    string mensajeCreacion = "Nueva matrícula con NIF alumno: " + nifAlumno + "\n";
+                    mensajeCreacion += "y asigantura: " + nombreAsignatura;
+
+                    var auditoriaCrearInforme = new TAuditorium
+                    {
+                        NifUsuario = nifAutor,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = mensajeCreacion
+                    };
+                    _context.Add(auditoriaCrearInforme);
+                    await _context.SaveChangesAsync();
+                    return;
+                case constDefinidas.accionBorrarElemento:
+                    string mensajeBorrado = "Matrícula borrada entre el alumno con NIF: " + nifAlumno + "\n";
+                    mensajeBorrado += "y la asigantura: " + nombreAsignatura;
+
+                    var auditoriaBorrarInforme = new TAuditorium
+                    {
+                        NifUsuario = nifAutor,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = mensajeBorrado
+                    };
+                    _context.Add(auditoriaBorrarInforme);
+                    await _context.SaveChangesAsync();
+                    return;
+            }
+
+        }
+
         //Retorna una lista de todos las auditorias.
         //Esta función solo está disponible para un administrador.
         public async Task<List<TAuditorium>> listaAuditorias()
