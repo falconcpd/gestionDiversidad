@@ -15,7 +15,6 @@ namespace gestionDiversidad.Interfaces
         Task<List<TMedico>> listaMedicos();
         Task<TInforme> buscarInforme(string nifAlumno, string nifMedico, string fecha);
         DateTime fechaPresente();
-        Task guardarAuditoria(string nif, int pantalla, int accion);
         Task<List<TAuditorium>> listaAuditorias();
         Task guardarCrearBorrarUsuarioAuditoria(string nifAutor, int pantalla, int accion, string nifUsuario);
         Task guardarModificarUsuarioAuditoria(string nifAutor, int pantalla, ModificarUsuarios model, TUsuario user);
@@ -24,5 +23,6 @@ namespace gestionDiversidad.Interfaces
         Task guardarModificarInformeAuditoria(string nifAutor, int pantalla, TInforme informe);
         Task guardarCrearBorrarAsignaturaAuditoria(string nifAutor, int pantalla, int accion, string nombreAsignatura);
         Task guardarCrearBorrarMatriculaAuditoria(string nifAutor, int pantalla, int accion, string nifAlumno, string nombreAsignatura);
+        Task guardarCrearBorrarDocenciaAuditoria(string nifAutor, int pantalla, int accion, string nifProfesor, string nombreAsignatura);
     }
 }

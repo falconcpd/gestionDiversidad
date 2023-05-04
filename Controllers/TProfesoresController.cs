@@ -173,7 +173,7 @@ namespace gestionDiversidad.Controllers
                 profesor!.IdAsignaturas.Add(asignatura!);
                 await _context.SaveChangesAsync();
                 await _serviceController
-                    .guardarAuditoria(sesionNif, constDefinidas.screenListaDocencias, constDefinidas.accionCrear);
+                    .guardarCrearBorrarDocenciaAuditoria(sesionNif, constDefinidas.screenListaDocencias, constDefinidas.accionCrearElemento, profesor.Nif, asignatura!.Nombre);
 
                 return RedirectToAction("listaDocencias", "TProfesores");
 
@@ -260,7 +260,7 @@ namespace gestionDiversidad.Controllers
 
             await _context.SaveChangesAsync();
             await _serviceController
-                .guardarAuditoria(sesionNif, constDefinidas.screenListaDocencias, constDefinidas.accionBorrar);
+                .guardarCrearBorrarDocenciaAuditoria(sesionNif, constDefinidas.screenListaDocencias, constDefinidas.accionBorrarElemento, profesor.Nif, asignatura!.Nombre);
             return RedirectToAction("listaDocencias", "TProfesores");
 
         }

@@ -212,54 +212,7 @@ namespace gestionDiversidad.Controllers
             DateTime fechaActualFinal = DateTime
                 .ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
             return fechaActualFinal;
-        }
-
-        //Guarda en la base de datos los cambios realizados
-        public async Task guardarAuditoria(string nif, int pantalla, int accion)
-        {
-            DateTime fechaActual = fechaPresente();
-
-            switch (accion)
-            {
-                case constDefinidas.accionCrear:
-                    var auditoriaCrear = new TAuditorium
-                    {
-                        NifUsuario = nif,
-                        Pantalla = pantalla,
-                        FechaHora = fechaActual,
-                        Accion = "Crear nuevo elemento"
-                    };
-                    _context.Add(auditoriaCrear);
-                    await _context.SaveChangesAsync();
-
-                    return;
-                case constDefinidas.accionBorrar:
-                    var auditoriaBorrar = new TAuditorium
-                    {
-                        NifUsuario = nif,
-                        Pantalla = pantalla,
-                        FechaHora = fechaActual,
-                        Accion = "Borrar un elemento"
-                    };
-                    _context.Add(auditoriaBorrar);
-                    await _context.SaveChangesAsync();
-
-                    return;
-                case constDefinidas.accionModificar:
-                    var auditoriaModificar = new TAuditorium
-                    {
-                        NifUsuario = nif,
-                        Pantalla = pantalla,
-                        FechaHora = fechaActual,
-                        Accion = "Modificar un elemento"
-                    };
-                    _context.Add(auditoriaModificar);
-                    await _context.SaveChangesAsync();
-
-                    return;
-
-            }
-        }
+        }     
 
         //Guarda en la base de datos los cambios realizados que tengan que ver con la creacion y borrado de usuarios
         public async Task guardarCrearBorrarUsuarioAuditoria(string nifAutor, int pantalla, int accion, string nifUsuario)
@@ -577,34 +530,34 @@ namespace gestionDiversidad.Controllers
                 case constDefinidas.accionCrearElemento:
                     string mensajeCreacion = "Nueva asignatura creada con nombre: " + nombreAsignatura;
 
-                    var auditoriaCrearInforme = new TAuditorium
+                    var auditoriaCrearAsignatura = new TAuditorium
                     {
                         NifUsuario = nifAutor,
                         Pantalla = pantalla,
                         FechaHora = fechaActual,
                         Accion = mensajeCreacion
                     };
-                    _context.Add(auditoriaCrearInforme);
+                    _context.Add(auditoriaCrearAsignatura);
                     await _context.SaveChangesAsync();
                     return;
                 case constDefinidas.accionBorrarElemento:
                     string mensajeBorrado = "Asignatura borrada con nombre: " + nombreAsignatura;
 
-                    var auditoriaBorrarInforme = new TAuditorium
+                    var auditoriaBorrarAsignatura = new TAuditorium
                     {
                         NifUsuario = nifAutor,
                         Pantalla = pantalla,
                         FechaHora = fechaActual,
                         Accion = mensajeBorrado
                     };
-                    _context.Add(auditoriaBorrarInforme);
+                    _context.Add(auditoriaBorrarAsignatura);
                     await _context.SaveChangesAsync();
                     return;
             }
 
         }
 
-        //Guarda en la base de datos los cambios realizados que tengan que ver con la creacion o borrado de las asignaturas
+        //Guarda en la base de datos los cambios realizados que tengan que ver con la creacion o borrado de las matrículas
         public async Task guardarCrearBorrarMatriculaAuditoria(string nifAutor, int pantalla, int accion, string nifAlumno, string nombreAsignatura)
         {
             DateTime fechaActual = fechaPresente();
@@ -615,28 +568,67 @@ namespace gestionDiversidad.Controllers
                     string mensajeCreacion = "Nueva matrícula con NIF alumno: " + nifAlumno + "\n";
                     mensajeCreacion += "y asigantura: " + nombreAsignatura;
 
-                    var auditoriaCrearInforme = new TAuditorium
+                    var auditoriaCrearMatricula = new TAuditorium
                     {
                         NifUsuario = nifAutor,
                         Pantalla = pantalla,
                         FechaHora = fechaActual,
                         Accion = mensajeCreacion
                     };
-                    _context.Add(auditoriaCrearInforme);
+                    _context.Add(auditoriaCrearMatricula);
                     await _context.SaveChangesAsync();
                     return;
                 case constDefinidas.accionBorrarElemento:
                     string mensajeBorrado = "Matrícula borrada entre el alumno con NIF: " + nifAlumno + "\n";
                     mensajeBorrado += "y la asigantura: " + nombreAsignatura;
 
-                    var auditoriaBorrarInforme = new TAuditorium
+                    var auditoriaBorrarMatricula = new TAuditorium
                     {
                         NifUsuario = nifAutor,
                         Pantalla = pantalla,
                         FechaHora = fechaActual,
                         Accion = mensajeBorrado
                     };
-                    _context.Add(auditoriaBorrarInforme);
+                    _context.Add(auditoriaBorrarMatricula);
+                    await _context.SaveChangesAsync();
+                    return;
+            }
+
+        }
+
+        //Guarda en la base de datos los cambios realizados que tengan que ver con la creacion o borrado de las docencias
+        public async Task guardarCrearBorrarDocenciaAuditoria(string nifAutor, int pantalla, int accion, string nifProfesor, string nombreAsignatura)
+        {
+            DateTime fechaActual = fechaPresente();
+
+            switch (accion)
+            {
+                case constDefinidas.accionCrearElemento:
+                    string mensajeCreacion = "Nueva docencia con NIF profesor: " + nifProfesor + "\n";
+                    mensajeCreacion += "y asigantura: " + nombreAsignatura;
+
+                    var auditoriaCrearDocencia = new TAuditorium
+                    {
+                        NifUsuario = nifAutor,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = mensajeCreacion
+                    };
+                    _context.Add(auditoriaCrearDocencia);
+                    await _context.SaveChangesAsync();
+                    return;
+                case constDefinidas.accionBorrarElemento:
+                    string mensajeBorrado = "Docencia borrada entre el profesor con NIF: " + nifProfesor + "\n";
+                    mensajeBorrado += "y la asigantura: " + nombreAsignatura;
+
+                    var auditoriaBorrarDocencia = new TAuditorium
+                    {
+                        NifUsuario = nifAutor,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = mensajeBorrado
+                    };
+                    _context.Add(auditoriaBorrarDocencia);
                     await _context.SaveChangesAsync();
                     return;
             }
