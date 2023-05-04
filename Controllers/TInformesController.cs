@@ -316,6 +316,8 @@ namespace gestionDiversidad.Controllers
                 .FirstOrDefaultAsync(m => m.Nif == nifNuevoMedico))!;
             TAlumno alumno = (await _context.TAlumnos
                 .FirstOrDefaultAsync(a => a.Nif == nifAlumno))!;
+            await _serviceController
+                .guardarModificarMedicoInformeAuditoria(sesionNif, constDefinidas.screenListalInformes, nifNuevoMedico, informe);
 
             anteriorMedico.TInformes.Remove(informe);
             alumno.TInformes.Remove(informe);
@@ -334,9 +336,6 @@ namespace gestionDiversidad.Controllers
             };
             _context.Add(nuevoInforme);
             await _context.SaveChangesAsync();
-            await _serviceController
-                .guardarAuditoria(sesionNif, constDefinidas.screenListalInformes, constDefinidas.accionModificar);
-
 
             return RedirectToAction("listaInformes", "TInformes");
         }

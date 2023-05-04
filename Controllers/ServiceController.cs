@@ -473,6 +473,7 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        //Guarda en la base de datos los cambios realizados que tengan que ver con la creacion o borrado de los informes
         public async Task guardarCrearBorrarInformeAuditoria(string nifAutor, int pantalla, int accion, TInforme informe)
         {
             string fechaFormateada = informe.Fecha
@@ -519,9 +520,33 @@ namespace gestionDiversidad.Controllers
 
         }
 
-        //Retorna una lista de todos las auditorias.
-        //Esta función solo está disponible para un administrador.
-        public async Task<List<TAuditorium>> listaAuditorias()
+        //Guarda en la base de datos los cambios realizados que tengan que ver con la modificacion de los informes
+        public async Task guardarModificarMedicoInformeAuditoria(string nifAutor, int pantalla, string nifNuevoMedico, TInforme informe)
+        {
+            string fechaFormateada = informe.Fecha
+                .ToString("dd/MM/yyyy HH:mm:ss");
+            DateTime fechaActual = fechaPresente();
+
+            string mensajeModificacion = "Cambio de médico en el informe con NIF alumno: " + informe.NifAlumno + ", y fecha: " + fechaFormateada + "\n";
+            mensajeModificacion += "NIF del anterior médico: " + informe.NifMedico + "; NIF del médico actual: " + nifNuevoMedico;
+
+            mensajeModificacion = mensajeModificacion.Replace("\n", "<br/>");
+            var auditoriaModificarMedicoInforme = new TAuditorium
+            {
+                NifUsuario = nifAutor,
+                Pantalla = pantalla,
+                FechaHora = fechaActual,
+                Accion = mensajeModificacion
+            };
+            _context.Add(auditoriaModificarMedicoInforme);
+            await _context.SaveChangesAsync();
+            return;
+
+        }
+
+            //Retorna una lista de todos las auditorias.
+            //Esta función solo está disponible para un administrador.
+            public async Task<List<TAuditorium>> listaAuditorias()
         {
             List<TAuditorium> auditorias = await _context.TAuditoria
                 .Include(a => a.PantallaNavigation)
