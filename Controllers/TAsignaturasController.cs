@@ -111,9 +111,10 @@ namespace gestionDiversidad.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(model.Asignatura);
-                await _context.SaveChangesAsync();
                 await _serviceController
-                    .guardarAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, constDefinidas.accionCrear);
+                    .guardarCrearBorrarAsignaturaAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, constDefinidas.accionCrearElemento, model.Asignatura.Nombre);
+                await _context.SaveChangesAsync();
+
             }
             return RedirectToAction("listaAsignaturas", "TAsignaturas");
         }
@@ -171,13 +172,14 @@ namespace gestionDiversidad.Controllers
                 {
                     alumno.IdAsignaturas.Remove(tAsignatura);
                 }
+                await _serviceController
+                    .guardarCrearBorrarAsignaturaAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, constDefinidas.accionBorrarElemento, tAsignatura.Nombre);
 
                 _context.TAsignaturas.Remove(tAsignatura);
+
             }
             
             await _context.SaveChangesAsync();
-            await _serviceController
-                .guardarAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, constDefinidas.accionBorrar);
             return RedirectToAction("listaAsignaturas", "TAsignaturas");
         }
     }
