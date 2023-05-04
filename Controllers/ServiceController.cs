@@ -14,6 +14,7 @@ using System.ComponentModel;
 using gestionDiversidad.Constantes;
 using System.Globalization;
 using System.IO;
+using System.Text;
 
 namespace gestionDiversidad.Controllers
 {
@@ -260,9 +261,221 @@ namespace gestionDiversidad.Controllers
             }
         }
 
-        //Retorna una lista de todos las auditorias.
-        //Esta función solo está disponible para un administrador.
-        public async Task<List<TAuditorium>> listaAuditorias()
+        //Guarda en la base de datos los cambios realizados que tengan que ver con la creacion y borrado de usuarios
+        public async Task guardarCrearBorrarUsuarioAuditoria(string nifAutor, int pantalla, int accion, string nifUsuario)
+        {
+            DateTime fechaActual = fechaPresente();
+            TUsuario usuario = (await _context.TUsuarios.FirstOrDefaultAsync(u => u.Nif == nifUsuario))!;
+
+            switch (accion)
+            {
+                case constDefinidas.accionCrearUsuario:
+                    switch (usuario.IdRol)
+                    {
+                        case constDefinidas.rolAlumno:
+                            var auditoriaCrearAlumno = new TAuditorium
+                            {
+                                NifUsuario = nifAutor,
+                                Pantalla = pantalla,
+                                FechaHora = fechaActual,
+                                Accion = "Se ha creado un nuevo Usuario de tipo Alumno con NIF: " + nifUsuario
+                            };
+                            _context.Add(auditoriaCrearAlumno);
+                            await _context.SaveChangesAsync();
+                            break;
+                        case constDefinidas.rolProfesor:
+                            var auditoriaCrearProfesor = new TAuditorium
+                            {
+                                NifUsuario = nifAutor,
+                                Pantalla = pantalla,
+                                FechaHora = fechaActual,
+                                Accion = "Se ha creado un nuevo Usuario de tipo Profesor con NIF: " + nifUsuario
+                            };
+                            _context.Add(auditoriaCrearProfesor);
+                            await _context.SaveChangesAsync();
+                            break;
+                        case constDefinidas.rolMedico:
+                            var auditoriaCrearMedico = new TAuditorium
+                            {
+                                NifUsuario = nifAutor,
+                                Pantalla = pantalla,
+                                FechaHora = fechaActual,
+                                Accion = "Se ha creado un nuevo Usuario de tipo Medico con NIF: " + nifUsuario
+                            };
+                            _context.Add(auditoriaCrearMedico);
+                            await _context.SaveChangesAsync();
+                            break;
+                    }
+                    return;
+                case constDefinidas.accionBorrarUsuario:
+                    switch (usuario.IdRol)
+                    {
+                        case constDefinidas.rolAlumno:
+                            var auditoriaBorrarAlumno = new TAuditorium
+                            {
+                                NifUsuario = nifAutor,
+                                Pantalla = pantalla,
+                                FechaHora = fechaActual,
+                                Accion = "Se ha borrado el Usuario de tipo Alumno con NIF: " + nifUsuario
+                            };
+                            _context.Add(auditoriaBorrarAlumno);
+                            await _context.SaveChangesAsync();
+                            break;
+                        case constDefinidas.rolProfesor:
+                            var auditoriaBorrarProfesor = new TAuditorium
+                            {
+                                NifUsuario = nifAutor,
+                                Pantalla = pantalla,
+                                FechaHora = fechaActual,
+                                Accion = "Se ha borrado el Usuario de tipo Profesor con NIF: " + nifUsuario
+                            };
+                            _context.Add(auditoriaBorrarProfesor);
+                            await _context.SaveChangesAsync();
+                            break;
+                        case constDefinidas.rolMedico:
+                            var auditoriaBorrarMedico = new TAuditorium
+                            {
+                                NifUsuario = nifAutor,
+                                Pantalla = pantalla,
+                                FechaHora = fechaActual,
+                                Accion = "Se ha borrado el Usuario de tipo Medico con NIF: " + nifUsuario
+                            };
+                            _context.Add(auditoriaBorrarMedico);
+                            await _context.SaveChangesAsync();
+                            break;
+                    }
+                    return;
+            }
+        }
+
+        //Guarda en la base de datos los cambios realizados que tengan que ver con la modificación de los usuarios
+        public async Task guardarModificarUsuarioAuditoria(string nifAutor, int pantalla, ModificarUsuarios model, TUsuario user)
+        {
+            DateTime fechaActual = fechaPresente();
+            switch (user.IdRol)
+            {
+                case constDefinidas.rolAlumno:
+                    string mensajeAlumno = "Los atributos del alumno con NIF: " + user.Nif + ", modificados son:" + "\n";
+                    TAlumno alumno = (await _context.TAlumnos
+                        .FirstOrDefaultAsync(a => a.Nif == user.Nif))!;
+                    if (model.Usuario != user.Usuario)
+                    {
+                        mensajeAlumno += "Usuario anterior: " + user.Usuario + "; Usuario nuevo: " + model.Usuario + "\n";
+                    }
+                    if (model.Password != user.Password)
+                    {
+                        mensajeAlumno += "Password modificado" + "\n";
+                    }
+                    if (model.Nombre!= alumno.Nombre)
+                    {
+                        mensajeAlumno += "Nombre anterior: " + alumno.Nombre + "; Nombre nuevo: " + model.Nombre + "\n";
+
+                    }
+                    if (model.Apellido1 != alumno.Apellido1)
+                    {
+                        mensajeAlumno += "Primer apellido anterior: " + alumno.Apellido1 + "; Primer apellido nuevo: " + model.Apellido1 + "\n";
+                    }
+                    if (model.Apellido2 != alumno.Apellido2)
+                    {
+                        mensajeAlumno += "Segundo apellido anterior: " + alumno.Apellido2 + "; Segundo apellido nuevo: " + model.Apellido2;
+                    }
+                    mensajeAlumno = mensajeAlumno.Replace("\n", "<br/>");
+                    var auditoriaModificarAlumno = new TAuditorium
+                    {
+                        NifUsuario = nifAutor,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = mensajeAlumno
+                    };
+                    _context.Add(auditoriaModificarAlumno);
+                    await _context.SaveChangesAsync();
+
+                    return;
+
+                case constDefinidas.rolProfesor:
+                    string mensajeProfesor = "Los atributos del profesor con NIF: " + user.Nif + ", modificados son:" + "\n";
+                    TProfesor profesor = (await _context.TProfesors
+                        .FirstOrDefaultAsync(p => p.Nif == user.Nif))!;
+                    if (model.Usuario != user.Usuario)
+                    {
+                        mensajeProfesor += "Usuario anterior: " + user.Usuario + "; Usuario nuevo: " + model.Usuario + "\n";
+                    }
+                    if (model.Password != user.Password)
+                    {
+                        mensajeProfesor += "Password modificado" + "\n";
+                    }
+                    if (model.Nombre != profesor.Nombre)
+                    {
+                        mensajeProfesor += "Nombre anterior: " + profesor.Nombre + "; Nombre nuevo: " + model.Nombre + "\n";
+
+                    }
+                    if (model.Apellido1 != profesor.Apellido1)
+                    {
+                        mensajeProfesor += "Primer apellido anterior: " + profesor.Apellido1 + "; Primer apellido nuevo: " + model.Apellido1 + "\n";
+                    }
+                    if (model.Apellido2 != profesor.Apellido2)
+                    {
+                        mensajeProfesor += "Segundo apellido anterior: " + profesor.Apellido2 + "; Segundo apellido nuevo: " + model.Apellido2;
+                    }
+                    mensajeProfesor = mensajeProfesor.Replace("\n", "<br/>");
+                    var auditoriaModificarProfesor = new TAuditorium
+                    {
+                        NifUsuario = nifAutor,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = mensajeProfesor
+                    };
+                    _context.Add(auditoriaModificarProfesor);
+                    await _context.SaveChangesAsync();
+
+                    return;
+
+                case constDefinidas.rolMedico:
+                    string mensajeMedico = "Los atributos del médico con NIF: " + user.Nif + ", modificados son:" + "\n";
+                    TMedico medico = (await _context.TMedicos
+                        .FirstOrDefaultAsync(a => a.Nif == user.Nif))!;
+                    if (model.Usuario != user.Usuario)
+                    {
+                        mensajeMedico += "Usuario anterior: " + user.Usuario + "; Usuario nuevo: " + model.Usuario + "\n";
+                    }
+                    if (model.Password != user.Password)
+                    {
+                        mensajeMedico += "Password modificado" + "\n";
+                    }
+                    if (model.Nombre != medico.Nombre)
+                    {
+                        mensajeMedico += "Nombre anterior: " + medico.Nombre + "; Nombre nuevo: " + model.Nombre + "\n";
+
+                    }
+                    if (model.Apellido1 != medico.Apellido1)
+                    {
+                        mensajeMedico += "Primer apellido anterior: " + medico.Apellido1 + "; Primer apellido nuevo: " + model.Apellido1 + "\n";
+                    }
+                    if (model.Apellido2 != medico.Apellido2)
+                    {
+                        mensajeMedico += "Segundo apellido anterior: " + medico.Apellido2 + "; Segundo apellido nuevo: " + model.Apellido2;
+                    }
+                    mensajeMedico = mensajeMedico.Replace("\n", "<br/>");
+                    var auditoriaModificarMedico = new TAuditorium
+                    {
+                        NifUsuario = nifAutor,
+                        Pantalla = pantalla,
+                        FechaHora = fechaActual,
+                        Accion = mensajeMedico
+                    };
+                    _context.Add(auditoriaModificarMedico);
+                    await _context.SaveChangesAsync();
+
+                    return;
+            }
+            
+            return;
+
+        }
+
+            //Retorna una lista de todos las auditorias.
+            //Esta función solo está disponible para un administrador.
+            public async Task<List<TAuditorium>> listaAuditorias()
         {
             List<TAuditorium> auditorias = await _context.TAuditoria
                 .Include(a => a.PantallaNavigation)

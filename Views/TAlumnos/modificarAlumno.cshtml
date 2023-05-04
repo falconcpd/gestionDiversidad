@@ -46,6 +46,10 @@
                 <input type="hidden" asp-for="Rol" />
                 <input type="submit" value="Modificar" class="btn btn-primary" />
             </div>
+            @if (TempData["SinCambiosUsuario"] != null)
+            {
+                <div class="alert alert-info">@TempData["SinCambiosUsuario"]</div>
+            }
         </form>
     </div>
 </div>

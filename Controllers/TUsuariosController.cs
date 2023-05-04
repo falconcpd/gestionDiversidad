@@ -249,6 +249,44 @@ namespace gestionDiversidad.Controllers
             return RedirectToAction("insertarAlumno", "TAlumnos");
         }
 
+        // Función que verifica si de verdad hay cambios
+        public async Task<bool> verficarCambios(ModificarUsuarios model)
+        {
+            TUsuario usuario = (await _context.TUsuarios
+            .FirstOrDefaultAsync(a => a.Nif == model.Nif))!;
+
+                switch (model.Rol)
+                {
+                    case constDefinidas.rolAlumno:
+                        TAlumno alumno = (await _context.TAlumnos
+                            .FirstOrDefaultAsync(a => a.Nif == model.Nif))!;
+                        if(model.Nombre != alumno.Nombre || model.Apellido1 != alumno.Apellido1 || model.Apellido2 != alumno.Apellido2 || model.Usuario != usuario.Usuario || model.Password != usuario.Password)
+                        {
+                            return true;
+                        }
+                        break;
+                    case constDefinidas.rolProfesor:
+                        TProfesor profesor = (await _context.TProfesors
+                            .FirstOrDefaultAsync(p => p.Nif == model.Nif))!;
+                        if (model.Nombre != profesor.Nombre || model.Apellido1 != profesor.Apellido1 || model.Apellido2 != profesor.Apellido2 || model.Usuario != usuario.Usuario || model.Password != usuario.Password)
+                        {
+                            return true;
+                        }
+                        break;
+                    case constDefinidas.rolMedico:
+                        TMedico medico = (await _context.TMedicos
+                            .FirstOrDefaultAsync(m => m.Nif == model.Nif))!;
+                        if (model.Nombre != medico.Nombre || model.Apellido1 != medico.Apellido1 || model.Apellido2 != medico.Apellido2 || model.Usuario != usuario.Usuario || model.Password != usuario.Password)
+                        {
+                            return true;
+                        }
+                        break;
+                }
+            
+
+            return false;
+        }
+
         // POST: TUsuarios/confirmarCambios
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -257,52 +295,63 @@ namespace gestionDiversidad.Controllers
             int rol = model.Rol;
             string nif = model.Nif;
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && (await verficarCambios(model)))
             {
+
                 string sesionNif = giveSesionNif();
                 TUsuario usuario = (await _context.TUsuarios
                             .FirstOrDefaultAsync(a => a.Nif == nif))!;
+                var anteriorUsuario = new TUsuario
+                {
+                    Nif = usuario.Nif!,
+                    Usuario = usuario.Usuario!,
+                    Password = usuario.Password!,
+                    IdRol = usuario.IdRol
+                }; 
+
                 usuario.Password = model.Password!;
                 usuario.Usuario = model.Usuario!;
+
                 switch (rol)
                 {
                     case constDefinidas.rolAlumno:
+                        await _serviceController
+                            .guardarModificarUsuarioAuditoria(sesionNif, constDefinidas.screenAlumno, model, anteriorUsuario);
                         TAlumno alumno = (await _context.TAlumnos
                             .FirstOrDefaultAsync(a => a.Nif == nif))!;
                         alumno.Nombre = model.Nombre;
                         alumno.Apellido1 = model.Apellido1;
                         alumno.Apellido2 = model.Apellido2;
                         await _context.SaveChangesAsync();
-                        await _serviceController
-                            .guardarAuditoria(sesionNif, constDefinidas.screenAlumno, constDefinidas.accionModificar);
+
                         return RedirectToAction("volverPerfil", "TUsuarios", new
                         {
                             nif = nif,
                             rol = rol
                         });
                     case constDefinidas.rolProfesor:
+                        await _serviceController
+                            .guardarModificarUsuarioAuditoria(sesionNif, constDefinidas.screenProfesor, model, anteriorUsuario);
                         TProfesor profesor = (await _context.TProfesors
                             .FirstOrDefaultAsync(p => p.Nif == nif))!;
                         profesor.Nombre = model.Nombre;
                         profesor.Apellido1 = model.Apellido1;
                         profesor.Apellido2 = model.Apellido2;
                         await _context.SaveChangesAsync();
-                        await _serviceController
-                            .guardarAuditoria(sesionNif, constDefinidas.screenProfesor, constDefinidas.accionModificar);
                         return RedirectToAction("volverPerfil", "TUsuarios", new
                         {
                             nif = nif,
                             rol = rol
                         });
                     case constDefinidas.rolMedico:
+                        await _serviceController
+                            .guardarModificarUsuarioAuditoria(sesionNif, constDefinidas.screenMedico, model, anteriorUsuario);
                         TMedico medico = (await _context.TMedicos
                             .FirstOrDefaultAsync(m => m.Nif == nif))!;
                         medico.Nombre = model.Nombre;
                         medico.Apellido1 = model.Apellido1;
                         medico.Apellido2 = model.Apellido2;
                         await _context.SaveChangesAsync();
-                        await _serviceController
-                            .guardarAuditoria(sesionNif, constDefinidas.screenMedico, constDefinidas.accionModificar);
                         return RedirectToAction("volverPerfil", "TUsuarios", new
                         {
                             nif = nif,
@@ -311,6 +360,7 @@ namespace gestionDiversidad.Controllers
                 }
             }
 
+            TempData["SinCambiosUsuario"] = "No se ha modificado ningún parámetro del usuario.";
             switch (rol)
             {
                 case constDefinidas.rolAlumno:
@@ -357,8 +407,8 @@ namespace gestionDiversidad.Controllers
 
             if(actualUser.padre != null)
             {
-                actualUser.padre = null;
-                actualJson = JsonConvert.SerializeObject(actualUser);
+                UserNavigation sesionUser = new UserNavigation(nif, rol, null);
+                actualJson = JsonConvert.SerializeObject(sesionUser);
                 HttpContext.Session.SetString(constDefinidas.keyActualUser, actualJson);
             }
 

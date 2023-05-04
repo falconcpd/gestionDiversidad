@@ -225,7 +225,7 @@ namespace gestionDiversidad.Controllers
             _context.Add(profesor);
             await _context.SaveChangesAsync();
             await _serviceController
-               .guardarAuditoria(sesionNif, constDefinidas.screenListaProfesores, constDefinidas.accionCrear);
+               .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaProfesores, constDefinidas.accionCrearUsuario, nif);
 
             return RedirectToAction("listaProfesores", "TProfesores", 
                 new { volverPadre = "false" });
@@ -285,19 +285,22 @@ namespace gestionDiversidad.Controllers
             TProfesor profesor = (await _context.TProfesors
                     .FirstOrDefaultAsync(p => p.Nif == nifProfesor))!;
             _context.TProfesors.Remove(profesor);
-            TUsuario usuario = (await _context.TUsuarios
-                .FirstOrDefaultAsync(u => u.Nif == nifProfesor))!;
-            _context.TUsuarios.Remove(usuario);
+
             List<TAsignatura> asignaturas = (await _serviceController
                 .listaAsignaturas(nifProfesor, constDefinidas.rolProfesor))!;
-            foreach(var asignatura in asignaturas)
+            foreach (var asignatura in asignaturas)
             {
                 asignatura.NifProfesors.Remove(profesor);
             }
+            TUsuario usuario = (await _context.TUsuarios
+                .FirstOrDefaultAsync(u => u.Nif == nifProfesor))!;
+            await _serviceController
+                .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaProfesores, constDefinidas.accionBorrar, nifProfesor);
+
+            _context.TUsuarios.Remove(usuario);
 
             await _context.SaveChangesAsync();
-            await _serviceController
-                .guardarAuditoria(sesionNif, constDefinidas.screenListaProfesores, constDefinidas.accionBorrar);
+
 
             return RedirectToAction("listaProfesores", "TProfesores", new
             {

@@ -153,7 +153,7 @@ namespace gestionDiversidad.Controllers
             _context.Add(alumno);
             await _context.SaveChangesAsync();
             await _serviceController
-                .guardarAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionCrear);
+                .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionCrearUsuario, nif);
 
             return RedirectToAction("crearInforme", "TInformes", new {
                 nifMedico = medico,
@@ -313,13 +313,14 @@ namespace gestionDiversidad.Controllers
 
             _context.TAlumnos.Remove(alumno);
 
+            await _serviceController
+                .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionBorrarUsuario, nifAlumno);
+
             TUsuario usuario = (await _context.TUsuarios
                 .FirstOrDefaultAsync(u => u.Nif == nifAlumno))!;
             _context.TUsuarios.Remove(usuario);
 
             await _context.SaveChangesAsync();
-            await _serviceController
-                .guardarAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionBorrar);
 
             return RedirectToAction("listaAlumnos", "TAlumnos", new
             {

@@ -1,4 +1,5 @@
 ﻿using gestionDiversidad.Models;
+using gestionDiversidad.ViewModels;
 using System.Collections.Generic;
 
 namespace gestionDiversidad.Interfaces
@@ -16,5 +17,7 @@ namespace gestionDiversidad.Interfaces
         DateTime fechaPresente();
         Task guardarAuditoria(string nif, int pantalla, int accion);
         Task<List<TAuditorium>> listaAuditorias();
+        Task guardarCrearBorrarUsuarioAuditoria(string nifAutor, int pantalla, int accion, string nifUsuario);
+        Task guardarModificarUsuarioAuditoria(string nifAutor, int pantalla, ModificarUsuarios model, TUsuario user);
     }
 }

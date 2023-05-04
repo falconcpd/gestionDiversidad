@@ -17,6 +17,9 @@
         public const int accionBorrar = 2;
         public const int accionModificar = 3;
         //////////////////////////////
+        public const int accionCrearUsuario = 1;
+        public const int accionBorrarUsuario = 2;
+        //////////////////////////////
         public const int screenAlumno = 1;
         public const int screenProfesor = 2;
         public const int screenMedico = 3;

@@ -36,7 +36,7 @@
                     @Html.DisplayFor(modelItem => item.PantallaNavigation.Nombre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Accion)
+                    @Html.Raw(item.Accion)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.FechaHora)
