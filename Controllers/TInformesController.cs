@@ -130,7 +130,7 @@ namespace gestionDiversidad.Controllers
             _context.TInformes.Update(informe);
             await _context.SaveChangesAsync();
             await _serviceController
-                .guardarAuditoria(sesionNif, constDefinidas.screenInforme, constDefinidas.accionModificar);
+                .guardarModificarInformeAuditoria(sesionNif, constDefinidas.screenListalInformes, informe); ;
 
             return RedirectToAction("infoBasica", "TInformes", new { 
                 nifMedico = nifMedico, 

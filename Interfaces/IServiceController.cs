@@ -21,5 +21,6 @@ namespace gestionDiversidad.Interfaces
         Task guardarModificarUsuarioAuditoria(string nifAutor, int pantalla, ModificarUsuarios model, TUsuario user);
         Task guardarCrearBorrarInformeAuditoria(string nifAutor, int pantalla, int accion, TInforme informe);
         Task guardarModificarMedicoInformeAuditoria(string nifAutor, int pantalla, string nifNuevoMedico, TInforme informe);
+        Task guardarModificarInformeAuditoria(string nifAutor, int pantalla, TInforme informe);
     }
 }
