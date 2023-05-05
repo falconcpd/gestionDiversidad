@@ -7,44 +7,46 @@
 
 <h1>Lista de auditorías</h1>
 
-<table class="table" style="text-align:center; vertical-align:middle">
-    <thead>
-        <tr>
-            <th>
-                <strong>Nif usuario </strong>
-            </th>
-            <th>
-                <strong>Pantalla </strong>
-            </th>
-            <th>
-                <strong>Acción </strong>
-            </th>
-            <th>
-                <strong>Fecha de la acción </strong>
-            </th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.ListaAuditorias)
-        {
+<div div class="table-responsive overflow-auto" style=" max-height: 500px; overflow-y: auto;">
+    <table id="example" class="table table-bordered table-striped" >
+        <thead style="text-align:center; vertical-align:middle">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NifUsuario)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PantallaNavigation.Nombre)
-                </td>
-                <td>
-                    @Html.Raw(item.Accion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaHora)
-                </td>
+                <th>
+                    <strong>Nif usuario </strong>
+                </th>
+                <th>
+                    <strong>Pantalla </strong>
+                </th>
+                <th>
+                    <strong>Acción </strong>
+                </th>
+                <th>
+                    <strong>Fecha de la acción </strong>
+                </th>
+
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody style="text-align:center; vertical-align:middle">
+            @foreach (var item in Model.ListaAuditorias)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NifUsuario)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PantallaNavigation.Nombre)
+                    </td>
+                    <td>
+                        @Html.Raw(item.Accion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaHora)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 
 <div style="margin-top: 10px; margin-bottom: 10px;">

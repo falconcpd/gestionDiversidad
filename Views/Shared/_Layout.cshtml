@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/gestionDiversidad.styles.css" asp-append-version="true" />
+    
 </head>
-<body>
+<body style="background-image: url('https://static.vecteezy.com/system/resources/previews/002/395/537/original/abstract-blue-and-white-geometric-background-free-vector.jpg'); background-size: cover;">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid d-flex align-items-center">
@@ -51,6 +52,10 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/orderTable.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
