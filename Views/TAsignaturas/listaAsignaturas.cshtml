@@ -17,7 +17,7 @@
 
 @if (Model.ActualRol == constDefinidas.rolAlumno)
 {
-    <h1>Lista de informes: Alumno/a @Model.ActualName (NIF: @Model.ActualNif)</h1>
+    <h1>Lista de asignaturas: Alumno/a @Model.ActualName (NIF: @Model.ActualNif)</h1>
 }
 
 <div class="table-responsive overflow-auto" style=" max-height: 500px; overflow-y: auto;">
@@ -27,9 +27,12 @@
                 <th>
                     @Html.DisplayNameFor(model => model.ListaAsignaturas.First().Nombre)
                 </th>
-                <th>
-                    <strong>Acción: Borrar asignatura</strong>
-                </th>
+                @if (Model.Permiso.Borrar)
+                {
+                    <th>
+                        <strong>Acción: Borrar Asignatura</strong>
+                    </th>
+                }
             </tr>
         </thead>
         <tbody style="text-align:center; vertical-align:middle">

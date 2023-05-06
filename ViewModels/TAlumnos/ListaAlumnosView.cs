@@ -9,6 +9,7 @@ namespace gestionDiversidad.ViewModels.TAlumnos
         public List<TAlumno> ListaAlumnos { get; set; } = null!;
         public int ActualRol { get; set; }
         public string ActualNif { get; set; } = null!;
+        public string ActualName { get; set; } = null!;
     }
 }
 

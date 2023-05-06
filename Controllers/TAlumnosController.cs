@@ -99,6 +99,7 @@ namespace gestionDiversidad.Controllers
             int sesionRol = giveSesionRol();
             bool volverPadreValue;
             UserNavigation actualUser = giveActualUser();
+            string actualName = (await _serviceController.giveActualNombre(actualUser.nif, actualUser.rol));
 
             volverPadreValue = bool.Parse(volverPadre);
             if (volverPadreValue)
@@ -117,6 +118,7 @@ namespace gestionDiversidad.Controllers
                 .permisoPantalla(constDefinidas.screenAlumno, sesionRol);
             vistaListasAlumno.ActualNif = actualUser.nif;
             vistaListasAlumno.ActualRol = actualUser.rol;
+            vistaListasAlumno.ActualName = actualName;
 
             return View(vistaListasAlumno);
         }

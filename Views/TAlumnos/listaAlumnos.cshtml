@@ -5,65 +5,92 @@
     ViewData["Title"] = "listaAlumnos";
 }
 
-<h1>Lista de alumnos</h1>
+@if (Model.ActualRol == constDefinidas.rolAdmin)
+{
+    <h1>Lista de alumnos: Administrador/a @Model.ActualName (NIF: @Model.ActualNif)</h1>
+}
 
-<table class="table" style="text-align:center; vertical-align:middle">
-    <thead>
-        <tr>
-            <th>
-                <strong>@Html.DisplayNameFor(model => model.ListaAlumnos.First().Nombre)</strong>
-            </th>
-            <th>
-                <strong>Primer apellido: </strong>
-            </th>
-            <th>
-                <strong>Segundo apellido: </strong>
-            </th>
-            <th>
-                <strong>@Html.DisplayNameFor(model => model.ListaAlumnos.First().Nif)</strong>
-            </th>
+@if (Model.ActualRol == constDefinidas.rolMedico)
+{
+    <h1>Lista de alumnos: Médico @Model.ActualName (NIF: @Model.ActualNif)</h1>
+}
 
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.ListaAlumnos)
-        {
+@if (Model.ActualRol == constDefinidas.rolProfesor)
+{
+    <h1>Lista de alumnos: Profesor/a @Model.ActualName (NIF: @Model.ActualNif)</h1>
+}
+
+<div class="table-responsive overflow-auto" style=" max-height: 500px; overflow-y: auto;">
+    <table id="listaAlumnos" class="table table-bordered table-striped">
+        <thead style="text-align:center; vertical-align:middle">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Apellido1)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Apellido2)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nif)
-                </td>
+                <th>
+                    <strong>@Html.DisplayNameFor(model => model.ListaAlumnos.First().Nombre)</strong>
+                </th>
+                <th>
+                    <strong>Primer apellido: </strong>
+                </th>
+                <th>
+                    <strong>Segundo apellido: </strong>
+                </th>
+                <th>
+                    <strong>@Html.DisplayNameFor(model => model.ListaAlumnos.First().Nif)</strong>
+                </th>
                 @if (Model.Alumno.Acceder)
                 {
-                    <td>
-                        <form method="get" asp-action="infoBasica" asp-controller="TAlumnos">
-                            <input type="hidden" name="id" value=@item.Nif />
-                            <button type="submit">Detalles Alumno</button>
-                        </form>
-                    </td>
+                    <th>
+                        <strong>Acción: Detalles del alumno</strong>
+                    </th>
                 }
                 @if (Model.Permiso.Borrar)
                 {
-                    <td>
-                        <form method="get" asp-action="borrarAlumno" asp-controller="TAlumnos">
-                            <input type="hidden" name="nifAlumno" value=@item.Nif />
-                            <button type="submit" class="btn btn-danger">Borrar Alumno</button>
-                        </form>
-                    </td>
+                    <th>
+                        <strong>Acción: Borrar alumno</strong>
+                    </th>
                 }
-
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody style="text-align:center; vertical-align:middle">
+            @foreach (var item in Model.ListaAlumnos)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Apellido1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Apellido2)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nif)
+                    </td>
+                    @if (Model.Alumno.Acceder)
+                    {
+                        <td>
+                            <form method="get" asp-action="infoBasica" asp-controller="TAlumnos">
+                                <input type="hidden" name="id" value=@item.Nif />
+                                <button type="submit" class="btn btn-info text-white">Detalles</button>
+                            </form>
+                        </td>
+                    }
+                    @if (Model.Permiso.Borrar)
+                    {
+                        <td>
+                            <form method="get" asp-action="borrarAlumno" asp-controller="TAlumnos">
+                                <input type="hidden" name="nifAlumno" value=@item.Nif />
+                                <button type="submit" class="btn btn-warning text-white">Borrar</button>
+                            </form>
+                        </td>
+                    }
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 @if (Model.Permiso.Insertar)
 {
     <div style="margin-top: 10px; margin-bottom: 10px;">
@@ -74,6 +101,6 @@
 
 <div>
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
-    asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver al perfil anterior</a>
+    asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver atrás</a>
 </div>
 
