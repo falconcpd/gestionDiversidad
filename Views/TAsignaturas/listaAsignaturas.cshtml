@@ -1,56 +1,75 @@
 ﻿@model gestionDiversidad.ViewModels.TAsignaturas.ListaAsignaturasView
+@using gestionDiversidad.Constantes
 
 @{
     ViewData["Title"] = "listAsignaturas";
 }
 
-<h1>Lista de asignaturas</h1>
+@if (Model.ActualRol == constDefinidas.rolAdmin)
+{
+    <h1>Lista de asignaturas: Administrador/a @Model.ActualName (NIF: @Model.ActualNif)</h1>
+}
 
-<table class="table" style="text-align:center; vertical-align:middle">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ListaAsignaturas.First().Nombre)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.ListaAsignaturas)
-        {
+@if (Model.ActualRol == constDefinidas.rolProfesor)
+{
+    <h1>Lista de asignaturas: Profesor/a @Model.ActualName (NIF: @Model.ActualNif)</h1>
+}
+
+@if (Model.ActualRol == constDefinidas.rolAlumno)
+{
+    <h1>Lista de informes: Alumno/a @Model.ActualName (NIF: @Model.ActualNif)</h1>
+}
+
+<div class="table-responsive overflow-auto" style=" max-height: 500px; overflow-y: auto;">
+    <table id="listaAsignaturas" class="table table-bordered table-striped">
+        <thead style="text-align:center; vertical-align:middle">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                    </td>
-                @if (Model.Permiso.Borrar)
-                {
+                <th>
+                    @Html.DisplayNameFor(model => model.ListaAsignaturas.First().Nombre)
+                </th>
+                <th>
+                    <strong>Acción: Borrar asignatura</strong>
+                </th>
+            </tr>
+        </thead>
+        <tbody style="text-align:center; vertical-align:middle">
+            @foreach (var item in Model.ListaAsignaturas)
+            {
+                <tr>
                     <td>
-                        <form asp-action="borrarAsignatura" asp-controller="TAsignaturas">
-                            <input type="hidden" name="actualNif" value=@Model.ActualNif />
-                            <input type="hidden" name="actualRol" value=@Model.ActualRol />
-                            <input type="hidden" name="id" value=@item.Id />
-                            <button type="submit" class="btn btn-danger">Borrar Asignatura</button>
-                        </form>
+                        @Html.DisplayFor(modelItem => item.Nombre)
                     </td>
-                }
+                    @if (Model.Permiso.Borrar)
+                    {
+                        <td>
+                            <form asp-action="borrarAsignatura" asp-controller="TAsignaturas">
+                                <input type="hidden" name="actualNif" value=@Model.ActualNif />
+                                <input type="hidden" name="actualRol" value=@Model.ActualRol />
+                                <input type="hidden" name="id" value=@item.Id />
+                                <button type="submit" class="btn btn-warning text-white">Borrar</button>
+                            </form>
+                        </td>
+                    }
 
                 </tr>
-        }
-    </tbody>
-</table>
+            }
+        </tbody>
+    </table>
+</div>
+
 
 @if (Model.Permiso.Insertar)
 {
     <div style="margin-top: 10px; margin-bottom: 10px;">
         <a asp-controller="TAsignaturas" asp-action="insertarAsignatura" class="btn btn-primary">
-            Crear asignatura
+            Crear nueva asignatura
         </a>
     </div>
 }
 
 <div>
     <a asp-controller="TUsuarios" asp-action="volverPerfil" 
-    asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver al perfil anterior</a>
+    asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver atrás</a>
 </div>
 
 

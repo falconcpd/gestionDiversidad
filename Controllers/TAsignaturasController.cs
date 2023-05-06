@@ -53,9 +53,9 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> listaAsignaturas()
         {
             ListaAsignaturasView vistaListaAsignaturas= new ListaAsignaturasView();
-            string sesionNif = giveSesionNif();
             int sesionRol = giveSesionRol();
             UserNavigation actualUser = giveActualUser();
+            string actualName = (await _serviceController.giveActualNombre(actualUser.nif, actualUser.rol));
             List<TAsignatura> asignaturas = await _serviceController
                 .listaAsignaturas(actualUser.nif, actualUser.rol);
 
@@ -64,8 +64,7 @@ namespace gestionDiversidad.Controllers
                 permisoPantalla(constDefinidas.screenListaAsignaturas, sesionRol);
             vistaListaAsignaturas.ActualRol = actualUser.rol;
             vistaListaAsignaturas.ActualNif = actualUser.nif;
-            vistaListaAsignaturas.SesionRol = sesionRol;
-            vistaListaAsignaturas.SesionNif = sesionNif;
+            vistaListaAsignaturas.ActualName = actualName;
 
             return View(vistaListaAsignaturas);
 

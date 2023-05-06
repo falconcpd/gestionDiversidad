@@ -8,7 +8,7 @@ namespace gestionDiversidad.ViewModels.TAsignaturas
         public List<TAsignatura> ListaAsignaturas { get; set; } = null!;
         public string ActualNif { get; set; } = null!;
         public int ActualRol { get; set; }
-        public int SesionRol { get; set; }
-        public string SesionNif { get; set; } = null!;
+        public string ActualName { get; set; } = null!;
+
     }
 }
