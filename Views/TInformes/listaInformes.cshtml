@@ -1,10 +1,24 @@
 ﻿@model gestionDiversidad.ViewModels.TInformes.ListaInformesView
+@using gestionDiversidad.Constantes
 
 @{
     ViewData["Title"] = "listaInformes";
 }
 
-<h1>Lista de informes</h1>
+@if(Model.ActualRol == constDefinidas.rolAdmin)
+{
+    <h1>Lista de informes: Administrador/a @Model.ActualName (NIF: @Model.ActualNif)</h1>
+}
+
+@if (Model.ActualRol == constDefinidas.rolMedico)
+{
+    <h1>Lista de informes: Médico @Model.ActualName (NIF: @Model.ActualNif)</h1>
+}
+
+@if (Model.ActualRol == constDefinidas.rolAlumno)
+{
+    <h1>Lista de informes: Alumno/a @Model.ActualName (NIF: @Model.ActualNif)</h1>
+}
 
 <div class="table-responsive overflow-auto" style=" max-height: 500px; overflow-y: auto;">
     <table id="listaInformes" class="table table-bordered table-striped">
@@ -95,7 +109,7 @@
 
 <div style="margin-top: 10px; margin-bottom: 10px;">
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
-     asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver al perfil anterior</a>
+     asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver atrás</a>
 </div>
 
 @if (TempData["UnSoloInforme"] != null)

@@ -24,5 +24,6 @@ namespace gestionDiversidad.Interfaces
         Task guardarCrearBorrarAsignaturaAuditoria(string nifAutor, int pantalla, int accion, string nombreAsignatura);
         Task guardarCrearBorrarMatriculaAuditoria(string nifAutor, int pantalla, int accion, string nifAlumno, string nombreAsignatura);
         Task guardarCrearBorrarDocenciaAuditoria(string nifAutor, int pantalla, int accion, string nifProfesor, string nombreAsignatura);
+        Task<string> giveActualNombre(string nif, int rol);
     }
 }

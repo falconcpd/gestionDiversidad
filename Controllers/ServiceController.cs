@@ -646,6 +646,38 @@ namespace gestionDiversidad.Controllers
 
             return auditorias;
         }
+
+        //Función que te devuelve el nombre de actual user dependiendo de su rol
+        public async Task<string> giveActualNombre(string nif, int rol)
+        {
+            TAlumno alumno;
+            TMedico medico;
+            TProfesor profesor;
+            TAdministracion admin;
+
+            switch (rol)
+            {
+                case constDefinidas.rolAlumno:
+                    alumno = (await _context.TAlumnos
+                        .FirstOrDefaultAsync(u => u.Nif == nif))!;
+                    return(alumno.Nombre);
+                case constDefinidas.rolMedico:
+                    medico = (await _context.TMedicos
+                        .FirstOrDefaultAsync(u => u.Nif == nif))!;
+                    return (medico.Nombre);
+                case constDefinidas.rolAdmin:
+                    admin = (await _context.TAdministracions
+                        .FirstOrDefaultAsync(u => u.Nif == nif))!;
+                    return (admin.Nombre);
+                case constDefinidas.rolProfesor:
+                    profesor = (await _context.TProfesors
+                        .FirstOrDefaultAsync(u => u.Nif == nif))!;
+                    return (profesor.Nombre);
+                default:
+                    return ("");
+            }
+            
+        }
     }
 
 

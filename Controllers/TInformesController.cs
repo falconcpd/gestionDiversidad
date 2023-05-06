@@ -59,10 +59,10 @@ namespace gestionDiversidad.Controllers
             List<TInforme> informes = new List<TInforme>();
             ListaInformesView vistaListaInformes = new ListaInformesView();
             int sesionRol = giveSesionRol();
-            string sesionNif = giveSesionNif();
             UserNavigation actualUser = giveActualUser();
+            string actualName = (await _serviceController.giveActualNombre(actualUser.nif, actualUser.rol));
 
-            informes = await _serviceController.listaInformes(actualUser.nif, actualUser.rol);
+            informes = (await _serviceController.listaInformes(actualUser.nif, actualUser.rol));
 
              vistaListaInformes.Permiso = await _serviceController
                 .permisoPantalla(constDefinidas.screenListalInformes, sesionRol);
@@ -71,6 +71,7 @@ namespace gestionDiversidad.Controllers
             vistaListaInformes.ListaInformes = informes;
             vistaListaInformes.ActualRol = actualUser.rol;
             vistaListaInformes.ActualNif = actualUser.nif;
+            vistaListaInformes.ActualName = actualName;
 
             return View(vistaListaInformes);
 
