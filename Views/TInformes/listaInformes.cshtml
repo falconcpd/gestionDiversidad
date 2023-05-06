@@ -6,72 +6,90 @@
 
 <h1>Lista de informes</h1>
 
-<table class="table" style="text-align:center; vertical-align:middle">
-    <thead>
-        <tr>
-            <th>
-                <strong>Alumno </strong>
-            </th>
-            <th>
-                <strong>Médico </strong>
-            </th>
-            <th>
-                <strong>@Html.DisplayNameFor(model => model.ListaInformes.First().Fecha)</strong>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.ListaInformes)
-        {
+<div class="table-responsive overflow-auto" style=" max-height: 500px; overflow-y: auto;">
+    <table id="listaInformes" class="table table-bordered table-striped">
+        <thead style="text-align:center; vertical-align:middle">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NifAlumnoNavigation.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NifMedicoNavigation.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Fecha)
-                </td>
-                @if (Model.Informe.Acceder)
-                {
-                    <td>
-                        <form method="get" asp-action="infoBasica" asp-controller="TInformes">
-                            <input type="hidden" name="nifAlumno" value=@item.NifAlumno />
-                            <input type="hidden" name="nifMedico" value=@item.NifMedico />
-                            <input type="hidden" name="fecha" value=@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss") />
-                            <button type="submit">Detalles informe</button>
-                        </form>
-                    </td>
-                }
+                <th>
+                    <strong>Alumno(NIF) </strong>
+                </th>
+                <th>
+                    <strong>Médico(NIF) </strong>
+                </th>
+                <th>
+                    <strong>@Html.DisplayNameFor(model => model.ListaInformes.First().Fecha)</strong>
+                </th>
+                <th>
+                    <strong>Acción: Detalles del informe</strong>
+                </th>
                 @if (Model.Permiso.Borrar)
                 {
-                    <td>
-                        <a asp-controller="TInformes" asp-action="borrarInforme"
-                   asp-route-nifMedico="@item.NifMedico" asp-route-nifAlumno="@item.NifAlumno"
-                   asp-route-fecha="@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")"
-                           class="btn btn-danger">Borrar informe</a>
-                    </td>
+                    <th>
+                        <strong>Acción: Borrar informe</strong>
+                    </th>
                 }
                 @if (Model.Permiso.Modificar)
                 {
-                    <td>
-                    <a asp-controller="TInformes" asp-action="elegirMedicoInforme"
-                   asp-route-nifMedico="@item.NifMedico" asp-route-nifAlumno="@item.NifAlumno"
-                   asp-route-fecha="@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")"
-                           class="btn btn-primary">Cambiar médico informe</a>
-                    </td>
+                    <th>
+                        <strong>Acción: Cambiar médico titular</strong>
+                    </th>
                 }
-                
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody style="text-align:center; vertical-align:middle">
+            @foreach (var item in Model.ListaInformes)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NifAlumnoNavigation.Nombre) @("(" + item.NifAlumno + ")")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NifMedicoNavigation.Nombre) @("(" + item.NifMedico + ")")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Fecha)
+                    </td>
+                    @if (Model.Informe.Acceder)
+                    {
+                        <td>
+                            <form method="get" asp-action="infoBasica" asp-controller="TInformes">
+                                <input type="hidden" name="nifAlumno" value=@item.NifAlumno />
+                                <input type="hidden" name="nifMedico" value=@item.NifMedico />
+                                <input type="hidden" name="fecha" value=@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss") />
+                                <button type="submit" class="btn btn-info text-white">Detalles</button>
+                            </form>
+                        </td>
+                    }
+                    @if (Model.Permiso.Borrar)
+                    {
+                        <td>
+                            <a asp-controller="TInformes" asp-action="borrarInforme"
+                       asp-route-nifMedico="@item.NifMedico" asp-route-nifAlumno="@item.NifAlumno"
+                       asp-route-fecha="@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")"
+                               class="btn btn-warning text-white">Borrar</a>
+                        </td>
+                    }
+                    @if (Model.Permiso.Modificar)
+                    {
+                        <td>
+                            <a asp-controller="TInformes" asp-action="elegirMedicoInforme"
+                       asp-route-nifMedico="@item.NifMedico" asp-route-nifAlumno="@item.NifAlumno"
+                       asp-route-fecha="@item.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")"
+                               class="btn btn-primary">Cambiar médico</a>
+                        </td>
+                    }
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 @if (Model.Permiso.Insertar)
 {
     <div style="margin-top: 10px; margin-bottom: 10px;">
         <a asp-controller="TInformes" asp-action="insertarInforme"
-           class="btn btn-primary">Nuevo Informe</a>
+           class="btn btn-primary">Añadir nuevo Informe</a>
     </div>
 }
 
