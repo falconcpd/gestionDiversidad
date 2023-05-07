@@ -7,46 +7,57 @@
 }
 
 <h1>Lista docencias de profesores</h1>
-<table class="table" style="text-align:center; vertical-align:middle">
-    <thead>
-        <tr>
-            <th>
-                <strong>Profesor</strong>
-            </th>
-            <th>
-                <strong>@Html.DisplayNameFor(model => model.LProfesores.First().Nif)</strong>
-            </th>
-            <th>
-                <strong>Asignatura </strong>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var profesor in Model.LProfesores)
-        {
-            @foreach (var asignatura in profesor.IdAsignaturas)
+
+<div class="table-responsive overflow-auto" style=" max-height: 500px; overflow-y: auto;">
+    <table id="listaDocencias" class="table table-bordered table-striped">
+        <thead style="text-align:center; vertical-align:middle">
+            <tr>
+                <th>
+                    <strong>Profesor</strong>
+                </th>
+                <th>
+                    <strong>Nif profesor</strong>
+                </th>
+                <th>
+                    <strong>Asignatura </strong>
+                </th>
+                @if (Model.Pantalla.Borrar)
+                {
+                    <th>
+                        <strong>Acción: Borrar docencia </strong>
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody style="text-align:center; vertical-align:middle">
+            @foreach (var profesor in Model.LProfesores)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => profesor.Nombre)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => profesor.Nif)
-                    </td>
-                    <td>@asignatura.Nombre</td>
-                    @if (Model.Pantalla.Borrar)
-                    {
+                @foreach (var asignatura in profesor.IdAsignaturas)
+                {
+                    <tr>
                         <td>
-                            <a asp-controller="TProfesores" asp-action="borrarDocencia"
-                             asp-route-idAsignatura="@asignatura.Id" asp-route-nifProfesor="@profesor.Nif"
-                               class="btn btn-danger">Borrar docencia</a>
+                            @Html.DisplayFor(modelItem => profesor.Nombre)
                         </td>
-                    }
-                </tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => profesor.Nif)
+                        </td>
+                        <td>
+                            @asignatura.Nombre
+                        </td>
+                        @if (Model.Pantalla.Borrar)
+                        {
+                            <td>
+                                <a asp-controller="TProfesores" asp-action="borrarDocencia"
+                       asp-route-idAsignatura="@asignatura.Id" asp-route-nifProfesor="@profesor.Nif"
+                                   class="btn btn-warning text-white">Borrar docencia</a>
+                            </td>
+                        }
+                    </tr>
+                }
             }
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 
 @if (Model.Pantalla.Insertar)
 {
