@@ -4,125 +4,148 @@
 @{
     ViewData["Title"] = "infoBasica";
 }
-
-<h1>Información de administración</h1>
-
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            <strong>@Html.DisplayNameFor(model => model.Admin.Nombre)</strong>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Admin.Nombre)
-        </dd>
-        <dt class="col-sm-2">
-            <strong>Primer apellido: </strong>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Admin.Apellido1)
-        </dd>
-        <dt class="col-sm-2">
-            <strong>Segundo apellido: </strong>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Admin.Apellido2)
-        </dd>
-        <dt class="col-sm-2">
-            <strong>Nif administración: </strong>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Admin.NifNavigation.Nif)
-        </dd>
-    </dl>
+<div class="text-center">
+    <h1>Información del administrador/a</h1>
 </div>
 
-@if (Model!.LAsignaturas.Acceder)
-{
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
-            <button type="submit">Ver lista de asignaturas</button>
-        </form>
-    </div>
-}
 
-@if (Model!.LMedicos.Acceder)
-{
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <form asp-controller="TMedicos" asp-action="listaMedicos">
-            <input type="hidden" name="volverPadre" value="false" />
-            <button type="submit">Ver lista de médicos</button>
-        </form>
-    </div>
-}
+<div class="text-center">
+    <hr />
+        <dl class="row">
+            <dt>
+            <strong>Nombre: </strong>
+        </dt>
+            <dd>
+            @Html.DisplayFor(model => model.Admin.Nombre)
+        </dd>
+        <dt >
+            <strong>Primer apellido: </strong>
+        </dt>
+        <dd >
+            @Html.DisplayFor(model => model.Admin.Apellido1)
+        </dd>
+        <dt >
+            <strong>Segundo apellido: </strong>
+        </dt>
+        <dd >
+            @Html.DisplayFor(model => model.Admin.Apellido2)
+        </dd>
+        <dt >
+            <strong>Nif: </strong>
+        </dt>
+        <dd >
+            @Html.DisplayFor(model => model.Admin.NifNavigation.Nif)
+        </dd>
+        </dl>
+</div>
 
-@if (Model!.LProfesores.Acceder)
-{
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <form asp-controller="TProfesores" asp-action="listaProfesores">
-            <input type="hidden" name="volverPadre" value="false" />
-            <button type="submit">Ver lista de profesores</button>
-        </form>
-    </div>
-}
+<div style="text-align:center; vertical-align:middle">
+    @if (Model!.LAsignaturas.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
+                <button type="submit" class="btn btn-info text-white">
+                    Asignaturas
+                </button>
+            </form>
+        </div>
+    }
 
-@if (Model!.LAlumnos.Acceder)
-{
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-       <form asp-controller="TAlumnos" asp-action="listaAlumnos">
-            <input type="hidden" name="volverPadre" value="false" />
-            <input type="hidden" name="rol" value="@constDefinidas.rolAdmin" />
-            <input type="hidden" name="nif" value="@Model.Admin.Nif" />
-            <button type="submit">Ver lista de alumnos</button>
-        </form>
-    </div>
-}
+    @if (Model!.LMedicos.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form asp-controller="TMedicos" asp-action="listaMedicos">
+                <input type="hidden" name="volverPadre" value="false" />
+                <button type="submit" class="btn btn-info text-white">
+                    Médicos
+                </button>
+            </form>
+        </div>
+    }
 
-@if (Model!.LInformes.Acceder)
-{
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <form asp-controller="TInformes" asp-action="listaInformes">
-            <input type="hidden" name="rol" value="@constDefinidas.rolAdmin" />
-            <input type="hidden" name="nif" value="@Model.Admin.Nif" />
-            <button type="submit">Ver lista de informes</button>
-        </form>
-    </div>
-}
+    @if (Model!.LProfesores.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form asp-controller="TProfesores" asp-action="listaProfesores">
+                <input type="hidden" name="volverPadre" value="false" />
+                <button type="submit" class="btn btn-info text-white">
+                    Profesores
+                </button>
+            </form>
+        </div>
+    }
 
-@if (Model!.LDocencias.Acceder)
-{
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <form asp-controller="TProfesores" asp-action="listaDocencias">
-            <button type="submit">Ver lista de docencias</button>
-        </form>
-    </div>
-}
+    @if (Model!.LAlumnos.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form asp-controller="TAlumnos" asp-action="listaAlumnos">
+                <input type="hidden" name="volverPadre" value="false" />
+                <input type="hidden" name="rol" value="@constDefinidas.rolAdmin" />
+                <input type="hidden" name="nif" value="@Model.Admin.Nif" />
+                <button type="submit" class="btn btn-info text-white">
+                    Alumnos
+                </button>
+            </form>
+        </div>
+    }
 
-@if (Model.LMatriculas.Acceder)
-{
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <form asp-controller="TAlumnos" asp-action="listaMatriculas">
-            <button type="submit">Ver lista de matrículas</button>
-        </form>
-    </div>
-}
+    @if (Model!.LInformes.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form asp-controller="TInformes" asp-action="listaInformes">
+                <input type="hidden" name="rol" value="@constDefinidas.rolAdmin" />
+                <input type="hidden" name="nif" value="@Model.Admin.Nif" />
+                <button type="submit" class="btn btn-info text-white">
+                    Informes
+                </button>
+            </form>
+        </div>
+    }
 
-@if (Model.LPantallas.Acceder)
-{
-    <div style="margin-top: 10px; margin-bottom: 10px;">
-        <form asp-controller="TPantallas" asp-action="listaPantallas">
-            <button type="submit">Ver lista de pantallas</button>
-        </form>
-    </div>
-}
+    @if (Model!.LDocencias.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form asp-controller="TProfesores" asp-action="listaDocencias">
+                <button type="submit" class="btn btn-info text-white">
+                    Docencias
+                </button>
+            </form>
+        </div>
+    }
 
-@if (Model.LPantallas.Acceder)
-{
-    <div>
-        <form asp-controller="TAuditoriums" asp-action="listaAuditorias">
-            <button type="submit">Ver lista de auditorías</button>
-        </form>
-    </div>
+    @if (Model.LMatriculas.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form asp-controller="TAlumnos" asp-action="listaMatriculas">
+                <button type="submit" class="btn btn-info text-white">
+                    Matrículas
+                </button>
+            </form>
+        </div>
+    }
 
-}
+    @if (Model.LPantallas.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form asp-controller="TPantallas" asp-action="listaPantallas">
+                <button type="submit" class="btn btn-info text-white">
+                    Pantallas
+                </button>
+            </form>
+        </div>
+    }
+
+    @if (Model.LPantallas.Acceder)
+    {
+        <div>
+            <form asp-controller="TAuditoriums" asp-action="listaAuditorias">
+                <button type="submit" class="btn btn-info text-white">
+                    Auditorías
+                </button>
+            </form>
+        </div>
+
+    }
+</div>
+
 
