@@ -5,55 +5,66 @@
     ViewData["Title"] = "infoBasica";
 }
 
-<h1>Información del informe</h1>
+<div class="text-center">
+    <h1>Información del informe</h1>
+</div>
 
-<div>
+<div class="text-center">
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt>
             <strong>Nombre alumno: </strong>
         </dt>
-        <dd class = "col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Alumno.Nombre)
         </dd>
-        <dt class = "col-sm-2">
+        <dt>
             <strong>Nombre médico: </strong>
         </dt>
-        <dd class = "col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Medico.Nombre)
         </dd>
-        <dt class="col-sm-2">
+        <dt>
             <strong>Fecha de creación: </strong>
         </dt>
-        <dd class="col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Informe.Fecha)
         </dd>
-        <dd class="col-sm-10">
+        <dd>
             <a href="@Url.Action("verInforme", "TInformes", 
             new {nifAlumno = Model.Informe.NifAlumno, 
                 nifMedico = Model.Informe.NifMedico, 
                 fecha = Model.Informe.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")})"
-                target="_blank">Ver informe</a>
+               target="_blank" class="btn btn-info text-white">Ver informe</a>
         </dd>
     </dl>
 </div>
 
-@if (Model.Permiso.Modificar)
-{
-    <form asp-controller="TInformes" asp-action="actualizarPDF" asp-route-nifAlumno="@Model.Informe.NifAlumno"
-      asp-route-nifMedico=@Model.Informe.NifMedico asp-route-fecha=@Model.Informe.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")
-       method="post" enctype="multipart/form-data">
+<div class="text-center">
+    @if (Model.Permiso.Modificar)
+    {
         <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-            <label asp-for="@Model.PDF" >Seleccione el archivo PDF:</label>
-            <input asp-for="@Model.PDF" type="file" accept=".pdf">
+            <form asp-controller="TInformes" asp-action="actualizarPDF" asp-route-nifAlumno="@Model.Informe.NifAlumno"
+            asp-route-nifMedico=@Model.Informe.NifMedico asp-route-fecha=@Model.Informe.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")
+                method="post" enctype="multipart/form-data">           
+                    <label asp-for="@Model.PDF">Seleccione el archivo PDF:</label>
+                    <input asp-for="@Model.PDF" type="file" accept=".pdf">
+                <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+                    <button type="submit" class="btn btn-primary">Modificar archivo</button>
+                </div>
+            </form>
         </div>
-        <button type="submit" class="btn btn-primary">Modificar archivo</button>
-    </form>
+    }
 
-}
-
-<div>
-    <a asp-controller="TInformes" asp-action="listaInformes">
-        Volver lista de informes
-    </a>
+    <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+        <a asp-controller="TInformes" asp-action="listaInformes" class="btn btn-dark">
+            Volver lista de informes
+        </a>
+    </div>
+    @if (TempData["InformeVacio"] != null)
+    {
+        <div class="alert alert-danger">@TempData["InformeVacio"]</div>
+    }
 </div>
+
+

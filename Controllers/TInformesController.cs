@@ -122,9 +122,20 @@ namespace gestionDiversidad.Controllers
                 return NotFound();
             }
 
+            if(PDF == null)
+            {
+                TempData["InformeVacio"] = "No se ha seleccionado ningún informe para sustituir";
+                return RedirectToAction("infoBasica", "TInformes", new
+                {
+                    nifMedico = nifMedico,
+                    nifAlumno = nifAlumno,
+                    fecha = fecha
+                });
+            }
+
             using (var ms = new MemoryStream())
             {
-                await PDF.CopyToAsync(ms);
+                await PDF!.CopyToAsync(ms);
                 informe.Contenido = ms.ToArray();
             }
 

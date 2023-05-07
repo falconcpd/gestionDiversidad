@@ -6,67 +6,75 @@
     ViewData["Title"] = "infoBasica";
 }
 
-<h1>Información del alumno</h1>
+<div class="text-center">
+    <h1>Información del alumno</h1>
+</div>
 
-<div>
+<div class="text-center">
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Alumno.Nombre)
+        <dt>
+            <strong>Nombre: </strong>
         </dt>
-        <dd class="col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Alumno.Nombre)
         </dd>
-        <dd class ="col-sm-2">
+        <dd>
             <strong>Primer apellido: </strong>
         </dd>
-        <dd class="col-sm-10">
+        <dd >
             @Html.DisplayFor(model => model.Alumno.Apellido1)
         </dd>
-        <dd class="col-sm-2">
+        <dd>
             <strong>Segundo apellido: </strong>
         </dd>
-        <dd class="col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Alumno.Apellido2)
         </dd>
-        <dd class="col-sm-2">
-            <strong>Nif del alumno: </strong>
+        <dd>
+            <strong>Nif: </strong>
         </dd>
-        <dd class="col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Alumno.NifNavigation.Nif)
         </dd>
     </dl>
 </div>
 
-@if (Model!.Permiso.Modificar)
-{
-    <div>
-        <form asp-controller="TAlumnos" asp-action="modificarAlumno" asp-route-nif="@Model.Alumno.Nif">
-            <button type="submit">Modificar alumno</button>
-        </form>
-    </div>
-}
-@if (Model.LMatriculas.Acceder)
-{
-    <div>
-        <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
-            <button type="submit">Lista de asignaturas del alumno</button>
-        </form>
-    </div>
-}
+<div class="text-center">
+    @if (Model!.Permiso.Modificar)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form asp-controller="TAlumnos" asp-action="modificarAlumno" asp-route-nif="@Model.Alumno.Nif">
+                <button type="submit" class="btn btn-primary">Modificar alumno</button>
+            </form>
+        </div>
+    }
+    @if (Model.LMatriculas.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
+                <button type="submit" class="btn btn-info text-white">Asignaturas</button>
+            </form>
+        </div>
+    }
 
-@if (Model!.LInformes.Acceder)
-{
-    <div>
-        <form method="get" asp-action="listaInformes" asp-controller="TInformes">
-            <button type="submit">Lista de informes del alumno</button>
-        </form>
-    </div>
-}
-@if (Model!.LAlumnos.Acceder)
-{
-    <div>
+    @if (Model!.LInformes.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form method="get" asp-action="listaInformes" asp-controller="TInformes">
+                <button type="submit" class="btn btn-info text-white">Informes</button>
+            </form>
+        </div>
+    }
+    @if (Model!.LAlumnos.Acceder)
+    {
+       <div>
         <a asp-controller="TAlumnos" asp-action="listaAlumnos"
-       asp-route-volverPadre="true">Volver a la lista de alumnos</a>
-    </div>
-}
+           asp-route-volverPadre="true" class="btn btn-dark">
+           Volver atrás
+       </a>
+        </div>
+    }
+
+</div>
+
