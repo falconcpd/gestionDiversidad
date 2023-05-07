@@ -6,62 +6,76 @@
 
 <h1>Lista de profesores</h1>
 
-<table class="table" style="text-align:center; vertical-align:middle">
-    <thead>
-        <tr>
-            <th>
-                <strong>@Html.DisplayNameFor(model => model.ListaProfesores.First().Nombre)</strong>
-            </th>
-            <th>
-                <strong>Primer apellido: </strong>
-            </th>
-            <th>
-                <strong>Segundo apellido: </strong>
-            </th>
-            <th>
-                <strong>@Html.DisplayNameFor(model => model.ListaProfesores.First().Nif)</strong>
-            </th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.ListaProfesores)
-        {
+<div class="table-responsive overflow-auto" style=" max-height: 500px; overflow-y: auto;">
+    <table id="listaProfesores" class="table table-bordered table-striped">
+        <thead style="text-align:center; vertical-align:middle">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Apellido1)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Apellido2)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nif)
-                </td>
+                <th>
+                    <strong>@Html.DisplayNameFor(model => model.ListaProfesores.First().Nombre)</strong>
+                </th>
+                <th>
+                    <strong>Primer apellido </strong>
+                </th>
+                <th>
+                    <strong>Segundo apellido </strong>
+                </th>
+                <th>
+                    <strong>@Html.DisplayNameFor(model => model.ListaProfesores.First().Nif)</strong>
+                </th>
                 @if (Model.Profesor.Acceder)
                 {
-                    <td>
-                        <form method="get" asp-action="infoBasica" asp-controller="TProfesores">
-                            <input type="hidden" name="id" value=@item.Nif />
-                            <button type="submit">Detalles Profesor</button>
-                        </form>
-                    </td>
+                    <th>
+                        <strong>Acción: Detalles del profesor/a</strong>
+                    </th>
                 }
                 @if (Model.Permiso.Borrar)
                 {
-                    <td>
-                        <form asp-action="borrarProfesor" asp-controller="TProfesores">
-                            <input type="hidden" name="nifProfesor" value="@item.Nif" />
-                            <input type="submit" value="Borrar Profesor" class="btn btn-danger" /> 
-                        </form>
-                    </td>
+                    <th>
+                        <strong>Acción: Borrar profesor/a</strong>
+                    </th>
                 }
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody style="text-align:center; vertical-align:middle">
+            @foreach (var item in Model.ListaProfesores)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Apellido1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Apellido2)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nif)
+                    </td>
+                    @if (Model.Profesor.Acceder)
+                    {
+                        <td>
+                            <form method="get" asp-action="infoBasica" asp-controller="TProfesores">
+                                <input type="hidden" name="id" value=@item.Nif />
+                                <button type="submit" class="btn btn-info text-white">Detalles</button>
+                            </form>
+                        </td>
+                    }
+                    @if (Model.Permiso.Borrar)
+                    {
+                        <td>
+                            <form asp-action="borrarProfesor" asp-controller="TProfesores">
+                                <input type="hidden" name="nifProfesor" value="@item.Nif" />
+                                <input type="submit" value="Borrar" class="btn btn-warning text-white" />
+                            </form>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 @if (Model.Permiso.Insertar)
 {
     <div>
