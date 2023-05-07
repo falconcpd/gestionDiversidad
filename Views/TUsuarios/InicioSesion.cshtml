@@ -22,5 +22,9 @@
     {
         <div class="alert alert-danger">@TempData["ErrorSesion"]</div>
     }
+    @if (TempData["BorradoUsuarioProfesor"] != null)
+    {
+        <div class="alert alert-danger">@TempData["BorradoUsuarioProfesor"]</div>
+    }
 </form>
 

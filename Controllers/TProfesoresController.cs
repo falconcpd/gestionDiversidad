@@ -55,9 +55,20 @@ namespace gestionDiversidad.Controllers
         // GET: TProfesores/infoBasica/5
         public async Task<IActionResult> infoBasica(string id)
         {
+            UserNavigation actualUser = giveActualUser();
+            if (!await _serviceController.existeUsuario(id))
+            {
+                if(actualUser.padre == null)
+                {
+                    TempData["BorradoUsuarioProfesor"] = "El usuario de tipo profesor con NIF: " + 
+                      id + ", ha sido borrado. Por favor, contacte con un administrador/a para más información.";
+                    return RedirectToAction("errorVolverInicio", "TUsuarios");
+                }
+
+            }
+
             ProfesorView vistaProfesor = new ProfesorView();
             int sesionRol = giveSesionRol();
-            UserNavigation actualUser = giveActualUser();
             string actualJson;
 
             if (id == null || _context.TProfesors == null || sesionRol == 0)

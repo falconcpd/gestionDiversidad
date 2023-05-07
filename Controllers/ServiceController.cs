@@ -678,6 +678,12 @@ namespace gestionDiversidad.Controllers
             }
             
         }
+
+        //Función que te dice si existe o no un usuario con ese nif
+        public async Task<bool> existeUsuario(string nif)
+        {
+            return (await _context.TUsuarios.AnyAsync(u => u.Nif == nif));
+        }
     }
 
 
