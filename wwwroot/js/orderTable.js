@@ -135,4 +135,21 @@ document.addEventListener("DOMContentLoaded", function () {
             "infoEmpty": "Mostrando 0 a 0 de 0 entradas"
         }
     });
+    $('#listaPantallas').DataTable({
+        "language": {
+            "search": "Buscar:",
+            "lengthMenu": "Mostrar _MENU_ pantallas",
+            "sInfoFiltered": "(filtrado de un total de _MAX_ entradas)",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ pantallas",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            },
+            "zeroRecords": "No se encontraron resultados",
+            "emptyTable": "No hay pantallas disponibles en esta tabla",
+            "infoEmpty": "Mostrando 0 a 0 de 0 entradas"
+        }
+    });
 });
