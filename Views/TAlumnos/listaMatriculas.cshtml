@@ -7,46 +7,60 @@
 }
 
 <h1>Lista matrículas de alumnos</h1>
-<table class="table" style="text-align:center; vertical-align:middle">
-    <thead>
-        <tr>
-            <th>
-                <strong>Alumno</strong>
-            </th>
-            <th>
-                <strong>@Html.DisplayNameFor(model => model.LAlumnos.First().Nif)</strong>
-            </th>
-            <th>
-                <strong>Asignatura </strong>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var alumno in Model.LAlumnos)
-        {
+
+<div class="table-responsive overflow-auto" style=" max-height: 500px; overflow-y: auto;">
+    <table id="listaMatriculas" class="table table-bordered table-striped">
+        <thead style="text-align:center; vertical-align:middle">
+            <tr>
+                <th>
+                    <strong>Alumno</strong>
+                </th>
+                <th>
+                    <strong>@Html.DisplayNameFor(model => model.LAlumnos.First().Nif)</strong>
+                </th>
+                <th>
+                    <strong>Asignatura </strong>
+                </th>
+                @if (Model.Pantalla.Borrar)
+                {
+                    <th>
+                        <strong>Acción: Borrar matrícula</strong>
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody style="text-align:center; vertical-align:middle">
+            @foreach (var alumno in Model.LAlumnos)
+            {
                 @foreach (var asignatura in alumno.IdAsignaturas)
                 {
-                <tr>
+                    <tr>
                         <td>
                             @Html.DisplayFor(modelItem => alumno.Nombre)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => alumno.Nif)
                         </td>
-                        <td>@asignatura.Nombre</td>
-                        @if(Model.Pantalla.Borrar)
-                        {
                         <td>
-                            <a asp-controller="TAlumnos" asp-action="borrarMatricula"
-                             asp-route-idAsignatura="@asignatura.Id" asp-route-nifAlumno="@alumno.Nif"
-                               class="btn btn-danger">Borrar matrícula</a>
+                            @asignatura.Nombre
                         </td>
+                        @if (Model.Pantalla.Borrar)
+                        {
+                            <td>
+                                <a asp-controller="TAlumnos" asp-action="borrarMatricula"
+                                asp-route-idAsignatura="@asignatura.Id" asp-route-nifAlumno="@alumno.Nif"
+                                   class="btn btn-warning text-white">Borrar matrícula</a>
+                            </td>
                         }
-                </tr>
+                    </tr>
                 }
-        }
-    </tbody>
-</table>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
 @if (Model.Pantalla.Insertar)
 {
     <div style="margin-top: 10px; margin-bottom: 10px;">
@@ -59,6 +73,6 @@
 <div>
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
        asp-route-nif="@Model.SesionNif" asp-route-rol="@Model.SesionRol">
-        Volver al usuario anterior
+        Volver atrás
     </a>
 </div>
