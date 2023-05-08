@@ -4,38 +4,43 @@
     ViewData["Title"] = "crearMatricula";
 }
 
-<h1>Crear nueva matrícula</h1>
+<div class="text-center">
+    <h2>Crear nueva matrícula</h2>
+</div>
 
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="crearMatricula" asp-controller="TAlumnos"
-              method="post">
+<div class="text-center">
+        <form asp-action="crearMatricula" asp-controller="TAlumnos"method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-                <label asp-for="@Model.NifAlumno" class="control-label">Alumno: </label>
-                <select asp-for="NifAlumno" asp-items="@Model.LAlumnos!.Select(a => new SelectListItem { Text = a.Nombre, Value = a.Nif })"></select>
+            <div style="margin-top: 10px; margin-bottom: 10px;">
+            <label asp-for="@Model.NifAlumno" class="control-label" style="display: block;">Alumno(Nif): </label>
+            <select asp-for="NifAlumno" asp-items="@Model.LAlumnos!.Select(a => new SelectListItem { Text = $"{a.Nombre}({a.Nif})", Value = a.Nif })" class="text-center"></select>
                 <span asp-validation-for="@Model.NifAlumno" class="text-danger"></span>
             </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-                <label asp-for="@Model.IdAsignatura" class="control-label"> Asignatura: </label>
-                <select asp-for="IdAsignatura" asp-items="@Model.LAsignaturas!.Select(a => new SelectListItem { Text = a.Nombre, Value = a.Id.ToString() })"></select>
+            <label asp-for="@Model.IdAsignatura" class="control-label" style="display: block;"> Asignatura: </label>
+            <select asp-for="IdAsignatura" asp-items="@Model.LAsignaturas!.Select(a => new SelectListItem { Text = a.Nombre, Value = a.Id.ToString() })" class="text-center"></select>
                 <span asp-validation-for="@Model.IdAsignatura" class="text-danger"></span>
             </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
                 <input type="submit" value="Crear matrícula" class="btn btn-primary" />
             </div>
         </form>
-    </div>
 </div>
+
+<div class="text-center" style="margin-top: 10px; margin-bottom: 10px;">
+    <a asp-controller="TAlumnos" asp-action="listaMatriculas"
+       asp-route-volverPadre="false" class="btn btn-dark">
+       Volver atrás
+   </a>
+</div>
+
 @if (TempData["ExisteMatricula"] != null)
 {
-    <div class="alert alert-danger">@TempData["ExisteMatricula"]</div>
+    <div class="alert alert-danger text-center">
+        @TempData["ExisteMatricula"]
+    </div>
 }
-<div>
-    <a asp-controller="TAlumnos" asp-action="listaMatriculas"
-       asp-route-volverPadre="false">Volver a matrículas</a>
-</div>
 
 
 @section Scripts {

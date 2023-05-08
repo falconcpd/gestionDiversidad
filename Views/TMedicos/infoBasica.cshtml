@@ -5,70 +5,77 @@
     ViewData["Title"] = "infoBasica";
 }
 
-<h1>Información de médico</h1>
+<div class="text-center">
+    <h2>Información de médico</h2>
+</div>
 
-<div>
+<div class="text-center">
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Medico.Nombre)
+        <dt>
+            <strong>Nombre: </strong>
         </dt>
-        <dd class="col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Medico.Nombre)
         </dd>
-        <dd class="col-sm-2">
+        <dd>
             <strong>Primer apellido: </strong>
         </dd>
-        <dd class="col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Medico.Apellido1)
         </dd>
-        <dd class="col-sm-2">
+        <dd>
             <strong>Segundo apellido: </strong>
         </dd>
-        <dd class="col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Medico.Apellido2)
         </dd>
-        <dd class="col-sm-2">
+        <dd>
             <strong>Nif del médico: </strong>
         </dd>
-        <dd class="col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Medico.NifNavigation.Nif)
         </dd>
     </dl>
 </div>
 
-@if (Model!.Permiso.Modificar && (Model.Medico.Nif != constDefinidas.keyMedicoTemporal))
-{
-    <div>
-        <form asp-controller="TMedicos" asp-action="modificarMedico" asp-route-nif="@Model.Medico.Nif">
-            <button type="submit">Modificar médico</button>
-        </form>
-    </div>
-}
-@if (Model.LAlumnos.Acceder)
-{
-    <div>
-        <form method="get" asp-action="listaAlumnos" asp-controller="TAlumnos">
-            <input type="hidden" name="volverPadre" value="false" />
-            <button type="submit">Ver lista de Alumnos</button>
-        </form>
-    </div>
-}
+<div class="text-center">
+    @if (Model!.Permiso.Modificar && (Model.Medico.Nif != constDefinidas.keyMedicoTemporal))
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form asp-controller="TMedicos" asp-action="modificarMedico" asp-route-nif="@Model.Medico.Nif">
+                <button type="submit" class="btn btn-primary">Modificar médico</button>
+            </form>
+        </div>
+    }
+    @if (Model.LAlumnos.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form method="get" asp-action="listaAlumnos" asp-controller="TAlumnos">
+                <input type="hidden" name="volverPadre" value="false" />
+                <button type="submit" class="btn btn-info text-white">Alumnos</button>
+            </form>
+        </div>
+    }
 
-@if (Model!.LInformes.Acceder)
-{
-    <div>
-        <form method="get" asp-action="listaInformes" asp-controller="TInformes">
-            <button type="submit">Lista de informes del médico</button>
-        </form>
-    </div>
-}
+    @if (Model!.LInformes.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <form method="get" asp-action="listaInformes" asp-controller="TInformes">
+                <button type="submit" class="btn btn-info text-white">Informes</button>
+            </form>
+        </div>
+    }
 
-@if (Model!.LMedicos.Acceder)
-{
-    <div>
-        <a asp-controller="TMedicos" asp-action="listaMedicos"
-        asp-route-volverPadre="true">Volver a la lista de médicos</a>
-    </div>
-}
+    @if (Model!.LMedicos.Acceder)
+    {
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <a asp-controller="TMedicos" asp-action="listaMedicos"
+           asp-route-volverPadre="true" class="btn btn-dark">
+                Volver atrás
+            </a>
+        </div>
+    }
+</div>
+
 

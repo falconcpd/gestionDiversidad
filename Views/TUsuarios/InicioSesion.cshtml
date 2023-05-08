@@ -4,27 +4,37 @@
     ViewData["Title"] = "inicioSesion";
 }
 
-<h2>Inicio sesión</h2>
+<div class="text-center">
+    <h2>Inicio sesión</h2>
+</div>
 
-<form asp-controller="TUsuarios" asp-action="logging">
-    <div style="margin-bottom: 10px;">
-        <label for="usuario" style="display: block;">Usuario:</label>
-        <input type="text" name="usuario" id="usuario" style="margin-left: 5px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-        <label for="password" style="display: block;">Password:</label>
-        <input type="text" name="password" id="password" style="margin-left: 5px;">
-    </div>
+<div class="text-center">
+    <form asp-controller="TUsuarios" asp-action="logging">
+        <div style="margin-bottom: 10px;">
+            <label for="usuario" style="display: block;">Usuario:</label>
+            <input type="text" name="usuario" id="usuario" style="margin-left: 5px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label for="password" style="display: block;">Password:</label>
+            <input type="text" name="password" id="password" style="margin-left: 5px;">
+        </div>
 
-    <input type="submit" value="Iniciar Sesión">
+        <input type="submit" class="btn btn-primary" value="Iniciar Sesión">
 
-    @if (TempData["ErrorSesion"] != null)
-    {
-        <div class="alert alert-danger">@TempData["ErrorSesion"]</div>
-    }
-    @if (TempData["BorradoUsuarioProfesor"] != null)
-    {
-        <div class="alert alert-danger">@TempData["BorradoUsuarioProfesor"]</div>
-    }
-</form>
+        @if (TempData["ErrorSesion"] != null)
+        {
+            <div class="alert alert-danger" style="margin-top: 10px; margin-bottom: 10px;">
+                @TempData["ErrorSesion"]
+            </div>
+        }
+        @if (TempData["BorradoUsuarioProfesor"] != null)
+        {
+            <div class="alert alert-danger" style="margin-top: 10px; margin-bottom: 10px;">
+                @TempData["BorradoUsuarioProfesor"]
+            </div>
+        }
+    </form>
+</div>
+
+
 
