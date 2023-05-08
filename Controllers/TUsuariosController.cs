@@ -14,6 +14,8 @@ using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using gestionDiversidad.ViewModels.TAlumnos;
 using gestionDiversidad.ViewModels.TProfesores;
 using gestionDiversidad.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.IO;
 
 namespace gestionDiversidad.Controllers
 {
@@ -217,12 +219,12 @@ namespace gestionDiversidad.Controllers
         {
             if (ModelState.IsValid)
             {
+                string sesionNif = giveSesionNif();
+                byte[] file;
                 using (var ms = new MemoryStream())
                 {
                     await model.PDF.CopyToAsync(ms);
-                    var file = ms.ToArray();
-                    string base64file = Convert.ToBase64String(file);
-                    TempData[constDefinidas.keyInformePDF] = base64file;
+                    file = ms.ToArray();
                 }
 
                 var user = new TUsuario
@@ -235,15 +237,37 @@ namespace gestionDiversidad.Controllers
 
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-
-                return RedirectToAction("crearAlumno", "TAlumnos", new
+                /// Parte alumno
+                var alumno = new TAlumno
                 {
-                    nif = model.Nif,
-                    nombre = model.Nombre,
-                    apellido1 = model.Apellido1,
-                    apellido2 = model.Apellido2,
-                    medico = model.MedicoNif
-                });
+                    Nif = model.Nif!,
+                    Nombre = model.Nombre!,
+                    Apellido1 = model.Apellido1!,
+                    Apellido2 = model.Apellido2!
+                };
+
+                _context.Add(alumno);
+                await _context.SaveChangesAsync();
+                await _serviceController
+                    .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionCrearElemento, model.Nif);
+                ///Parte informe
+                DateTime fechaActualFinal = _serviceController.fechaPresente();
+
+                var informe = new TInforme
+                {
+                    NifMedico = model.MedicoNif,
+                    NifAlumno = model.Nif,
+                    Fecha = fechaActualFinal,
+                    Contenido = file
+                };
+
+                _context.Add(informe);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("listaAlumnos", "TAlumnos",new
+                    {
+                        volverPadre = "false"
+                    });
 
             }
             return RedirectToAction("insertarAlumno", "TAlumnos");

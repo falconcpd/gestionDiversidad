@@ -151,31 +151,6 @@ namespace gestionDiversidad.Controllers
             });
         }
 
-        //Función que crea un informe: TInformes/crearInforme
-        public async Task<IActionResult> crearInforme(string nifMedico, string nifAlumno)
-        {
-            var filepdf = TempData[constDefinidas.keyInformePDF] as string;
-            byte[] filestream = Convert.FromBase64String(filepdf!);
-
-            DateTime fechaActualFinal = _serviceController.fechaPresente();
-
-            var informe = new TInforme
-            {
-                NifMedico = nifMedico,
-                NifAlumno = nifAlumno,
-                Fecha = fechaActualFinal,
-                Contenido = filestream
-            };
-
-            _context.Add(informe);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("listaAlumnos", "TAlumnos",
-                new {
-                     volverPadre = "false" 
-                });
-        }
-
         // POST : TInformes/crearInformeNuevo
         [HttpPost]
         [ValidateAntiForgeryToken]

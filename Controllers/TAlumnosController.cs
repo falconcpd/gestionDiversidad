@@ -139,30 +139,6 @@ namespace gestionDiversidad.Controllers
             return View(vistaCrearAlumno);
         }
 
-        //Función que crea al alumno: TAlumnos/crearAlumno
-        public async Task<IActionResult> crearAlumno(string nif, string nombre, string apellido1, string apellido2, string medico)
-        {
-            string sesionNif = giveSesionNif();
-
-            var alumno = new TAlumno
-            {
-                Nif = nif,
-                Nombre = nombre,
-                Apellido1 = apellido1,
-                Apellido2 = apellido2
-            };
-
-            _context.Add(alumno);
-            await _context.SaveChangesAsync();
-            await _serviceController
-                .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionCrearElemento, nif);
-
-            return RedirectToAction("crearInforme", "TInformes", new {
-                nifMedico = medico,
-                nifAlumno = nif
-            });
-        }
-
         // GET: TAlumnos/listaMatriculas
         public async Task<IActionResult> listaMatriculas()
         {
