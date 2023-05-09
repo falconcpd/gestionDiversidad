@@ -12,6 +12,7 @@ using gestionDiversidad.Navigation;
 using Newtonsoft.Json;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using gestionDiversidad.ViewModels.TAsignaturas;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace gestionDiversidad.Controllers
 {
@@ -101,17 +102,22 @@ namespace gestionDiversidad.Controllers
             string sesionNif = giveSesionNif();
             List<string> nombres = await nombresAsignatura();
 
-            if (nombres.Contains(model.Asignatura!.Nombre))
+            if (nombres.Contains(model.Nombre))
             {
-                TempData["NombreRepetido"] = "El nombre ya está cogido.";
+                TempData["NombreRepetido"] = "El nombre ya está cogido";
                 return RedirectToAction("insertarAsignatura", "TAsignaturas");
             }
 
             if (ModelState.IsValid)
             {
-                _context.Add(model.Asignatura);
+                var asignatura = new TAsignatura
+                {
+                    Nombre = model.Nombre
+
+                };
+                _context.Add(asignatura);
                 await _serviceController
-                    .guardarCrearBorrarAsignaturaAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, constDefinidas.accionCrearElemento, model.Asignatura.Nombre);
+                    .guardarCrearBorrarAsignaturaAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, constDefinidas.accionCrearElemento, model.Nombre);
                 await _context.SaveChangesAsync();
 
             }

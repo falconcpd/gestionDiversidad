@@ -4,27 +4,30 @@
     ViewData["Title"] = "borrarAsignatura";
 }
 
-<h3>¿Seguro que quieres borrar esta asignatura?</h3>
-<div>
-    <hr />
+<div class="text-center">
+    <h2>¿Seguro que quieres borrar esta asignatura?</h2>
+</div>
+
+<hr />
+<div class="text-center">
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Asignatura.Nombre)
+        <dt>
+            <strong>Nombre: </strong>
         </dt>
-        <dd class = "col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Asignatura.Nombre)
         </dd>
     </dl>
 </div>
-<div style="margin-top: 10px; margin-bottom: 10px;">
+<div style="margin-top: 10px; margin-bottom: 10px;" class="text-center">
     <form asp-action="confirmarBorrado" asp-controller="TAsignaturas">
         <input type="hidden" name="id" value="@Model.Asignatura.Id" />
         <input type="submit" value="Borrar Asignatura" class="btn btn-danger" />
     </form>
 </div>
-<div>
-    <a asp-action="listaAsignaturas" asp-controller="TAsignaturas">
-        Volver a la lista de asignaturas
+<div class="text-center">
+    <a asp-action="listaAsignaturas" asp-controller="TAsignaturas" class="btn btn-dark">
+        Volver atrás
     </a>
 </div>
 

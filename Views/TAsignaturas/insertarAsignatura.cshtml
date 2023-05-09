@@ -4,32 +4,34 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Crear nueva Asignatura</h1>
+<div class="text-center">
+    <h2>Crear nueva Asignatura</h2>
+</div>
 
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="text-center">
         <form asp-action="crearAsignatura" asp-controller="TAsignaturas">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="@Model.Asignatura!.Nombre" class="control-label"></label>
-                <input asp-for="@Model.Asignatura!.Nombre" class="form-control" />
-                <span asp-validation-for="@Model.Asignatura!.Nombre" class="text-danger"></span>
+            <div>
+            <label asp-for="@Model.Nombre" class="control-label" style="display: block;">Nombre: </label>
+                <input asp-for="@Model.Nombre" />
+                <div style="margin-bottom: 10px;">
+                    <span asp-validation-for="@Model.Nombre" class="text-danger"></span>
+                </div>           
             </div>
-            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+            <div style="margin-top: 10px; margin-bottom: 10px;">
                 <input type="hidden" name="actualRol" value="@Model.ActualRol" />
                 <input type="hidden" name="actualNif" value="@Model.ActualNif" />
                 <input type="submit" value="Crear asignatura" class="btn btn-primary" />
             </div>
             <div style="margin-top: 10px; margin-bottom: 10px;">
-                <a asp-action="listaAsignaturas" asp-controller="TAsignaturas">
-                    Volver a la lista de asignaturas
+            <a asp-action="listaAsignaturas" asp-controller="TAsignaturas" class="btn btn-dark">
+                    Volver atrás
                 </a>
             </div>
         </form>
-    </div>
 </div>
-<div>
+<div class="text-center" style="margin-top: 10px; margin-bottom: 10px;">
     @if (TempData["NombreRepetido"] != null)
     {
         <div class="alert alert-danger">@TempData["NombreRepetido"]</div>
