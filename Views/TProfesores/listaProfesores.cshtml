@@ -25,13 +25,13 @@
                 @if (Model.Profesor.Acceder)
                 {
                     <th>
-                        <strong>Acción: Detalles del profesor/a</strong>
+                        <strong>Acción: Detalles</strong>
                     </th>
                 }
                 @if (Model.Permiso.Borrar)
                 {
                     <th>
-                        <strong>Acción: Borrar profesor/a</strong>
+                        <strong>Acción: Borrar</strong>
                     </th>
                 }
             </tr>
@@ -88,7 +88,9 @@
 
 <div>
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
-    asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol>Volver al perfil principal</a>
+       asp-route-nif=@Model.SesionNif asp-route-rol=@Model.SesionRol class="btn btn-dark">
+        Volver atrás
+    </a>
 </div>
 
 

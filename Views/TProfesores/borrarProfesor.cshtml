@@ -4,38 +4,41 @@
     ViewData["Title"] = "borrarProfesor";
 }
 
-<h3>¿Seguro que quieres borrar el profesor?</h3>
-<div>
+<div class="text-center">
+    <h2>¿Seguro que quieres borrar el/la profesor/a?</h2>
+</div>
+
+<div class="text-center">
     <hr />
     <dl class="row">
-        <dt class="col-sm-3">
-            <strong>@Html.DisplayNameFor(model => model.Profesor.Nombre)</strong>
+        <dt>
+            <strong>Nombre: </strong>
         </dt>
-        <dd class="col-sm-11">
+        <dd>
             @Html.DisplayFor(model => model.Profesor.Nombre)
         </dd>
     </dl>
     <dl class="row">
-        <dt class="col-sm-3">
-            <strong>Primer Apellido</strong>
+        <dt>
+            <strong>Primer Apellido: </strong>
         </dt>
-        <dd class="col-sm-11">
+        <dd>
             @Html.DisplayFor(model => model.Profesor.Apellido1)
         </dd>
     </dl>
     <dl class="row">
-        <dt class="col-sm-3">
-            <strong>Segundo Apellido</strong>
+        <dt>
+            <strong>Segundo Apellido: </strong>
         </dt>
-        <dd class="col-sm-11">
+        <dd>
             @Html.DisplayFor(model => model.Profesor.Apellido2)
         </dd>
     </dl>
     <dl class="row">
-        <dt class="col-sm-3">
-            <strong>@Html.DisplayNameFor(model => model.Profesor.Nif)</strong>
+        <dt>
+            <strong>Nif: </strong>
         </dt>
-        <dd class="col-sm-11">
+        <dd>
             @Html.DisplayFor(model => model.Profesor.Nif)
         </dd>
     </dl>
@@ -47,8 +50,8 @@
     </form>
     <div>
         <a asp-action="listaProfesores" asp-controller="TProfesores"
-           asp-route-volverPadre="false">
-            Volver lista de Profesores.
+           asp-route-volverPadre="false" class="btn btn-dark">
+            Volver atrás
         </a>
     </div>
 </div>

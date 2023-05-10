@@ -4,32 +4,33 @@
     ViewData["Title"] = "borrarDocencia";
 }
 
-<h1>Borrar docencia</h1>
+<div class="text-center">
+    <h2>¿Seguro que quieres borrar esta docencia?</h2>
+</div>
 
-<h3>¿Seguro que quieres borrar esta docencia?</h3>
-<div>
+<div class="text-center">
     <hr />
     <dl class="row">
-        <dt class="col-sm-3">
-            <strong>Alumno </strong>
+        <dt>
+            <strong>Profesor: </strong>
         </dt>
-        <dd class="col-sm-11">
+        <dd>
             @Html.DisplayFor(model => model.Profesor.Nombre)
         </dd>
     </dl>
     <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Profesor.Nif)
+        <dt>
+            <strong>Nif: </strong>
         </dt>
-        <dd class="col-sm-11">
+        <dd>
             @Html.DisplayFor(model => model.Profesor.Nif)
         </dd>
     </dl>
     <dl class="row">
-        <dt class="col-sm-3">
-            <strong>Asignatura </strong>
+        <dt>
+            <strong>Asignatura: </strong>
         </dt>
-        <dd class="col-sm-11">
+        <dd>
             @Html.DisplayFor(model => model.Asignatura.Nombre)
         </dd>
     </dl>
@@ -42,8 +43,8 @@
 
     </form>
 </div>
-<div>
-    <a asp-action="listaDocencias" asp-controller="TProfesores">
-        Volver lista de docencias
+<div class="text-center">
+    <a asp-action="listaDocencias" asp-controller="TProfesores" class="btn btn-dark">
+        Volver atrás
     </a>
 </div>
