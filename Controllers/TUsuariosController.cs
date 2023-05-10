@@ -46,22 +46,22 @@ namespace gestionDiversidad.Controllers
 
             if (usuario == null)
             {
-                TempData["ErrorSesion"] = "El usuario está vacío.";
+                TempData["ErrorSesion"] = "El usuario está vacío";
                 return View("InicioSesion");
             }
             else if (password == null)
             {
-                TempData["ErrorSesion"] = "La contraseña está vacía.";
+                TempData["ErrorSesion"] = "La contraseña está vacía";
                 return View("InicioSesion");
             }
             else if (user == null)
             {
-                TempData["ErrorSesion"] = "El usuario o contraseña son incorrectos.";
+                TempData["ErrorSesion"] = "El usuario o contraseña son incorrectos";
                 return View("InicioSesion");
             }
             else if(usuario == constDefinidas.keyMedicoTemporal)
             {
-                TempData["ErrorSesion"] = "No se puede iniciar sesión como un médico temporal.";
+                TempData["ErrorSesion"] = "No se puede iniciar sesión como un médico temporal";
                 return View("InicioSesion");
             }
 
@@ -384,7 +384,7 @@ namespace gestionDiversidad.Controllers
                 }
             }
 
-            TempData["SinCambiosUsuario"] = "No se ha modificado ningún parámetro del usuario.";
+            TempData["SinCambiosUsuario"] = "No se ha modificado ningún parámetro del usuario";
             switch (rol)
             {
                 case constDefinidas.rolAlumno:
