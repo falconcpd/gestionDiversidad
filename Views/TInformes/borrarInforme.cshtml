@@ -4,17 +4,22 @@
     ViewData["Title"] = "borrarInforme";
 }
 
-<h3>¿Seguro que quieres borrar el informe?</h3>
+<div class="text-center">
+    <h2>¿Seguro que quieres borrar el informe?</h2>
+</div>
 
+<div class="text-center">
     <form asp-action="confirmarBorradoInforme" asp-controller="TInformes" method="post">
         <input type="hidden" asp-for="NifAlumno" />
         <input type="hidden" asp-for="NifMedico" />
         <input type="hidden" asp-for="Fecha" />
         <input type="submit" value="Borrar Informe" class="btn btn-danger"
-           style="margin-top: 10px; margin-bottom: 10px;" />
+               style="margin-top: 10px; margin-bottom: 10px;" />
     </form>
-<div>
-    <a asp-action="listaInformes" asp-controller="TInformes">
-        Volver a la lista de informes
+</div>
+
+<div class="text-center">
+    <a asp-action="listaInformes" asp-controller="TInformes" class="btn btn-dark">
+        Volver atrás
     </a>
 </div>

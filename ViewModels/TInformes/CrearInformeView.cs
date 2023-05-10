@@ -10,7 +10,7 @@ namespace gestionDiversidad.ViewModels.TInformes
         public string MedicoNif { get; set; } = null!;
         [Required(ErrorMessage = "El informe necesita un alumno al que pertenecer")]
         public string AlumnoNif { get; set; } = null!;
-        [Required(ErrorMessage = "Un alumno no se puede almacenar sin un informe.")]
+        [Required(ErrorMessage = "Un informe necesita un pdf como contenido")]
         public IFormFile PDF { get; set; } = null!;
         public List<TMedico>? ListaMedicos { get; set; }
         public List<TAlumno>? ListaAlumnos { get; set; }

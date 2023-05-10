@@ -109,7 +109,9 @@
 
 <div style="margin-top: 10px; margin-bottom: 10px;">
     <a asp-controller="TUsuarios" asp-action="volverPerfil"
-     asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol>Volver atrás</a>
+       asp-route-nif=@Model.ActualNif asp-route-rol=@Model.ActualRol class="btn btn-dark">
+     Volver atrás
+    </a>
 </div>
 
 @if (TempData["UnSoloInforme"] != null)
