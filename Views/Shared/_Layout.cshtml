@@ -14,17 +14,16 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid d-flex align-items-center">
-                <p class="navbar-brand mx-auto mb-0 h1">Gestión Diversidad &nbsp;&nbsp;</p>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <p class="navbar-brand mr-auto mb-0 h1">Gestión Diversidad &nbsp;&nbsp;</p>
+                <div class="navbar-collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1 d-flex">
                         @if(Context.Session.GetInt32(constDefinidas.keyRol) != null){
-                            <li class="nav-item">
+                            <li class="nav-item" style="margin-right: 10px;">
                                 <form method="post" asp-controller="TUsuarios" asp-action="cerrarSesion">
                                     <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
                                 </form>
                             </li>
-                            <p>&nbsp;</p>
-                            <li class="nav-item">
+                            <li class="nav-item" style="margin-right: 10px;">
                                 <form asp-controller="TUsuarios" asp-action="volverPerfilPrincipal">
                                     <input type="hidden" name="rol" value=@Context.Session.GetInt32(constDefinidas.keyRol) />
                                     <input type="hidden" name="nif" value=@Context.Session.GetString(constDefinidas.keyNif) />
@@ -32,9 +31,43 @@
                                 </form>
                             </li>
                         }
-
                     </ul>
                 </div>
+                @if (Context.Session.GetInt32(constDefinidas.keyRol) != null)
+                {
+                    @if (Context.Session.GetInt32(constDefinidas.keyRol) == constDefinidas.rolAlumno)
+                    {
+                        <div class="text-right d-flex align-items-center ml-auto">
+                            <p class="mb-0">
+                                Usuario: @Context.Session.GetString(constDefinidas.keyUser)  Rol: Alumno/a
+                            </p>
+                        </div>
+                    }
+                    @if (Context.Session.GetInt32(constDefinidas.keyRol) == constDefinidas.rolProfesor)
+                    {
+                        <div class="text-right d-flex align-items-center ml-auto">
+                            <p class="mb-0">
+                                Usuario: @Context.Session.GetString(constDefinidas.keyUser)  Rol: Profesor/a
+                            </p>
+                        </div>
+                    }
+                    @if (Context.Session.GetInt32(constDefinidas.keyRol) == constDefinidas.rolMedico)
+                    {
+                        <div class="text-right d-flex align-items-center ml-auto">
+                            <p class="mb-0">
+                                Usuario: @Context.Session.GetString(constDefinidas.keyUser)  Rol: Medico
+                            </p>
+                        </div>
+                    }
+                    @if (Context.Session.GetInt32(constDefinidas.keyRol) == constDefinidas.rolAdmin)
+                    {
+                        <div class="text-right d-flex align-items-center ml-auto">
+                            <p class="mb-0">
+                                Usuario: @Context.Session.GetString(constDefinidas.keyUser)  Rol: Administrador/a
+                            </p>
+                        </div>
+                    }
+                }
             </div>
         </nav>
     </header>

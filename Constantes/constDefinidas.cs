@@ -9,6 +9,7 @@
         ////////////////////////////////
         public const string keyRol = "_rol";
         public const string keyNif = "_nif";
+        public const string keyUser = "_user";
         public const string keyActualUser = "_actualUser";
         public const string keyInformePDF = "_PDF";
         public const string keyMedicoTemporal = "Medico_Temporal";

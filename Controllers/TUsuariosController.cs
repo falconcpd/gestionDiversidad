@@ -71,10 +71,12 @@ namespace gestionDiversidad.Controllers
 
             string sessionKeyRol = constDefinidas.keyRol;
             string sessionKeyNif = constDefinidas.keyNif;
+            string sessionKeyUser = constDefinidas.keyUser;
             string sessionActualUser = constDefinidas.keyActualUser;
             string userNavigationJson = JsonConvert.SerializeObject(raiz);
             HttpContext.Session.SetInt32(sessionKeyRol, rol);
             HttpContext.Session.SetString(sessionKeyNif, nif);
+            HttpContext.Session.SetString(sessionKeyUser, usuario);
             HttpContext.Session.SetString(sessionActualUser, userNavigationJson);
 
             return RedirectToAction("volverPerfil", "TUsuarios", new
@@ -412,10 +414,12 @@ namespace gestionDiversidad.Controllers
         {
             string sessionKeyRol = constDefinidas.keyRol;
             string sessionKeyNif = constDefinidas.keyNif;
+            string sessionKeyUser = constDefinidas.keyUser;
             string sessionActualUser = constDefinidas.keyActualUser;
 
             HttpContext.Session.Remove(sessionKeyRol);
             HttpContext.Session.Remove(sessionKeyNif);
+            HttpContext.Session.Remove(sessionKeyUser);
             HttpContext.Session.Remove(sessionActualUser);
 
             return RedirectToAction("InicioSesion", "TUsuarios");
@@ -426,10 +430,12 @@ namespace gestionDiversidad.Controllers
         {
             string sessionKeyRol = constDefinidas.keyRol;
             string sessionKeyNif = constDefinidas.keyNif;
+            string sessionKeyUser = constDefinidas.keyUser;
             string sessionActualUser = constDefinidas.keyActualUser;
 
             HttpContext.Session.Remove(sessionKeyRol);
             HttpContext.Session.Remove(sessionKeyNif);
+            HttpContext.Session.Remove(sessionKeyUser);
             HttpContext.Session.Remove(sessionActualUser);
 
             return RedirectToAction("InicioSesion", "TUsuarios");
