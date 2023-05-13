@@ -29,5 +29,6 @@ namespace gestionDiversidad.Interfaces
         Task<bool> existeDistintoUsuario(string nif, int rol);
         bool confirmarEstructura(string estructura);
         string separarIdentificador(string estructura);
+        Task<bool> existeDistintaAsignatura(string estructura);
     }
 }

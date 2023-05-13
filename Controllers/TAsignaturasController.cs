@@ -124,6 +124,19 @@ namespace gestionDiversidad.Controllers
             return RedirectToAction("listaAsignaturas", "TAsignaturas");
         }
 
+        //[Remote] para ver que la estructura está bien
+        //GET : verificarAsignatura
+        public async Task<IActionResult> verificarAsignatura(string idAsignatura)
+        {
+            if (_serviceController.confirmarEstructura(idAsignatura) && await _serviceController.existeDistintaAsignatura(idAsignatura))
+            {
+                return Json(true);
+            }
+
+            return Json(false);
+
+        }
+
 
         // GET: TAsignaturas/borrarAsignatura/5
         public async Task<IActionResult> borrarAsignatura(string actualNif, int actualRol,int? id)

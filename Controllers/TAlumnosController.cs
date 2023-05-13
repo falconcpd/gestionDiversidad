@@ -176,7 +176,7 @@ namespace gestionDiversidad.Controllers
             if (ModelState.IsValid)
             {
                 string sesionNif = giveSesionNif();
-                int idAsignatura = Int32.Parse(model.IdAsignatura);
+                int idAsignatura = Int32.Parse(_serviceController.separarIdentificador(model.IdAsignatura));
                 string trueNifAlumno = _serviceController.separarIdentificador(model.NifAlumno);
                 var alumno = await _context.TAlumnos
                     .Include(a => a.IdAsignaturas)

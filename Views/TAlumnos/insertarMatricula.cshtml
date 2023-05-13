@@ -12,7 +12,7 @@
 <div class="text-center">
         <form asp-action="crearMatricula" asp-controller="TAlumnos"method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <div style="margin-top: 10px; margin-bottom: 10px;">
             <label for="alumnoDataList" class="form-label" style="display: block;">Alumno/a: </label>
             <input asp-for="NifAlumno" list="datalistOptionsAlumnos" id="alumnoDataList" placeholder="Buscar alumno/a..." class="text-center">
             <datalist asp-for="NifAlumno" id="datalistOptionsAlumnos">
@@ -27,8 +27,14 @@
                 
             </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-            <label asp-for="@Model.IdAsignatura" class="control-label" style="display: block;"> Asignatura: </label>
-            <select asp-for="IdAsignatura" asp-items="@Model.LAsignaturas!.Select(a => new SelectListItem { Text = a.Nombre, Value = a.Id.ToString() })" class="text-center"></select>
+            <label for="asignaturaDataList" class="form-label" style="display: block;">Asignatura: </label>
+            <input asp-for="IdAsignatura" list="datalistOptionsAsignaturas" id="asignaturaDataList" placeholder="Buscar asignatura..." class="text-center">
+            <datalist asp-for="IdAsignatura" id="datalistOptionsAsignaturas">
+                @foreach (var asignatura in Model.LAsignaturas!)
+                {
+                    <option value="@($"{asignatura.Nombre} | {asignatura.Id}")"></option>
+                }
+            </datalist>
             <div style="margin-bottom: 10px;">
                 <span asp-validation-for="@Model.IdAsignatura" class="text-danger"></span>
             </div>

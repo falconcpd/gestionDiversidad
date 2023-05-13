@@ -17,6 +17,7 @@ using System.IO;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
+
 namespace gestionDiversidad.Controllers
 {
     public class ServiceController : Controller, IServiceController
@@ -567,7 +568,7 @@ namespace gestionDiversidad.Controllers
             {
                 case constDefinidas.accionCrearElemento:
                     string mensajeCreacion = "Nueva matrícula con NIF alumno: " + nifAlumno + "\n";
-                    mensajeCreacion += "y asigantura: " + nombreAsignatura;
+                    mensajeCreacion += "y asignatura: " + nombreAsignatura;
 
                     var auditoriaCrearMatricula = new TAuditorium
                     {
@@ -581,7 +582,7 @@ namespace gestionDiversidad.Controllers
                     return;
                 case constDefinidas.accionBorrarElemento:
                     string mensajeBorrado = "Matrícula borrada entre el alumno con NIF: " + nifAlumno + "\n";
-                    mensajeBorrado += "y la asigantura: " + nombreAsignatura;
+                    mensajeBorrado += "y la asignatura: " + nombreAsignatura;
 
                     var auditoriaBorrarMatricula = new TAuditorium
                     {
@@ -606,7 +607,7 @@ namespace gestionDiversidad.Controllers
             {
                 case constDefinidas.accionCrearElemento:
                     string mensajeCreacion = "Nueva docencia con NIF profesor: " + nifProfesor + "\n";
-                    mensajeCreacion += "y asigantura: " + nombreAsignatura;
+                    mensajeCreacion += "y asignatura: " + nombreAsignatura;
 
                     var auditoriaCrearDocencia = new TAuditorium
                     {
@@ -620,7 +621,7 @@ namespace gestionDiversidad.Controllers
                     return;
                 case constDefinidas.accionBorrarElemento:
                     string mensajeBorrado = "Docencia borrada entre el profesor con NIF: " + nifProfesor + "\n";
-                    mensajeBorrado += "y la asigantura: " + nombreAsignatura;
+                    mensajeBorrado += "y la asignatura: " + nombreAsignatura;
 
                     var auditoriaBorrarDocencia = new TAuditorium
                     {
@@ -729,6 +730,7 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        //Funcion que saca el nif de la estructura
         public string separarIdentificador(string estructura)
         {
             int separadorIndex = estructura.IndexOf("|");
@@ -737,6 +739,20 @@ namespace gestionDiversidad.Controllers
             nif = nif.TrimStart();
             nif = nif.TrimEnd();
             return nif;
+        }
+
+        //Función que te dice si existe o no una asignatura con esa estructura
+        public async Task<bool> existeDistintaAsignatura(string estructura)
+        {
+
+            int separadorIndex = estructura.IndexOf("|");
+            string nombre = estructura.Substring(0, separadorIndex);
+            int idAsignatura = Int32.Parse(separarIdentificador(estructura));
+            //
+            nombre = nombre.TrimStart();
+            nombre = nombre.TrimEnd();
+
+            return (await _context.TAsignaturas.AnyAsync(a => a.Id == idAsignatura && a.Nombre == nombre));
         }
     }
 
