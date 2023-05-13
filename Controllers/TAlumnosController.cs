@@ -173,28 +173,43 @@ namespace gestionDiversidad.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> crearMatricula(CrearMatriculaView model)
         {
-            string sesionNif = giveSesionNif();
-            int idAsignatura = Int32.Parse(model.IdAsignatura);
-            var alumno = await _context.TAlumnos
-                .Include(a => a.IdAsignaturas)
-                .FirstOrDefaultAsync(a => a.Nif == model.NifAlumno);
-            var asignatura = await _context.TAsignaturas
-                .FirstOrDefaultAsync(a => a.Id == idAsignatura);
-            List<TAsignatura> listaAsiganturas = alumno!.IdAsignaturas.ToList();
-            bool asiste = listaAsiganturas.Contains(asignatura!);
-            if (ModelState.IsValid && !(asiste))
+            if (ModelState.IsValid)
             {
-                alumno!.IdAsignaturas.Add(asignatura!);
-                await _context.SaveChangesAsync();
-                await _serviceController
-                    .guardarCrearBorrarMatriculaAuditoria(sesionNif, constDefinidas.screenListaMatriculas, constDefinidas.accionCrearElemento, alumno.Nif, asignatura!.Nombre);
+                if (_serviceController.confirmarEstructura(model.NifAlumno))
+                {
+                    if (await _serviceController.existeDistintoUsuario(model.NifAlumno, constDefinidas.rolAlumno))
+                    {
+                        string sesionNif = giveSesionNif();
+                        int idAsignatura = Int32.Parse(model.IdAsignatura);
+                        string trueNifAlumno = _serviceController.separarIdentificador(model.NifAlumno);
+                        var alumno = await _context.TAlumnos
+                            .Include(a => a.IdAsignaturas)
+                            .FirstOrDefaultAsync(a => a.Nif == trueNifAlumno);
+                        var asignatura = await _context.TAsignaturas
+                            .FirstOrDefaultAsync(a => a.Id == idAsignatura);
+                        List<TAsignatura> listaAsiganturas = alumno!.IdAsignaturas.ToList();
+                        bool asiste = listaAsiganturas.Contains(asignatura!);
+                        if (!(asiste))
+                        {
+                            alumno!.IdAsignaturas.Add(asignatura!);
+                            await _context.SaveChangesAsync();
+                            await _serviceController
+                                .guardarCrearBorrarMatriculaAuditoria(sesionNif, constDefinidas.screenListaMatriculas, constDefinidas.accionCrearElemento, alumno.Nif, asignatura!.Nombre);
 
-                return RedirectToAction("listaMatriculas", "TAlumnos");
+                            return RedirectToAction("listaMatriculas", "TAlumnos");
 
+                        }
+                        TempData["ExisteMatricula"] = "El alumno ya está asistiendo a esta asignatura";
+                        return RedirectToAction("insertarMatricula", "TAlumnos");
+                    }
+                    TempData["AlumnoErroneo"] = "El alumno quue intentas elegir no existe";
+                    return RedirectToAction("insertarMatricula", "TAlumnos");
+                }
+                TempData["MalaEstructura"] = "Los datos se han metido en un formato incorrecto";
+                return RedirectToAction("insertarMatricula", "TAlumnos");
             }
-            TempData["ExisteMatricula"] = "El alumno ya está asistiendo a esta asignatura.";
-            return RedirectToAction("insertarMatricula", "TAlumnos");
 
+            return RedirectToAction("insertarMatricula", "TAlumnos");
         }
 
         //GET: TAlumnos/modificarAlumno

@@ -26,5 +26,8 @@ namespace gestionDiversidad.Interfaces
         Task guardarCrearBorrarDocenciaAuditoria(string nifAutor, int pantalla, int accion, string nifProfesor, string nombreAsignatura);
         Task<string> giveActualNombre(string nif, int rol);
         Task<bool> existeUsuario(string nif);
+        Task<bool> existeDistintoUsuario(string nif, int rol);
+        bool confirmarEstructura(string estructura);
+        string separarIdentificador(string estructura);
     }
 }

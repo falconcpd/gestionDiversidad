@@ -15,6 +15,7 @@ using gestionDiversidad.Constantes;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace gestionDiversidad.Controllers
 {
@@ -41,7 +42,7 @@ namespace gestionDiversidad.Controllers
         {
             List<TPermiso> r_permisos = await permisosRol(rol);
             TPermiso permiso = r_permisos.FirstOrDefault(p => p.IdPantalla == pantalla && p.IdRol == rol)!;
-            
+
             return permiso;
         }
 
@@ -79,7 +80,7 @@ namespace gestionDiversidad.Controllers
                 case constDefinidas.rolAdmin:
                     asignaturas = (await _context.TAsignaturas.ToListAsync());
                     return asignaturas;
-                default: 
+                default:
                     return asignaturas;
 
             }
@@ -132,7 +133,7 @@ namespace gestionDiversidad.Controllers
                         .Include(a => a.IdAsignaturas)
                         .ToListAsync());
                     return alumnos;
-                default: 
+                default:
                     return alumnos;
             }
         }
@@ -151,7 +152,7 @@ namespace gestionDiversidad.Controllers
                         .Include(u => u.TInformes)
                         .FirstOrDefaultAsync(u => u.Nif == nif))!;
                     informes = alumno.TInformes.ToList();
-                    foreach(var informe in informes)
+                    foreach (var informe in informes)
                     {
                         string fechaFormateada = informe.Fecha
                         .ToString("yyyy-MM-ddTHH:mm:ss");
@@ -212,7 +213,7 @@ namespace gestionDiversidad.Controllers
             DateTime fechaActualFinal = DateTime
                 .ParseExact(fechaActualFormateada, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
             return fechaActualFinal;
-        }     
+        }
 
         //Guarda en la base de datos los cambios realizados que tengan que ver con la creacion y borrado de usuarios
         public async Task guardarCrearBorrarUsuarioAuditoria(string nifAutor, int pantalla, int accion, string nifUsuario)
@@ -319,7 +320,7 @@ namespace gestionDiversidad.Controllers
                     {
                         mensajeAlumno += "Password modificado" + "\n";
                     }
-                    if (model.Nombre!= alumno.Nombre)
+                    if (model.Nombre != alumno.Nombre)
                     {
                         mensajeAlumno += "Nombre anterior: " + alumno.Nombre + "; Nombre nuevo: " + model.Nombre + "\n";
 
@@ -421,7 +422,7 @@ namespace gestionDiversidad.Controllers
 
                     return;
             }
-            
+
             return;
 
         }
@@ -504,7 +505,7 @@ namespace gestionDiversidad.Controllers
                 .ToString("dd/MM/yyyy HH:mm:ss");
             DateTime fechaActual = fechaPresente();
 
-            string mensajeModificacion = "Cambio del contenido del informe con NIF de alumno: " + informe.NifAlumno + ", NIF de médico: " + informe.NifMedico + "\n"; 
+            string mensajeModificacion = "Cambio del contenido del informe con NIF de alumno: " + informe.NifAlumno + ", NIF de médico: " + informe.NifMedico + "\n";
             mensajeModificacion += " y fecha: " + fechaFormateada + "\n";
             mensajeModificacion = mensajeModificacion.Replace("\n", "<br/>");
             var auditoriaModificarMedicoInforme = new TAuditorium
@@ -660,7 +661,7 @@ namespace gestionDiversidad.Controllers
                 case constDefinidas.rolAlumno:
                     alumno = (await _context.TAlumnos
                         .FirstOrDefaultAsync(u => u.Nif == nif))!;
-                    return(alumno.Nombre);
+                    return (alumno.Nombre);
                 case constDefinidas.rolMedico:
                     medico = (await _context.TMedicos
                         .FirstOrDefaultAsync(u => u.Nif == nif))!;
@@ -676,7 +677,7 @@ namespace gestionDiversidad.Controllers
                 default:
                     return ("");
             }
-            
+
         }
 
         //Función que te dice si existe o no un usuario con ese nif
@@ -684,7 +685,59 @@ namespace gestionDiversidad.Controllers
         {
             return (await _context.TUsuarios.AnyAsync(u => u.Nif == nif));
         }
-    }
 
+        //Función que te dice si existe o no un usuario dependiendo del rol con ese nif
+        public async Task<bool> existeDistintoUsuario(string estructura, int rol)
+        {
+
+            int separadorIndex = estructura.IndexOf("|");
+            string nombre = estructura.Substring(0, separadorIndex);
+            string nif = separarIdentificador(estructura);
+            //
+            nombre = nombre.TrimStart();
+            nombre = nombre.TrimEnd();
+
+            switch (rol)
+            {
+                case constDefinidas.rolAlumno:
+                    return (await _context.TAlumnos.AnyAsync(u => u.Nif == nif && u.Nombre == nombre));
+                case constDefinidas.rolMedico:
+                    return (await _context.TMedicos.AnyAsync(u => u.Nif == nif && u.Nombre == nombre));
+                case constDefinidas.rolProfesor:
+                    return (await _context.TProfesors.AnyAsync(u => u.Nif == nif && u.Nombre == nombre));
+            }
+
+            return false;
+        }
+
+        //Confirma que la estructura es la esperada
+        public bool confirmarEstructura(string estructura)
+        {
+            if (estructura.Length > 3 && estructura.Contains("|"))
+            {
+                int separadorIndex = estructura.IndexOf("|");
+                bool validLeft = estructura.Substring(0, separadorIndex).Trim().Length > 0;
+                bool validRight = estructura.Substring(separadorIndex + 1).Trim().Length > 0;
+
+                if (validLeft && validRight)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        public string separarIdentificador(string estructura)
+        {
+            int separadorIndex = estructura.IndexOf("|");
+            string nif = estructura.Substring(separadorIndex + 1);
+            //
+            nif = nif.TrimStart();
+            nif = nif.TrimEnd();
+            return nif;
+        }
+    }
 
 }

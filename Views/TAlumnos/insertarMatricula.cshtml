@@ -18,7 +18,7 @@
             <datalist asp-for="NifAlumno" id="datalistOptions">
                 @foreach (var alumno in Model.LAlumnos!)
                 {
-                    <option value="@($"{alumno.Nombre} / {alumno.Nif}")" ></option>
+                    <option value="@($"{alumno.Nombre} | {alumno.Nif}")" ></option>
                 }
             </datalist>
                 <span asp-validation-for="@Model.NifAlumno" class="text-danger"></span>
@@ -45,6 +45,18 @@
 {
     <div class="alert alert-danger text-center">
         @TempData["ExisteMatricula"]
+    </div>
+}
+@if (TempData["AlumnoErroneo"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["AlumnoErroneo"]
+    </div>
+}
+@if (TempData["MalaEstructura"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["MalaEstructura"]
     </div>
 }
 
