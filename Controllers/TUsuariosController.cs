@@ -154,6 +154,19 @@ namespace gestionDiversidad.Controllers
             return Json(!TUsuario);
         }
 
+        //[Remote] para ver que la estructura está bien
+        //GET : verificarAlumno
+        public async Task<IActionResult> verificarAlumno(string nifAlumno)
+        {
+            if (_serviceController.confirmarEstructura(nifAlumno) && await _serviceController.existeDistintoUsuario(nifAlumno, constDefinidas.rolAlumno))
+            {
+                return Json(true);
+            }
+
+            return Json(false);
+
+        }
+
         //POST: TUsuarios/crearUsuarioProfesor
         [HttpPost]
         [ValidateAntiForgeryToken]

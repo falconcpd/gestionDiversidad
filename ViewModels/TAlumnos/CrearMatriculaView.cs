@@ -1,4 +1,5 @@
 ﻿using gestionDiversidad.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace gestionDiversidad.ViewModels.TAlumnos
@@ -9,7 +10,8 @@ namespace gestionDiversidad.ViewModels.TAlumnos
         public List<TAsignatura>? LAsignaturas { get; set; }
         [Required(ErrorMessage = "Debes elegir una asignatura.")]
         public string IdAsignatura { get; set; } = null!;
-        [Required(ErrorMessage = "Debes elegir un alumno.")]
+        [Required(ErrorMessage = "Debes elegir un alumno")]
+        [Remote(action: "verificarAlumno", controller: "TUsuarios", ErrorMessage = "EL/La alumno/a no ha sido encontrado/a: Por favor, elige un/a alumno/a de la lista")]
         public string NifAlumno { get; set; } = null!;
     }
 }
