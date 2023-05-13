@@ -12,9 +12,15 @@
 <div class="text-center">
         <form asp-action="crearMatricula" asp-controller="TAlumnos"method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div style="margin-top: 10px; margin-bottom: 10px;">
-            <label asp-for="@Model.NifAlumno" class="control-label" style="display: block;">Alumno(Nif): </label>
-            <select asp-for="NifAlumno" asp-items="@Model.LAlumnos!.Select(a => new SelectListItem { Text = $"{a.Nombre}({a.Nif})", Value = a.Nif })" class="text-center"></select>
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <label for="alumnoDataList" class="form-label" style="display: block;">Alumno/a: </label>
+            <input asp-for="NifAlumno" list="datalistOptions" id="alumnoDataList" placeholder="Buscar alumno/a..." class="text-center">
+            <datalist asp-for="NifAlumno" id="datalistOptions">
+                @foreach (var alumno in Model.LAlumnos!)
+                {
+                    <option value="@($"{alumno.Nombre} / {alumno.Nif}")" ></option>
+                }
+            </datalist>
                 <span asp-validation-for="@Model.NifAlumno" class="text-danger"></span>
             </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
