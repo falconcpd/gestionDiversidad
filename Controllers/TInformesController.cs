@@ -161,8 +161,8 @@ namespace gestionDiversidad.Controllers
             if (ModelState.IsValid)
             {
                 byte[] contenido;
-                string nifMedico = model.MedicoNif;
-                string nifAlumno = model.AlumnoNif;
+                string nifMedico = _serviceController.separarIdentificador(model.MedicoNif);
+                string nifAlumno = _serviceController.separarIdentificador(model.NifAlumno);
                 using (var ms = new MemoryStream())
                 {
                     await model.PDF.CopyToAsync(ms);

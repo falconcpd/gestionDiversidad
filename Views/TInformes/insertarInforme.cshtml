@@ -14,17 +14,29 @@
               method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-                <label asp-for="@Model.MedicoNif" class="control-label" style="display: block;">Médicos: </label>
-                <select asp-for="MedicoNif" asp-items="@Model.ListaMedicos?.Select(m => new SelectListItem { Text = $"{m.Nombre}({m.Nif})", Value = m.Nif })" class="text-center"></select>
+            <label for="medicoDataList" class="form-label" style="display: block;">Médico: </label>
+            <input asp-for="MedicoNif" list="datalistOptionsMedicos" id="medicoDataList" placeholder="Buscar médico..." class="text-center">
+            <datalist asp-for="MedicoNif" id="datalistOptionsMedicos">
+                @foreach (var medico in Model.ListaMedicos!)
+                {
+                    <option value="@($"{medico.Nombre} | {medico.Nif}")"></option>
+                }
+            </datalist>
                 <div style="margin-bottom: 10px;">
                     <span asp-validation-for="@Model.MedicoNif" class="text-danger"></span>
                 </div>                
             </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-                <label asp-for="@Model.AlumnoNif" class="control-label" style="display: block;">Alumnos: </label>
-                <select asp-for="AlumnoNif" asp-items="@Model.ListaAlumnos?.Select(a => new SelectListItem { Text = $"{a.Nombre}({a.Nif})", Value = a.Nif })" class="text-center"></select>
+            <label for="alumnoDataList" class="form-label" style="display: block;">Alumno/a: </label>
+            <input asp-for="NifAlumno" list="datalistOptionsAlumnos" id="alumnoDataList" placeholder="Buscar alumno/a..." class="text-center">
+            <datalist asp-for="NifAlumno" id="datalistOptionsAlumnos">
+                @foreach (var alumno in Model.ListaAlumnos!)
+                {
+                    <option value="@($"{alumno.Nombre} | {alumno.Nif}")"></option>
+                }
+            </datalist>
                 <div style="margin-bottom: 10px;">
-                    <span asp-validation-for="@Model.AlumnoNif" class="text-danger"></span>
+                    <span asp-validation-for="@Model.NifAlumno" class="text-danger"></span>
                 </div>            
             </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
