@@ -293,9 +293,10 @@ namespace gestionDiversidad.Controllers
         // POST: TInformes/confirmarCambioMedicoInforme
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> confirmarCambioMedicoInforme(string nifAnteriorMedico, string nifAlumno, string fecha, string nifNuevoMedico)
+        public async Task<IActionResult> confirmarCambioMedicoInforme(string nifAnteriorMedico, string nifAlumno, string fecha, ModificarMedicoInforme model)
         {
             string sesionNif = giveSesionNif();
+            string nifNuevoMedico = _serviceController.separarIdentificador(model.MedicoNif);
             TInforme informe = await _serviceController.buscarInforme(nifAlumno, nifAnteriorMedico, fecha);
             TMedico anteriorMedico = (await _context.TMedicos
                 .FirstOrDefaultAsync(m => m.Nif == nifAnteriorMedico))!;

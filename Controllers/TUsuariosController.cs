@@ -182,9 +182,9 @@ namespace gestionDiversidad.Controllers
 
         //[Remote] para ver que la estructura está bien
         //GET : verificarProfesor
-        public async Task<IActionResult> verificarMedico(string nifMedico)
+        public async Task<IActionResult> verificarMedico(string medicoNif)
         {
-            if (_serviceController.confirmarEstructura(nifMedico) && await _serviceController.existeDistintoUsuario(nifMedico, constDefinidas.rolMedico))
+            if (_serviceController.confirmarEstructura(medicoNif) && await _serviceController.existeDistintoUsuario(medicoNif, constDefinidas.rolMedico))
             {
                 return Json(true);
             }
@@ -293,10 +293,11 @@ namespace gestionDiversidad.Controllers
                     .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionCrearElemento, model.Nif);
                 ///Parte informe
                 DateTime fechaActualFinal = _serviceController.fechaPresente();
+                string trueNifMedico = _serviceController.separarIdentificador(model.MedicoNif);
 
                 var informe = new TInforme
                 {
-                    NifMedico = model.MedicoNif,
+                    NifMedico = trueNifMedico,
                     NifAlumno = model.Nif,
                     Fecha = fechaActualFinal,
                     Contenido = file

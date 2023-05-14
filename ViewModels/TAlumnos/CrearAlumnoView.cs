@@ -23,7 +23,8 @@ namespace gestionDiversidad.ViewModels.TAlumnos
         public string? Apellido1 { get; set; }
         [Required(ErrorMessage = "El segundo apellido no puede estar vacío")]
         public string? Apellido2 { get; set; }
-        [Required(ErrorMessage = "El alumno necesita un medico que lleve su informe")]
+        [Required(ErrorMessage = "El alumno necesita un médico que lleve su informe")]
+        [Remote(action: "verificarMedico", controller: "TUsuarios", ErrorMessage = "EL médico no ha sido encontrado: Por favor, elige un médico de la lista")]
         public string MedicoNif { get; set; } = null!;
         [Required(ErrorMessage = "Un alumno no se puede almacenar sin un informe")]
         public IFormFile PDF { get; set; } = null!;

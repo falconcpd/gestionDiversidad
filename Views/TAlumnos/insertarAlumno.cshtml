@@ -71,8 +71,14 @@
                 </div>            
             </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-            <label asp-for="@Model.MedicoNif" class="control-label" style="display: block;">Médico encargado: </label>
-            <select asp-for="MedicoNif" asp-items="@Model.ListaMedicos?.Select(m => new SelectListItem { Text = $"{m.Nombre}({m.Nif})", Value = m.Nif })" class="text-center"></select>
+            <label for="medicoDataList" class="form-label" style="display: block;">Médico: </label>
+            <input asp-for="MedicoNif" list="datalistOptionsMedicos" id="medicoDataList" placeholder="Buscar médico..." class="text-center">
+            <datalist asp-for="MedicoNif" id="datalistOptionsMedicos">
+                @foreach (var medico in Model.ListaMedicos!)
+                {
+                    <option value="@($"{medico.Nombre} | {medico.Nif}")"></option>
+                }
+            </datalist>
                 <div style="margin-bottom: 10px;">
                     <span asp-validation-for="@Model.MedicoNif" class="text-danger"></span>
                 </div>           
