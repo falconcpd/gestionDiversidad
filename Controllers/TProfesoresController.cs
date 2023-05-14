@@ -171,10 +171,11 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> crearDocencia(CrearDocenciaView model)
         {
             string sesionNif = giveSesionNif();
-            int idAsignatura = int.Parse(model.IdAsignatura);
+            int idAsignatura = int.Parse(_serviceController.separarIdentificador(model.IdAsignatura));
+            string trueNifProfesor = _serviceController.separarIdentificador(model.NifProfesor);
             var profesor = await _context.TProfesors
                 .Include(p => p.IdAsignaturas)
-                .FirstOrDefaultAsync(p => p.Nif == model.NifProfesor);
+                .FirstOrDefaultAsync(p => p.Nif == trueNifProfesor);
             var asignatura = await _context.TAsignaturas
                 .FirstOrDefaultAsync(a => a.Id == idAsignatura);
             List<TAsignatura> listaAsiganturas = profesor!.IdAsignaturas.ToList();

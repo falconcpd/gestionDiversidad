@@ -167,6 +167,32 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        //[Remote] para ver que la estructura está bien
+        //GET : verificarProfesor
+        public async Task<IActionResult> verificarProfesor(string nifProfesor)
+        {
+            if (_serviceController.confirmarEstructura(nifProfesor) && await _serviceController.existeDistintoUsuario(nifProfesor, constDefinidas.rolProfesor))
+            {
+                return Json(true);
+            }
+
+            return Json(false);
+
+        }
+
+        //[Remote] para ver que la estructura está bien
+        //GET : verificarProfesor
+        public async Task<IActionResult> verificarMedico(string nifMedico)
+        {
+            if (_serviceController.confirmarEstructura(nifMedico) && await _serviceController.existeDistintoUsuario(nifMedico, constDefinidas.rolMedico))
+            {
+                return Json(true);
+            }
+
+            return Json(false);
+
+        }
+
         //POST: TUsuarios/crearUsuarioProfesor
         [HttpPost]
         [ValidateAntiForgeryToken]

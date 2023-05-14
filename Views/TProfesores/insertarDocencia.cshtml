@@ -10,23 +10,40 @@
 
 <hr />
 <div class="text-center">
-        <form asp-action="crearDocencia" asp-controller="TProfesores"
-              method="post">
+        <form asp-action="crearDocencia" asp-controller="TProfesores"method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-                <label asp-for="@Model.NifProfesor" class="control-label" style="display: block;">Profesor: </label>
-                <select asp-for="NifProfesor" asp-items="@Model.LProfesores!.Select(p => new SelectListItem { Text = $"{p.Nombre}({p.Nif})", Value = p.Nif })" class="text-center"></select>
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+        <label for="profesorDataList" class="form-label" style="display: block;">Profesor/a: </label>
+        <input asp-for="NifProfesor" list="datalistOptionsProfesores" id="profesorDataList" placeholder="Buscar profesor/a..." class="text-center">
+        <datalist asp-for="NifProfesor" id="datalistOptionsProfesores">
+            @foreach (var profesor in Model.LProfesores!)
+            {
+                <option value="@($"{profesor.Nombre} | {profesor.Nif}")"></option>
+            }
+        </datalist>
+            <div style="margin-bottom: 10px;">
                 <span asp-validation-for="@Model.NifProfesor" class="text-danger"></span>
             </div>
+                
+            </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-                <label asp-for="@Model.IdAsignatura" class="control-label" style="display: block;">Asignatura: </label>
-                <select asp-for="IdAsignatura" asp-items="@Model.LAsignaturas!.Select(a => new SelectListItem { Text = a.Nombre, Value = a.Id.ToString() })" class="text-center"></select>
+            <label for="asignaturaDataList" class="form-label" style="display: block;">Asignatura: </label>
+            <input asp-for="IdAsignatura" list="datalistOptionsAsignaturas" id="asignaturaDataList" placeholder="Buscar asignatura..." class="text-center">
+            <datalist asp-for="IdAsignatura" id="datalistOptionsAsignaturas">
+                @foreach (var asignatura in Model.LAsignaturas!)
+                {
+                    <option value="@($"{asignatura.Nombre} | {asignatura.Id}")"></option>
+                }
+            </datalist>
+            <div style="margin-bottom: 10px;">
                 <span asp-validation-for="@Model.IdAsignatura" class="text-danger"></span>
             </div>
+
+        </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
                 <input type="submit" value="Crear docencia" class="btn btn-primary" />
             </div>
-        </form>
+    </form>
 </div>
 
 <div class="text-center" style="margin-top: 10px; margin-bottom: 10px;">
