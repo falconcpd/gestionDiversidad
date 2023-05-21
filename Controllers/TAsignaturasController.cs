@@ -100,13 +100,6 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> crearAsignatura(CrearAsignaturaView model)
         {
             string sesionNif = giveSesionNif();
-            List<string> nombres = await nombresAsignatura();
-
-            if (nombres.Contains(model.Nombre))
-            {
-                TempData["NombreRepetido"] = "El nombre ya está cogido";
-                return RedirectToAction("insertarAsignatura", "TAsignaturas");
-            }
 
             if (ModelState.IsValid)
             {
@@ -134,6 +127,19 @@ namespace gestionDiversidad.Controllers
             }
 
             return Json(false);
+
+        }
+
+        //[Remote] para que no se repita nombre de asignatura
+        //GET : TUsuarios/verificarNombreAsignatura
+        public async Task<IActionResult> verificarNombreAsignatura(string nombre)
+        {
+            nombre = _serviceController.quitarEspacios(nombre);
+            if (await _context.TAsignaturas.AnyAsync(a => a.Nombre == nombre))
+            {
+                return Json(false);
+            }
+            return Json(true);
 
         }
 

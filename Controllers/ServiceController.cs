@@ -736,8 +736,7 @@ namespace gestionDiversidad.Controllers
             int separadorIndex = estructura.IndexOf("|");
             string nif = estructura.Substring(separadorIndex + 1);
             //
-            nif = nif.TrimStart();
-            nif = nif.TrimEnd();
+            nif = quitarEspacios(nif);
             return nif;
         }
 
@@ -749,10 +748,17 @@ namespace gestionDiversidad.Controllers
             string nombre = estructura.Substring(0, separadorIndex);
             int idAsignatura = Int32.Parse(separarIdentificador(estructura));
             //
-            nombre = nombre.TrimStart();
-            nombre = nombre.TrimEnd();
+            nombre = quitarEspacios(nombre);
 
             return (await _context.TAsignaturas.AnyAsync(a => a.Id == idAsignatura && a.Nombre == nombre));
+        }
+
+        //Funcion que quita los espacios tanto primeros como últimos
+        public string quitarEspacios(string palabra)
+        {
+            palabra = palabra.TrimStart();
+            palabra = palabra.TrimEnd();
+            return palabra;
         }
     }
 

@@ -30,5 +30,6 @@ namespace gestionDiversidad.Interfaces
         bool confirmarEstructura(string estructura);
         string separarIdentificador(string estructura);
         Task<bool> existeDistintaAsignatura(string estructura);
+        string quitarEspacios(string palabra);
     }
 }

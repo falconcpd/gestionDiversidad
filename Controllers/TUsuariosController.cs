@@ -181,7 +181,7 @@ namespace gestionDiversidad.Controllers
         }
 
         //[Remote] para ver que la estructura está bien
-        //GET : verificarProfesor
+        //GET : verificarMedico
         public async Task<IActionResult> verificarMedico(string medicoNif)
         {
             if (_serviceController.confirmarEstructura(medicoNif) && await _serviceController.existeDistintoUsuario(medicoNif, constDefinidas.rolMedico))
