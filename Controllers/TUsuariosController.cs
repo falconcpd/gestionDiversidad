@@ -122,6 +122,7 @@ namespace gestionDiversidad.Controllers
         //GET : TUsuarios/verificarNif
         public async Task<IActionResult> verificarNif(string nif)
         {
+            nif = _serviceController.quitarEspacios(nif);
             var usuario = await _context.TUsuarios
                 .AnyAsync(u => u.Nif == nif);
             return Json(!usuario);
@@ -131,6 +132,8 @@ namespace gestionDiversidad.Controllers
         //GET : TUsuarios/verificarModificarNombreUsuario
         public async Task<IActionResult> verificarModificarNombreUsuario(string usuario, string nif)
         {
+            usuario = _serviceController.quitarEspacios(usuario);
+
             TUsuario user = (await _context.TUsuarios
                 .FirstOrDefaultAsync(m => m.Nif == nif))!;
 
@@ -148,6 +151,7 @@ namespace gestionDiversidad.Controllers
         //GET : TUsuarios/verificarCrearNombreUsuario
         public async Task<IActionResult> verificarCrearNombreUsuario(string usuario)
         {
+            usuario = _serviceController.quitarEspacios(usuario);
             var TUsuario = await _context.TUsuarios
                 .AnyAsync(u => u.Usuario == usuario);
 
@@ -202,8 +206,8 @@ namespace gestionDiversidad.Controllers
             {
                 var user = new TUsuario
                 {
-                    Nif = model.Nif!,
-                    Usuario = model.Usuario!,
+                    Nif = _serviceController.quitarEspacios(model.Nif!),
+                    Usuario = _serviceController.quitarEspacios(model.Usuario!),
                     Password = model.Password!,
                     IdRol = constDefinidas.rolProfesor
                 };
@@ -214,9 +218,9 @@ namespace gestionDiversidad.Controllers
                 return RedirectToAction("crearProfesor", "TProfesores", new
                 {
                     nif = user.Nif,
-                    nombre = model.Nombre,
-                    apellido1 = model.Apellido1,
-                    apellido2 = model.Apellido2
+                    nombre = _serviceController.quitarEspacios(model.Nombre!),
+                    apellido1 = _serviceController.quitarEspacios(model.Apellido1!),
+                    apellido2 = _serviceController.quitarEspacios(model.Apellido2!)
                 });
             }
             return RedirectToAction("insertarProfesor", "TProfesores");
@@ -231,8 +235,8 @@ namespace gestionDiversidad.Controllers
             {
                 var user = new TUsuario
                 {
-                    Nif = model.Nif!,
-                    Usuario = model.Usuario!,
+                    Nif = _serviceController.quitarEspacios(model.Nif!),
+                    Usuario = _serviceController.quitarEspacios(model.Usuario!),
                     Password = model.Password!,
                     IdRol = constDefinidas.rolMedico
                 };
@@ -244,9 +248,9 @@ namespace gestionDiversidad.Controllers
                     new
                     {
                         nif = user.Nif,
-                        nombre = model.Nombre,
-                        apellido1 = model.Apellido1,
-                        apellido2 = model.Apellido2
+                        nombre = _serviceController.quitarEspacios(model.Nombre!),
+                        apellido1 = _serviceController.quitarEspacios(model.Apellido1!),
+                        apellido2 = _serviceController.quitarEspacios(model.Apellido2!)
                     });
 
             }
@@ -270,8 +274,8 @@ namespace gestionDiversidad.Controllers
 
                 var user = new TUsuario
                 {
-                    Nif = model.Nif!,
-                    Usuario = model.Usuario!,
+                    Nif = _serviceController.quitarEspacios(model.Nif!),
+                    Usuario = _serviceController.quitarEspacios(model.Usuario!),
                     Password = model.Password!,
                     IdRol = constDefinidas.rolAlumno
                 };
@@ -281,16 +285,16 @@ namespace gestionDiversidad.Controllers
                 /// Parte alumno
                 var alumno = new TAlumno
                 {
-                    Nif = model.Nif!,
-                    Nombre = model.Nombre!,
-                    Apellido1 = model.Apellido1!,
-                    Apellido2 = model.Apellido2!
+                    Nif = user.Nif,
+                    Nombre = _serviceController.quitarEspacios(model.Nombre!),
+                    Apellido1 = _serviceController.quitarEspacios(model.Apellido1!),
+                    Apellido2 = _serviceController.quitarEspacios(model.Apellido2!)
                 };
 
                 _context.Add(alumno);
                 await _context.SaveChangesAsync();
                 await _serviceController
-                    .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionCrearElemento, model.Nif);
+                    .guardarCrearBorrarUsuarioAuditoria(sesionNif, constDefinidas.screenListaAlumnos, constDefinidas.accionCrearElemento, alumno.Nif);
                 ///Parte informe
                 DateTime fechaActualFinal = _serviceController.fechaPresente();
                 string trueNifMedico = _serviceController.separarIdentificador(model.MedicoNif);
@@ -298,7 +302,7 @@ namespace gestionDiversidad.Controllers
                 var informe = new TInforme
                 {
                     NifMedico = trueNifMedico,
-                    NifAlumno = model.Nif,
+                    NifAlumno = alumno.Nif,
                     Fecha = fechaActualFinal,
                     Contenido = file
                 };
@@ -318,6 +322,7 @@ namespace gestionDiversidad.Controllers
         // Función que verifica si de verdad hay cambios
         public async Task<bool> verficarCambios(ModificarUsuarios model)
         {
+            string nombreUsuario = _serviceController.quitarEspacios(model.Usuario!);
             TUsuario usuario = (await _context.TUsuarios
             .FirstOrDefaultAsync(a => a.Nif == model.Nif))!;
 
@@ -326,7 +331,7 @@ namespace gestionDiversidad.Controllers
                     case constDefinidas.rolAlumno:
                         TAlumno alumno = (await _context.TAlumnos
                             .FirstOrDefaultAsync(a => a.Nif == model.Nif))!;
-                        if(model.Nombre != alumno.Nombre || model.Apellido1 != alumno.Apellido1 || model.Apellido2 != alumno.Apellido2 || model.Usuario != usuario.Usuario || model.Password != usuario.Password)
+                        if(model.Nombre != alumno.Nombre || model.Apellido1 != alumno.Apellido1 || model.Apellido2 != alumno.Apellido2 || nombreUsuario != usuario.Usuario || model.Password != usuario.Password)
                         {
                             return true;
                         }
@@ -334,7 +339,7 @@ namespace gestionDiversidad.Controllers
                     case constDefinidas.rolProfesor:
                         TProfesor profesor = (await _context.TProfesors
                             .FirstOrDefaultAsync(p => p.Nif == model.Nif))!;
-                        if (model.Nombre != profesor.Nombre || model.Apellido1 != profesor.Apellido1 || model.Apellido2 != profesor.Apellido2 || model.Usuario != usuario.Usuario || model.Password != usuario.Password)
+                        if (model.Nombre != profesor.Nombre || model.Apellido1 != profesor.Apellido1 || model.Apellido2 != profesor.Apellido2 || nombreUsuario != usuario.Usuario || model.Password != usuario.Password)
                         {
                             return true;
                         }
@@ -342,7 +347,7 @@ namespace gestionDiversidad.Controllers
                     case constDefinidas.rolMedico:
                         TMedico medico = (await _context.TMedicos
                             .FirstOrDefaultAsync(m => m.Nif == model.Nif))!;
-                        if (model.Nombre != medico.Nombre || model.Apellido1 != medico.Apellido1 || model.Apellido2 != medico.Apellido2 || model.Usuario != usuario.Usuario || model.Password != usuario.Password)
+                        if (model.Nombre != medico.Nombre || model.Apellido1 != medico.Apellido1 || model.Apellido2 != medico.Apellido2 || nombreUsuario != usuario.Usuario || model.Password != usuario.Password)
                         {
                             return true;
                         }
@@ -376,7 +381,7 @@ namespace gestionDiversidad.Controllers
                 }; 
 
                 usuario.Password = model.Password!;
-                usuario.Usuario = model.Usuario!;
+                usuario.Usuario = _serviceController.quitarEspacios(model.Usuario!);
 
                 switch (rol)
                 {
@@ -385,9 +390,9 @@ namespace gestionDiversidad.Controllers
                             .guardarModificarUsuarioAuditoria(sesionNif, constDefinidas.screenAlumno, model, anteriorUsuario);
                         TAlumno alumno = (await _context.TAlumnos
                             .FirstOrDefaultAsync(a => a.Nif == nif))!;
-                        alumno.Nombre = model.Nombre;
-                        alumno.Apellido1 = model.Apellido1;
-                        alumno.Apellido2 = model.Apellido2;
+                        alumno.Nombre = _serviceController.quitarEspacios(model.Nombre);
+                        alumno.Apellido1 = _serviceController.quitarEspacios(model.Apellido1);
+                        alumno.Apellido2 = _serviceController.quitarEspacios(model.Apellido2);
                         await _context.SaveChangesAsync();
 
                         return RedirectToAction("volverPerfil", "TUsuarios", new
@@ -400,9 +405,9 @@ namespace gestionDiversidad.Controllers
                             .guardarModificarUsuarioAuditoria(sesionNif, constDefinidas.screenProfesor, model, anteriorUsuario);
                         TProfesor profesor = (await _context.TProfesors
                             .FirstOrDefaultAsync(p => p.Nif == nif))!;
-                        profesor.Nombre = model.Nombre;
-                        profesor.Apellido1 = model.Apellido1;
-                        profesor.Apellido2 = model.Apellido2;
+                        profesor.Nombre = _serviceController.quitarEspacios(model.Nombre);
+                        profesor.Apellido1 = _serviceController.quitarEspacios(model.Apellido1);
+                        profesor.Apellido2 = _serviceController.quitarEspacios(model.Apellido2) ;
                         await _context.SaveChangesAsync();
                         return RedirectToAction("volverPerfil", "TUsuarios", new
                         {
@@ -414,9 +419,9 @@ namespace gestionDiversidad.Controllers
                             .guardarModificarUsuarioAuditoria(sesionNif, constDefinidas.screenMedico, model, anteriorUsuario);
                         TMedico medico = (await _context.TMedicos
                             .FirstOrDefaultAsync(m => m.Nif == nif))!;
-                        medico.Nombre = model.Nombre;
-                        medico.Apellido1 = model.Apellido1;
-                        medico.Apellido2 = model.Apellido2;
+                        medico.Nombre = _serviceController.quitarEspacios(model.Nombre);
+                        medico.Apellido1 = _serviceController.quitarEspacios(model.Apellido1);
+                        medico.Apellido2 = _serviceController.quitarEspacios(model.Apellido2);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("volverPerfil", "TUsuarios", new
                         {
