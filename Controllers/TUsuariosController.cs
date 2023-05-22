@@ -16,6 +16,7 @@ using gestionDiversidad.ViewModels.TProfesores;
 using gestionDiversidad.Interfaces;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.IO;
+using Microsoft.IdentityModel.Tokens;
 
 namespace gestionDiversidad.Controllers
 {
@@ -122,6 +123,11 @@ namespace gestionDiversidad.Controllers
         //GET : TUsuarios/verificarNif
         public async Task<IActionResult> verificarNif(string nif)
         {
+            if (nif == null)
+            {
+                //ModelState.AddModelError("Nif", "El campo no puede estar vacío o contener solo espacios en blanco");
+                return Json("El Nif no puede ser solo espacios en blanco");
+            }
             nif = _serviceController.quitarEspacios(nif);
             var usuario = await _context.TUsuarios
                 .AnyAsync(u => u.Nif == nif);
@@ -151,6 +157,10 @@ namespace gestionDiversidad.Controllers
         //GET : TUsuarios/verificarCrearNombreUsuario
         public async Task<IActionResult> verificarCrearNombreUsuario(string usuario)
         {
+            if (usuario == null)
+            {
+                return Json("El usuario no puede ser solo espacios en blanco");
+            }
             usuario = _serviceController.quitarEspacios(usuario);
             var TUsuario = await _context.TUsuarios
                 .AnyAsync(u => u.Usuario == usuario);
@@ -196,6 +206,53 @@ namespace gestionDiversidad.Controllers
             return Json(false);
 
         }
+
+
+        //[Remote] para ver que no hay espacios en blanco en el nombre (EEB)
+        public IActionResult verificarEEBNombre(string nombre)
+        {
+            if ((nombre == null) || string.IsNullOrEmpty(nombre))
+            {
+                return Json(false);
+            }
+
+            return Json(true);
+
+        }
+
+        //[Remote] para ver que no hay espacios en blanco en el primer apellido (EEB)
+        public IActionResult verificarEEBApellido1(string apellido1)
+        {
+            if ((apellido1 == null) || string.IsNullOrEmpty(apellido1))
+            {
+                return Json(false);
+            }
+
+            return Json(true);
+        }
+
+        //[Remote] para ver que no hay espacios en blanco en el segundo apellido (EEB)
+        public IActionResult verificarEEBApellido2(string apellido2)
+        {
+            if ((apellido2 == null) || string.IsNullOrEmpty(apellido2))
+            {
+                return Json(false);
+            }
+
+            return Json(true);
+        }
+
+        //[Remote] para ver que no hay espacios en blanco la contraseña (EEB)
+        public IActionResult verificarEEBPassword(string password)
+        {
+            if ((password == null) || string.IsNullOrEmpty(password))
+            {
+                return Json(false);
+            }
+
+            return Json(true);
+        }
+
 
         //POST: TUsuarios/crearUsuarioProfesor
         [HttpPost]
