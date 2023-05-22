@@ -122,7 +122,7 @@ namespace gestionDiversidad.Controllers
         //[Remote] para que no se repitan NIF en un usuario
         //GET : TUsuarios/verificarNif
         public async Task<IActionResult> verificarNif(string nif)
-        {
+         {
             if (nif == null)
             {
                 //ModelState.AddModelError("Nif", "El campo no puede estar vacío o contener solo espacios en blanco");

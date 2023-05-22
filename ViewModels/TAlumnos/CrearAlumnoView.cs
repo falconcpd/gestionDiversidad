@@ -13,15 +13,19 @@ namespace gestionDiversidad.ViewModels.TAlumnos
         [Remote(action: "verificarCrearNombreUsuario", controller: "TUsuarios", ErrorMessage = "El nombre del usuario ya está en uso")]
         public string? Usuario { get; set; }
         [Required(ErrorMessage = "La contraseña no puede estar vacía")]
+        [Remote(action: "verificarEEBPassword", controller: "TUsuarios", ErrorMessage = "Una contraseña no puede ser solo espacios en blanco")]
         public string? Password { get; set; }
         [Required(ErrorMessage = "La confirmación de la contraseña no puede estar vacía")]
         [Compare("Password", ErrorMessage = "Las contraseñas no coinciden")]
         public string? ConfirmPassword { get; set; }
         [Required(ErrorMessage = "El nombre no puede estar vacío")]
+        [Remote(action: "verificarEEBNombre", controller: "TUsuarios", ErrorMessage = "Un nombre no puede ser solo espacios en blanco")]
         public string? Nombre { get; set; }
         [Required(ErrorMessage = "El primer apellido no puede estar vacío")]
+        [Remote(action: "verificarEEBApellido1", controller: "TUsuarios", ErrorMessage = "Un primer apellido no puede ser solo espacios en blanco")]
         public string? Apellido1 { get; set; }
         [Required(ErrorMessage = "El segundo apellido no puede estar vacío")]
+        [Remote(action: "verificarEEBApellido2", controller: "TUsuarios", ErrorMessage = "Un segundo apellido no puede ser solo espacios en blanco")]
         public string? Apellido2 { get; set; }
         [Required(ErrorMessage = "El alumno necesita un médico que lleve su informe")]
         [Remote(action: "verificarMedico", controller: "TUsuarios", ErrorMessage = "EL médico no ha sido encontrado: Por favor, elige un médico de la lista")]

@@ -714,7 +714,7 @@ namespace gestionDiversidad.Controllers
         //Confirma que la estructura es la esperada
         public bool confirmarEstructura(string estructura)
         {
-            if (estructura.Length > 3 && estructura.Contains("|"))
+            if (estructura != null && estructura.Length > 3 && estructura.Contains("|"))
             {
                 int separadorIndex = estructura.IndexOf("|");
                 bool validLeft = estructura.Substring(0, separadorIndex).Trim().Length > 0;

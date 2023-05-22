@@ -118,7 +118,6 @@ namespace gestionDiversidad.Controllers
         }
 
         //[Remote] para ver que la estructura está bien
-        //GET : verificarAsignatura
         public async Task<IActionResult> verificarAsignatura(string idAsignatura)
         {
             if (_serviceController.confirmarEstructura(idAsignatura) && await _serviceController.existeDistintaAsignatura(idAsignatura))
@@ -131,9 +130,13 @@ namespace gestionDiversidad.Controllers
         }
 
         //[Remote] para que no se repita nombre de asignatura
-        //GET : TUsuarios/verificarNombreAsignatura
         public async Task<IActionResult> verificarNombreAsignatura(string nombre)
         {
+            if (nombre == null)
+            {
+                //ModelState.AddModelError("Nif", "El campo no puede estar vacío o contener solo espacios en blanco");
+                return Json("El nombre no puede ser solo espacios en blanco");
+            }
             nombre = _serviceController.quitarEspacios(nombre);
             if (await _context.TAsignaturas.AnyAsync(a => a.Nombre == nombre))
             {
