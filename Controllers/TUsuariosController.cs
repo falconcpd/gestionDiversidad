@@ -17,6 +17,7 @@ using gestionDiversidad.Interfaces;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.IO;
 using Microsoft.IdentityModel.Tokens;
+using gestionDiversidad.ViewModels.TMedicos;
 
 namespace gestionDiversidad.Controllers
 {
@@ -138,6 +139,10 @@ namespace gestionDiversidad.Controllers
         //GET : TUsuarios/verificarModificarNombreUsuario
         public async Task<IActionResult> verificarModificarNombreUsuario(string usuario, string nif)
         {
+            if (usuario == null)
+            {
+                return Json("El usuario no puede ser solo espacios en blanco");
+            }
             usuario = _serviceController.quitarEspacios(usuario);
 
             TUsuario user = (await _context.TUsuarios
@@ -286,7 +291,7 @@ namespace gestionDiversidad.Controllers
         //POST: TUsuarios/crearUsuarioMedico
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> crearUsuarioMedico(CrearProfesorView model)
+        public async Task<IActionResult> crearUsuarioMedico(CrearMedicoView model)
         {
             if (ModelState.IsValid)
             {
