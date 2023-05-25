@@ -31,5 +31,6 @@ namespace gestionDiversidad.Interfaces
         string separarIdentificador(string estructura);
         Task<bool> existeDistintaAsignatura(string estructura);
         string quitarEspacios(string palabra);
+        Task guardarModificarAsignaturaAuditoria(string nifAutor, int pantalla, string anteriorNombre, string nuevoNombre, int id);
     }
 }

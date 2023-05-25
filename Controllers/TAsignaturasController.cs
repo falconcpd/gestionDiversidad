@@ -71,6 +71,18 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        //GET: TAsignaturas/modificarAsignatura
+        public async Task<IActionResult> modificarAsignatura(int id)
+        {
+            TAsignatura asignatura = (await _context.TAsignaturas
+                .FirstOrDefaultAsync(a => a.Id == id))!;
+            ModificarAsignatura modificarAsignaturaView = new ModificarAsignatura();
+            modificarAsignaturaView.Id = asignatura.Id;
+            modificarAsignaturaView.Nombre = asignatura.Nombre;
+
+            return View(modificarAsignaturaView);
+        }
+
         //Funcion que te devuelve los nombres de las asignaturas
         public async Task<List<string>> nombresAsignatura()
         {
@@ -129,7 +141,7 @@ namespace gestionDiversidad.Controllers
 
         }
 
-        //[Remote] para que no se repita nombre de asignatura
+        //[Remote] para que no se repita nombre en la creación de la asignatura
         public async Task<IActionResult> verificarNombreAsignatura(string nombre)
         {
             if (nombre == null)
@@ -144,6 +156,54 @@ namespace gestionDiversidad.Controllers
             }
             return Json(true);
 
+        }
+
+        //[Remote] para que no se repita nombre de asignatura mientras lo modificas
+        public async Task<IActionResult> verificarModificarAsignatura(int id, string nombre)
+        {
+            if (nombre == null)
+            {
+                return Json("El nombre no puede ser solo espacios en blanco");
+            }
+            nombre = _serviceController.quitarEspacios(nombre);
+            TAsignatura asignatura = (await _context.TAsignaturas.FirstOrDefaultAsync(a => a.Id == id))!;
+            var TAsignatura = await _context.TAsignaturas
+                .AnyAsync(a => a.Nombre == nombre);
+            if (asignatura!.Nombre == nombre)
+            {
+                return Json(TAsignatura);
+            }
+            return Json(!TAsignatura);
+
+        }
+
+        // POST: TUsuarios/confirmarCambiosAsignatura
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> confirmarCambioAsignatura(ModificarAsignatura model)
+        {
+            string nuevoNombre = _serviceController.quitarEspacios(model.Nombre);
+            TAsignatura asignatura = (await _context.TAsignaturas
+                .FirstOrDefaultAsync(a => a.Id == model.Id))!;
+
+            if (ModelState.IsValid && (asignatura.Nombre != nuevoNombre))
+            {
+                string sesionNif = giveSesionNif();
+
+                await _serviceController
+                    .guardarModificarAsignaturaAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, asignatura.Nombre, nuevoNombre, model.Id);
+                asignatura.Nombre = _serviceController.quitarEspacios(model.Nombre);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("listaAsignaturas", "TAsignaturas");
+            }
+
+            TempData["SinCambiosAsignatura"] = "No se ha modificado ningún parámetro de la asignatura";
+
+            return RedirectToAction("modificarAsignatura", "TAsignaturas", new
+            {
+                id = model.Id
+            });
         }
 
 

@@ -1,0 +1,46 @@
+﻿@model gestionDiversidad.ViewModels.TAsignaturas.ModificarAsignatura
+
+@{
+    ViewData["Title"] = "modificarAsignatura";
+}
+
+<div class="text-center">
+    <h2>Modificar Asignatura</h2>
+</div>
+
+
+<hr />
+<div class="text-center">
+    <form asp-action="confirmarCambioAsignatura" asp-controller="TAsignaturas"
+          method="post">
+        <div>
+            <label asp-for="@Model.Nombre" class="control-label" style="display: block;">Nombre: </label>
+            <input asp-for="Nombre" />
+            <div style="margin-bottom: 10px;">
+                <span asp-validation-for="@Model.Nombre" class="text-danger"></span>
+            </div>
+        </div>
+        <div style="margin-top: 10px; margin-bottom: 10px;">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Modificar" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+<div class="text-center" >
+    <a asp-controller="TAsignaturas" asp-action="listaAsignaturas" class="btn btn-dark">
+        Volver atrás
+    </a>
+</div>
+
+<div class="text-center" style="margin-top: 10px; margin-bottom: 10px;">
+    @if (TempData["SinCambiosAsignatura"] != null)
+    {
+        <div class="alert alert-info">@TempData["SinCambiosAsignatura"]</div>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

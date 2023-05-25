@@ -33,6 +33,12 @@
                         <strong>Acción: Borrar Asignatura</strong>
                     </th>
                 }
+                @if (Model.Permiso.Modificar)
+                {
+                    <th>
+                        <strong>Acción: Modificar Asignatura</strong>
+                    </th>
+                }
             </tr>
         </thead>
         <tbody style="text-align:center; vertical-align:middle">
@@ -53,7 +59,15 @@
                             </form>
                         </td>
                     }
-
+                    @if (Model.Permiso.Modificar)
+                    {
+                        <td>
+                            <form asp-action="modificarAsignatura" asp-controller="TAsignaturas">
+                                <input type="hidden" name="id" value=@item.Id />
+                                <button type="submit" class="btn btn-warning text-white">Modificar</button>
+                            </form>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

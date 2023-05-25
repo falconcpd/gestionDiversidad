@@ -637,6 +637,28 @@ namespace gestionDiversidad.Controllers
 
         }
 
+        //Guarda en la base de datos los cambios realizados que tengan que ver con la modificacion del médico de los informes
+        public async Task guardarModificarAsignaturaAuditoria(string nifAutor, int pantalla, string anteriorNombre, string nuevoNombre, int id)
+        {
+            DateTime fechaActual = fechaPresente();
+
+            string mensajeModificacion = "Cambio del nombre de la asignatura con Id: " + id + "\n";
+            mensajeModificacion += "Nombre anterior: " + anteriorNombre + "; Nombre actual " + nuevoNombre;
+
+            mensajeModificacion = mensajeModificacion.Replace("\n", "<br/>");
+            var auditoriaModificarAsignatura = new TAuditorium
+            {
+                NifUsuario = nifAutor,
+                Pantalla = pantalla,
+                FechaHora = fechaActual,
+                Accion = mensajeModificacion
+            };
+            _context.Add(auditoriaModificarAsignatura);
+            await _context.SaveChangesAsync();
+            return;
+
+        }
+
         //Retorna una lista de todos las auditorias.
         //Esta función solo está disponible para un administrador.
         public async Task<List<TAuditorium>> listaAuditorias()
