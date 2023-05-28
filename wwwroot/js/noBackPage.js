@@ -1,4 +1,3 @@
-document.getElementById("pruebaHola").click();
 window.addEventListener("load", function () {
     history.pushState({ noBack: true }, null, location.href);
 });
