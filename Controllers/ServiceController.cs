@@ -768,11 +768,15 @@ namespace gestionDiversidad.Controllers
 
             int separadorIndex = estructura.IndexOf("|");
             string nombre = estructura.Substring(0, separadorIndex);
-            int idAsignatura = Int32.Parse(separarIdentificador(estructura));
-            //
-            nombre = quitarEspacios(nombre);
+            int idAsignatura;
+            if (int.TryParse(separarIdentificador(estructura), out idAsignatura))
+            {
+                nombre = quitarEspacios(nombre);
 
-            return (await _context.TAsignaturas.AnyAsync(a => a.Id == idAsignatura && a.Nombre == nombre));
+                return (await _context.TAsignaturas.AnyAsync(a => a.Id == idAsignatura && a.Nombre == nombre));
+            }
+
+            return (false);
         }
 
         //Funcion que quita los espacios tanto primeros como últimos

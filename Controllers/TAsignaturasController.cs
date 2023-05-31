@@ -112,17 +112,19 @@ namespace gestionDiversidad.Controllers
         public async Task<IActionResult> crearAsignatura(CrearAsignaturaView model)
         {
             string sesionNif = giveSesionNif();
+            string nombre = _serviceController.quitarEspacios(model.Nombre);
+
 
             if (ModelState.IsValid)
             {
                 var asignatura = new TAsignatura
                 {
-                    Nombre = model.Nombre
+                    Nombre = nombre
 
-                };
+            };
                 _context.Add(asignatura);
                 await _serviceController
-                    .guardarCrearBorrarAsignaturaAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, constDefinidas.accionCrearElemento, model.Nombre);
+                    .guardarCrearBorrarAsignaturaAuditoria(sesionNif, constDefinidas.screenListaAsignaturas, constDefinidas.accionCrearElemento, nombre);
                 await _context.SaveChangesAsync();
 
             }
