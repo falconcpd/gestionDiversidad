@@ -19,8 +19,6 @@ public partial class TUsuario
 
     public virtual TAlumno? TAlumno { get; set; }
 
-    public virtual ICollection<TAuditorium> TAuditoria { get; set; } = new List<TAuditorium>();
-
     public virtual TMedico? TMedico { get; set; }
 
     public virtual TProfesor? TProfesor { get; set; }

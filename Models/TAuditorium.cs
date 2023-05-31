@@ -15,7 +15,5 @@ public partial class TAuditorium
 
     public DateTime FechaHora { get; set; }
 
-    public virtual TUsuario NifUsuarioNavigation { get; set; } = null!;
-
     public virtual TPantalla PantallaNavigation { get; set; } = null!;
 }
