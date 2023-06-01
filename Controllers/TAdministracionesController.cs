@@ -88,8 +88,8 @@ namespace gestionDiversidad.Controllers
             vistaAdmin.LInformes = await _serviceController
                 .permisoPantalla(constDefinidas.screenListalInformes, sesionRol);
             vistaAdmin.LDocencias = await _serviceController
-                .permisoPantalla(constDefinidas.screenListaDocencias, sesionRol);
-            vistaAdmin.LMatriculas = await _serviceController
+                .permisoPantalla(constDefinidas.screenAuditoria, sesionRol);
+            vistaAdmin.LAuditorias = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaMatriculas, sesionRol);
             vistaAdmin.LPantallas = await _serviceController
                 .permisoPantalla(constDefinidas.screenListaPantallas, sesionRol);
