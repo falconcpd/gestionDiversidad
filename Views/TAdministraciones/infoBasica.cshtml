@@ -39,45 +39,11 @@
         </dl>
 </div>
 
-<div style="text-align:center; vertical-align:middle">
-    @if (Model!.LAsignaturas.Acceder)
-    {
-        <div style="margin-top: 10px; margin-bottom: 10px;">
-            <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
-                <button type="submit" class="btn btn-info text-white">
-                    Asignaturas
-                </button>
-            </form>
-        </div>
-    }
-
-    @if (Model!.LMedicos.Acceder)
-    {
-        <div style="margin-top: 10px; margin-bottom: 10px;">
-            <form asp-controller="TMedicos" asp-action="listaMedicos">
-                <input type="hidden" name="volverPadre" value="false" />
-                <button type="submit" class="btn btn-info text-white">
-                    Médicos
-                </button>
-            </form>
-        </div>
-    }
-
-    @if (Model!.LProfesores.Acceder)
-    {
-        <div style="margin-top: 10px; margin-bottom: 10px;">
-            <form asp-controller="TProfesores" asp-action="listaProfesores">
-                <input type="hidden" name="volverPadre" value="false" />
-                <button type="submit" class="btn btn-info text-white">
-                    Profesores
-                </button>
-            </form>
-        </div>
-    }
-
-    @if (Model!.LAlumnos.Acceder)
-    {
-        <div style="margin-top: 10px; margin-bottom: 10px;">
+<div style="text-align:center; vertical-align:middle; margin-top: 10px; margin-bottom: 10px;">
+    <div class="btn-group">
+        <div class="btn-group-vertical; mx-auto">
+        @if (Model!.LAlumnos.Acceder)
+        {
             <form asp-controller="TAlumnos" asp-action="listaAlumnos">
                 <input type="hidden" name="volverPadre" value="false" />
                 <input type="hidden" name="rol" value="@constDefinidas.rolAdmin" />
@@ -86,12 +52,19 @@
                     Alumnos
                 </button>
             </form>
-        </div>
-    }
-
-    @if (Model!.LInformes.Acceder)
-    {
-        <div style="margin-top: 10px; margin-bottom: 10px;">
+        }
+        @if (Model!.LAsignaturas.Acceder)
+        {
+            <div style="margin-top: 10px; margin-bottom: 10px;">
+                <form method="get" asp-action="listaAsignaturas" asp-controller="TAsignaturas">
+                    <button type="submit" class="btn btn-info text-white">
+                        Asignaturas
+                    </button>
+                </form> 
+            </div>
+        }
+        @if (Model!.LInformes.Acceder)
+        {
             <form asp-controller="TInformes" asp-action="listaInformes">
                 <input type="hidden" name="rol" value="@constDefinidas.rolAdmin" />
                 <input type="hidden" name="nif" value="@Model.Admin.Nif" />
@@ -99,53 +72,73 @@
                     Informes
                 </button>
             </form>
+        }
         </div>
-    }
+    </div>
 
-    @if (Model!.LDocencias.Acceder)
-    {
-        <div style="margin-top: 10px; margin-bottom: 10px;">
-            <form asp-controller="TProfesores" asp-action="listaDocencias">
+    <div class="btn-group">
+        <div class="btn-group-vertical; mx-auto">
+        @if (Model!.LProfesores.Acceder)
+        {
+            <form asp-controller="TProfesores" asp-action="listaProfesores">
+                <input type="hidden" name="volverPadre" value="false" />
                 <button type="submit" class="btn btn-info text-white">
-                    Docencias
+                    Profesores
                 </button>
             </form>
-        </div>
-    }
-
-    @if (Model.LMatriculas.Acceder)
-    {
-        <div style="margin-top: 10px; margin-bottom: 10px;">
-            <form asp-controller="TAlumnos" asp-action="listaMatriculas">
+        }
+        @if (Model.LMatriculas.Acceder)
+        {
+            <div style="margin-top: 10px; margin-bottom: 10px;">
+                <form asp-controller="TAlumnos" asp-action="listaMatriculas">
                 <button type="submit" class="btn btn-info text-white">
                     Matrículas
                 </button>
-            </form>
-        </div>
-    }
-
-    @if (Model.LPantallas.Acceder)
-    {
-        <div style="margin-top: 10px; margin-bottom: 10px;">
+                </form>
+            </div>
+        }
+        @if (Model.LPantallas.Acceder)
+        {
             <form asp-controller="TPantallas" asp-action="listaPantallas">
                 <button type="submit" class="btn btn-info text-white">
                     Pantallas
                 </button>
             </form>
-        </div>
-    }
+        }
 
-    @if (Model.LPantallas.Acceder)
-    {
-        <div>
-            <form asp-controller="TAuditoriums" asp-action="listaAuditorias">
+        </div>
+    </div>
+    
+    <div class="btn-group">
+        <div class="btn-group-vertical; mx-auto">
+        @if (Model!.LMedicos.Acceder)
+        {
+            <form asp-controller="TMedicos" asp-action="listaMedicos">
+                <input type="hidden" name="volverPadre" value="false" />
                 <button type="submit" class="btn btn-info text-white">
-                    Auditorías
+                    Médicos
                 </button>
             </form>
-        </div>
-
+        }
+        @if (Model!.LDocencias.Acceder)
+        {
+            <div style="margin-top: 10px; margin-bottom: 10px;">
+                <form asp-controller="TProfesores" asp-action="listaDocencias">
+                    <button type="submit" class="btn btn-info text-white">
+                        Docencias
+                    </button>
+                </form>
+            </div>
+        }
+    @if (Model.LPantallas.Acceder)
+    {
+        <form asp-controller="TAuditoriums" asp-action="listaAuditorias">
+            <button type="submit" class="btn btn-info text-white">
+                Auditorías
+            </button>
+        </form>
     }
+        </div>
+    </div>
 </div>
-
 
