@@ -6,7 +6,7 @@
 
 <div class="text-center">
     <h2>Crear nuevo/a alumno/a</h2>
-    <h4>Un/a alumno/a nuevo deberá tener un informe asignado como mínimo</h4>
+    <h4>Un/a alumno/a deberá tener un informe asignado como mínimo</h4>
 </div>
 <hr />
 
@@ -71,7 +71,7 @@
                 </div>            
             </div>
             <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
-            <label for="medicoDataList" class="form-label" style="display: block;">Médico: </label>
+            <label for="medicoDataList" class="form-label" style="display: block;">Médico titular: </label>
             <input asp-for="MedicoNif" list="datalistOptionsMedicos" id="medicoDataList" placeholder="Buscar médico..." class="text-center">
             <datalist asp-for="MedicoNif" id="datalistOptionsMedicos">
                 @foreach (var medico in Model.ListaMedicos!)
