@@ -41,7 +41,7 @@
 </div>
 
 <div class="text-center">
-    @if (Model.Permiso.Modificar)
+    @if (Model.Permiso.Modificar && Context.Session.GetString(constDefinidas.keyNif) == Model.Medico.Nif)
     {
         <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
             <form asp-controller="TInformes" asp-action="actualizarPDF" asp-route-nifAlumno="@Model.Informe.NifAlumno"
