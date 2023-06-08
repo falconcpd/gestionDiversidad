@@ -532,22 +532,6 @@ namespace gestionDiversidad.Controllers
             return RedirectToAction("InicioSesion", "TUsuarios");
         }
 
-        //Función que redirecciona si algún usuario, informe cualquier otra cosa se ha borrado en medio de una sentencia y ya no existe. 
-        public IActionResult errorVolverInicio()
-        {
-            string sessionKeyRol = constDefinidas.keyRol;
-            string sessionKeyNif = constDefinidas.keyNif;
-            string sessionKeyUser = constDefinidas.keyUser;
-            string sessionActualUser = constDefinidas.keyActualUser;
-
-            HttpContext.Session.Remove(sessionKeyRol);
-            HttpContext.Session.Remove(sessionKeyNif);
-            HttpContext.Session.Remove(sessionKeyUser);
-            HttpContext.Session.Remove(sessionActualUser);
-
-            return RedirectToAction("InicioSesion", "TUsuarios");
-        }
-
         //POST : TUsuarios/volverPerfilPrincipal
         [HttpPost]
         [ValidateAntiForgeryToken]
