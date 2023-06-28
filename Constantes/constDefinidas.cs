@@ -11,13 +11,8 @@
         public const string keyNif = "_nif";
         public const string keyUser = "_user";
         public const string keyActualUser = "_actualUser";
-        public const string keyInformePDF = "_PDF";
         public const string keyMedicoTemporal = "Medico_Temporal";
         ///////////////////////////////
-        public const int accionCrear = 1;
-        public const int accionBorrar = 2;
-        public const int accionModificar = 3;
-        //////////////////////////////
         public const int accionCrearElemento = 1;
         public const int accionBorrarElemento = 2;
         //////////////////////////////
