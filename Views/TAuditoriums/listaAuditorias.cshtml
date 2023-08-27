@@ -40,7 +40,7 @@
                         @Html.Raw(item.Accion)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FechaHora)
+                        @Html.Raw(item.FechaHora.ToString("yyyy/MM/dd HH:mm:ss"))
                     </td>
                 </tr>
             }

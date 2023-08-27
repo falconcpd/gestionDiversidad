@@ -28,7 +28,7 @@
             <strong>Fecha de creación: </strong>
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Informe.Fecha)
+            @Html.Raw(Model.Informe.Fecha.ToString("yyyy/MM/dd HH:mm:ss"))
         </dd>
         <dd>
             <a href="@Url.Action("verInforme", "TInformes", 

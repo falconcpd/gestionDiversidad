@@ -61,7 +61,7 @@
                         @Html.DisplayFor(modelItem => item.NifMedicoNavigation.Nombre) @("(" + item.NifMedico + ")")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Fecha)
+                        @Html.Raw(item.Fecha.ToString("yyyy/MM/dd HH:mm:ss"))
                     </td>
                     @if (Model.Informe.Acceder)
                     {
